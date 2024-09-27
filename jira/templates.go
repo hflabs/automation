@@ -180,4 +180,16 @@ const (
 
 	IssueItemFieldStoryPoints   = "Story Points"
 	IssueItemFieldBusinessValue = "Business Value"
+
+	IssueINNATransitionVerifyAndCloseId              = "91"
+	IssueINNATransitionReopenId                      = "101"
+	IssueINNATransitionDelayId                       = "111"
+	IssueINNATransitionStartDevelopmentId            = "71"
+	IssueINNATransitionCloseWithoutFixId             = "141"
+	IssueINNATransitionFinishDevelopmentId           = "81"
+	IssueINNATransitionRateId                        = "51"
+	IssueINNATransitionTrashId                       = "171"
+	IssueINNATransitionPlanId                        = "61"
+	IssueINNATransitionRevertToBacklogFromRatedId    = "161"
+	IssueINNATransitionRevertToBacklogFromProgressId = "131"
 )
