@@ -1,4 +1,4 @@
-module github.com/PunyaI/automation/logger
+module github.com/hflabs/automation/logger
 
 go 1.23.1
 
