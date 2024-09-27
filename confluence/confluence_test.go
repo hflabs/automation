@@ -7,10 +7,29 @@ import (
 )
 
 func TestExtractHashcodeFromContent(t *testing.T) {
-	t.Run("test", func(t *testing.T) {
-		content, err := os.ReadFile("test_data/content_with_hashcode.txt")
-		require.NoError(t, err)
-		details := extractHashcodeFromContent(string(content))
-		require.Equal(t, "304c51c4ef838285f89d5be131697258", details)
-	})
+	tests := []struct {
+		name     string
+		filePath string
+		hash     string
+	}{
+		{
+			name:     "01. hashcode at page start",
+			filePath: "test_data/content_with_hashcode_start.txt",
+			hash:     "7a8b9ecc2a62cc944862a408a913e913",
+		},
+		{
+			name:     "02. hashcode after similar macros",
+			filePath: "test_data/content_with_hashcode.txt",
+			hash:     "7a8b9ecc2a62cc944862a408a913e914",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			content, err := os.ReadFile(tt.filePath)
+			require.NoError(t, err)
+			resultHash := extractHashcodeFromContent(string(content))
+			require.Equal(t, tt.hash, resultHash)
+		})
+	}
+
 }

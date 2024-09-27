@@ -1,0 +1,7 @@
+<ac:structured-macro ac:macro-id="bbaa9ed7-a169-4ac8-97e9-544efe609bdd" ac:name="hfl" ac:schema-version="1">
+  <ac:parameter ac:name="hiddentitle">Эта страница сгенерирована автоматически</ac:parameter>
+  <ac:parameter ac:name="atlassian-macro-output-type">INLINE</ac:parameter>
+  <ac:rich-text-body>
+    <p>7a8b9ecc2a62cc944862a408a913e913</p>
+  </ac:rich-text-body>
+</ac:structured-macro>

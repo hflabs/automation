@@ -1,1 +1,15 @@
-<ac:parameter ac:name="hiddentitle">Эта страница сгенерирована автоматически</ac:parameter><ac:parameter ac:name="atlassian-macro-output-type">INLINE</ac:parameter><ac:rich-text-body>\n<p>304c51c4ef838285f89d5be131697258</p>\n</ac:rich-text-body></ac:structured-macro>\n\n\n
+<ac:structured-macro ac:macro-id="d78a3b6e-3c9c-4f7c-acb1-d93d57d8ea8f" ac:name="hfl" ac:schema-version="1">
+  <ac:parameter ac:name="atlassian-macro-output-type">INLINE</ac:parameter>
+  <ac:rich-text-body>
+    <p>Перечень справочников</p>
+    <p>Полезные ссылки:</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<hr/>
+<ac:structured-macro ac:macro-id="bbaa9ed7-a169-4ac8-97e9-544efe609bdd" ac:name="hfl" ac:schema-version="1">
+  <ac:parameter ac:name="hiddentitle">Эта страница сгенерирована автоматически</ac:parameter>
+  <ac:parameter ac:name="atlassian-macro-output-type">INLINE</ac:parameter>
+  <ac:rich-text-body>
+    <p>7a8b9ecc2a62cc944862a408a913e914</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
