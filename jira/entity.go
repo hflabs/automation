@@ -29,7 +29,7 @@ type ChangelogItem struct {
 
 type FieldsIssue struct {
 	BusinessValue int          `json:"customfield_10084,omitempty"`
-	StoryPoints   int          `json:"customfield_10083,omitempty"`
+	StoryPoints   float64      `json:"customfield_10083,omitempty"`
 	WeightedJob   float64      `json:"customfield_12580,omitempty"`
 	Status        IssueField   `json:"status,omitempty"`
 	Issuetype     IssueIdField `json:"issuetype,omitempty"`
