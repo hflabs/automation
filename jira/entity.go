@@ -11,14 +11,14 @@ type jira struct {
 type WebhookIssue struct {
 	IssueEventType string    `json:"issue_event_type_name,omitempty"`
 	Issue          IssueJira `json:"issue,omitempty"`
+	Changelog      struct {
+		Items []IssueItemChangelog `json:"items,omitempty"`
+	} `json:"changelog,omitempty"`
 }
 
 type IssueJira struct {
-	Key       string      `json:"key,omitempty"`
-	Fields    FieldsIssue `json:"fields,omitempty"`
-	Changelog struct {
-		Items []IssueItemChangelog `json:"items,omitempty"`
-	} `json:"changelog,omitempty"`
+	Key    string      `json:"key,omitempty"`
+	Fields FieldsIssue `json:"fields,omitempty"`
 }
 
 type IssueItemChangelog struct {

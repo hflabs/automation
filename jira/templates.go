@@ -69,20 +69,6 @@ func GetJiraSuggestions() Fields {
 				WontFix: "2",
 				Unknown: "100300",
 			},
-			Changelog: Changelog{
-				SingleItem: SingleItem{
-					Field: Field{
-						StoryPoints:   "Story Points",
-						BusinessValue: "Business Value",
-						WeightedJob:   "Weighted Job",
-					},
-				},
-				EventType: EventType{
-					Updated:  "issue_updated",
-					Generic:  "issue_generic",
-					Assigned: "issue_assigned",
-				},
-			},
 			Transitions: Transitions{
 				INNA: ProjectTransition{
 					FromBacklogToRate:        "51",
@@ -103,18 +89,32 @@ func GetJiraSuggestions() Fields {
 				},
 			},
 		},
+		Changelog: Changelog{
+			SingleItem: SingleItem{
+				Field: Field{
+					StoryPoints:   "Story Points",
+					BusinessValue: "Business Value",
+					WeightedJob:   "Weighted Job",
+				},
+			},
+			EventType: EventType{
+				Updated:  "issue_updated",
+				Generic:  "issue_generic",
+				Assigned: "issue_assigned",
+			},
+		},
 	}
 }
 
 type Fields struct {
-	Issue Issue // Задача
+	Issue     // Задача
+	Changelog // Журнал изменения
 }
 type Issue struct {
 	Status      // Статус
 	Type        // Тип
 	Priority    // Приоритет
 	Resolution  // Результат
-	Changelog   // Журнал изменения
 	Transitions // Возможные переходы статусов
 }
 type Status struct {
