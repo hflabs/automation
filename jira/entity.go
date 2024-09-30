@@ -85,3 +85,7 @@ type SearchResponse struct {
 type UpdateIssueRequest struct {
 	Fields map[string]interface{} `json:"fields"`
 }
+
+type TransitionIssueRequest struct {
+	Transition IssueIdField `json:"transition,omitempty"`
+}

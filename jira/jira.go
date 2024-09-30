@@ -51,7 +51,7 @@ func (j *jira) TransitionIssue(issueKey, transition string) error {
 		BaseURL(fmt.Sprintf("%s/issue/%s/transitions", j.BaseUrl, issueKey)).
 		Post().
 		BasicAuth(j.Username, j.Password).
-		BodyJSON(IssueIdField{transition}).
+		BodyJSON(TransitionIssueRequest{IssueIdField{ID: transition}}).
 		Fetch(context.Background())
 }
 
