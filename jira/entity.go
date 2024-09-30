@@ -12,7 +12,7 @@ type WebhookIssue struct {
 	IssueEventType string    `json:"issue_event_type_name,omitempty"`
 	Issue          IssueJira `json:"issue,omitempty"`
 	Changelog      struct {
-		Items []IssueItemChangelog `json:"items,omitempty"`
+		Items []ChangelogItem `json:"items,omitempty"`
 	} `json:"changelog,omitempty"`
 }
 
@@ -21,7 +21,7 @@ type IssueJira struct {
 	Fields FieldsIssue `json:"fields,omitempty"`
 }
 
-type IssueItemChangelog struct {
+type ChangelogItem struct {
 	Field string `json:"field,omitempty,omitempty"`
 	From  string `json:"from,omitempty"`
 	To    string `json:"to,omitempty"`

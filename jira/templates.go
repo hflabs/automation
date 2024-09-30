@@ -97,25 +97,26 @@ func GetJiraSuggestions() Fields {
 					WeightedJob:   "Weighted Job",
 				},
 			},
-			EventType: EventType{
-				Updated:  "issue_updated",
-				Generic:  "issue_generic",
-				Assigned: "issue_assigned",
-			},
+		},
+		EventType: EventType{
+			Updated:  "issue_updated",
+			Generic:  "issue_generic",
+			Assigned: "issue_assigned",
 		},
 	}
 }
 
 type Fields struct {
-	Issue     // Задача
-	Changelog // Журнал изменения
+	Issue     Issue     // Задача
+	Changelog Changelog // Журнал изменения
+	EventType EventType // Тип события
 }
 type Issue struct {
-	Status      // Статус
-	Type        // Тип
-	Priority    // Приоритет
-	Resolution  // Результат
-	Transitions // Возможные переходы статусов
+	Status      Status      // Статус
+	Type        Type        // Тип
+	Priority    Priority    // Приоритет
+	Resolution  Resolution  // Результат
+	Transitions Transitions // Возможные переходы статусов
 }
 type Status struct {
 	Open                        string // Открытый
@@ -194,12 +195,11 @@ type Resolution struct {
 }
 
 type Changelog struct {
-	EventType  // Тип события
-	SingleItem // Что изменилось
+	SingleItem SingleItem // Что изменилось
 }
 
 type SingleItem struct {
-	Field // Поле
+	Field Field // Поле
 }
 
 type Field struct {
