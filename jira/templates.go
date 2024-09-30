@@ -1,195 +1,236 @@
 package jira
 
-const (
-	IssueEventTypeUpdated  = "issue_updated"
-	IssueEventTypeGeneric  = "issue_generic"
-	IssueEventTypeAssigned = "issue_assigned"
-
-	IssueStatusOpen   = "Открытый"
-	IssueStatusOpenId = "1"
-
-	IssueStatusToDo   = "К выполнению"
-	IssueStatusToDoId = "2"
-
-	IssueStatusInProgress   = "В работе"
-	IssueStatusInProgressId = "3"
-
-	IssueStatusReopened   = "Переоткрыт"
-	IssueStatusReopenedId = "4"
-
-	IssueStatusResolved   = "Решенные"
-	IssueStatusResolvedId = "5"
-
-	IssueStatusClosed   = "Закрыт"
-	IssueStatusClosedId = "6"
-
-	IssueStatusTestingInProgress   = "Testing In Progress"
-	IssueStatusTestingInProgressId = "1006"
-
-	IssueStatusCRInProgress   = "CR In Progress"
-	IssueStatusCRInProgressId = "10008"
-
-	IssueStatusDelay   = "Отложен"
-	IssueStatusDelayId = "10009"
-
-	IssueStatusNew   = "Новый"
-	IssueStatusNewId = "10011"
-
-	IssueStatusAssigned   = "Назначен"
-	IssueStatusAssignedId = "10012"
-
-	IssueHRPInProgress   = "В работе"
-	IssueHRPInProgressId = "10013"
-
-	IssueStatusResolveSup   = "Решен"
-	IssueStatusResolveSupId = "10014"
-
-	IssueStatusConfirmed   = "Подтвержден"
-	IssueStatusConfirmedId = "10015"
-
-	IssueStatusSaved   = "Сохранен"
-	IssueStatusSavedId = "10016"
-
-	IssueStatusRequestInfo   = "Запрос информации"
-	IssueStatusRequestInfoId = "10018"
-
-	IssueStatusEscalation   = "Эскалация"
-	IssueStatusEscalationId = "10019"
-
-	IssueStatusDone   = "Готово"
-	IssueStatusDoneId = "10020"
-
-	IssueStatusOut   = "Выход"
-	IssueStatusOutId = "10022"
-
-	IssueStatusHRPAgreed   = "Согласовано"
-	IssueStatusHRPAgreedId = "10120"
-
-	IssueStatusCancelled   = "Отменен"
-	IssueStatusCancelledId = "10121"
-
-	IssueStatusOnApproval   = "На согласовании"
-	IssueStatusOnApprovalId = "10220"
-
-	IssueStatusCRCompleted   = "CR завершен"
-	IssueStatusCRCompletedId = "10320"
-
-	IssueStatusBacklog   = "Очередь"
-	IssueStatusBacklogId = "10424"
-
-	IssueStatusSelectedRu = "Выбрано"
-	IssueStatusSelectedId = "10520"
-
-	IssueStatusOfferDone   = "Сделан оффер"
-	IssueStatusOfferDoneId = "10425"
-
-	IssueStatusRated   = "Оценено"
-	IssueStatusRatedId = "10620"
-
-	IssueStatusCodeReview   = "Ревью кода"
-	IssueStatusCodeReviewId = "10720"
-
-	IssueStatusDeployed   = "Deployed"
-	IssueStatusDeployedId = "10820"
-
-	IssueStatusSelectedForDevelopment   = "Selected for Development"
-	IssueStatusSelectedForDevelopmentId = "10920"
-
-	IssueStatusTestReview   = "Ревью тестирования"
-	IssueStatusTestReviewId = "11020"
-
-	IssueStatusDesignReview   = "Ревью дизайна"
-	IssueStatusDesignReviewId = "11021"
-
-	IssueStatusHRPAllOrganizedRu = "Всё организовано"
-	IssueStatusHRPAllOrganizedId = "11320"
-
-	IssueStatusDesign   = "Дизайн"
-	IssueStatusDesignId = "11420"
-
-	IssueStatusReadyForDev   = "Готово к разработке"
-	IssueStatusReadyForDevId = "11421"
-
-	IssueStatusDevelopment   = "Разработка"
-	IssueStatusDevelopmentId = "11422"
-
-	IssueStatusReview   = "Ревью"
-	IssueStatusReviewId = "11423"
-
-	IssueStatusAnalytics   = "Аналитика"
-	IssueStatusAnalyticsId = "11520"
-
-	IssueStatusReviewRequirements   = "Ревью требований"
-	IssueStatusReviewRequirementsId = "11521"
-
-	IssueStatusReadyForTesting   = "Готово к тестированию"
-	IssueStatusReadyForTestingId = "11522"
-
-	IssueStatusTesting   = "Тестирование"
-	IssueStatusTestingId = "11523"
-
-	IssueStatusDocumentation   = "Документация"
-	IssueStatusDocumentationId = "11620"
-
-	IssueStatusFirstAnswer   = "Дан первичный ответ"
-	IssueStatusFirstAnswerId = "11720"
-
-	IssueStatusNoNeedReaction   = "Дан первичный ответ"
-	IssueStatusNoNeedReactionId = "11820"
-
-	IssueStatusAssignedInQueue   = "Назначен (в очереди)"
-	IssueStatusAssignedInQueueId = "11821"
-
-	IssueStatusAnsweredButNeedImprovements   = "Отвечено, но остались доделки"
-	IssueStatusAnsweredButNeedImprovementsId = "11822"
-
-	IssueStatusAwaitingCustomerResponse   = "Ожидает ответа заказчика"
-	IssueStatusAwaitingCustomerResponseId = "11823"
-
-	IssueStatusAwaitingDecisionColleagues   = "Ожидает решения от коллег"
-	IssueStatusAwaitingDecisionColleaguesId = "11824"
-
-	IssueTypeBugRu = "Ошибка"
-	IssueTypeBugId = "1"
-
-	IssueTypeNewFeature   = "Новая функциональность"
-	IssueTypeNewFeatureId = "2"
-
-	IssueTypeTask   = "Задача"
-	IssueTypeTaskId = "3"
-
-	IssueTypeImprovement   = "Улучшение"
-	IssueTypeImprovementId = "4"
-
-	IssueTypeEpic   = "Эпик"
-	IssueTypeEpicId = "5"
-
-	IssuePriorityBlocker   = "Блокирующий"
-	IssuePriorityBlockerId = "2"
-
-	IssuePriorityMinor   = "Незначительный"
-	IssuePriorityMinorId = "4"
-
-	IssueResolutionFixed   = "Исправленный"
-	IssueResolutionFixedId = "1"
-
-	IssueResolutionWontFix   = "Не будет исправлено"
-	IssueResolutionWontFixId = "2"
-
-	IssueResolutionUnknownId = "100300"
-
-	IssueItemFieldStoryPoints   = "Story Points"
-	IssueItemFieldBusinessValue = "Business Value"
-
-	IssueINNATransitionVerifyAndCloseId              = "91"
-	IssueINNATransitionReopenId                      = "101"
-	IssueINNATransitionDelayId                       = "111"
-	IssueINNATransitionStartDevelopmentId            = "71"
-	IssueINNATransitionCloseWithoutFixId             = "141"
-	IssueINNATransitionFinishDevelopmentId           = "81"
-	IssueINNATransitionRateId                        = "51"
-	IssueINNATransitionTrashId                       = "171"
-	IssueINNATransitionPlanId                        = "61"
-	IssueINNATransitionRevertToBacklogFromRatedId    = "161"
-	IssueINNATransitionRevertToBacklogFromProgressId = "131"
+var (
+	suggestions = Fields{
+		Issue: Issue{
+			Status: Status{
+				Open:                        "1",
+				ToDo:                        "2",
+				InProgress:                  "3",
+				Reopened:                    "4",
+				Resolved:                    "5",
+				Closed:                      "6",
+				TestingInProgress:           "1006",
+				CRInProgress:                "10008",
+				Delay:                       "10009",
+				New:                         "10011",
+				Assigned:                    "10012",
+				InProgressHRP:               "10013",
+				ResolveSup:                  "10014",
+				Confirmed:                   "10015",
+				Saved:                       "10016",
+				RequestInfo:                 "10018",
+				Escalation:                  "10019",
+				Done:                        "10020",
+				Out:                         "10022",
+				AgreedHRP:                   "10120",
+				Cancelled:                   "10121",
+				OnApproval:                  "10220",
+				CRCompleted:                 "10320",
+				Backlog:                     "10424",
+				Selected:                    "10520",
+				OfferDone:                   "10425",
+				Rated:                       "10620",
+				CodeReview:                  "10720",
+				Deployed:                    "10820",
+				SelectedForDevelopment:      "10920",
+				TestReview:                  "11020",
+				DesignReview:                "11021",
+				AllOrganizedHRP:             "11320",
+				Design:                      "11420",
+				ReadyForDevelopment:         "11421",
+				Development:                 "11422",
+				Review:                      "11423",
+				Analytics:                   "11520",
+				Requirements:                "11521",
+				ReadyForTesting:             "11522",
+				Testing:                     "11523",
+				Documentation:               "11620",
+				FirstAnswer:                 "11720",
+				NoNeedReaction:              "11820",
+				AssignedInQueue:             "11821",
+				AnsweredButNeedImprovements: "11822",
+				AwaitingCustomerResponse:    "11823",
+				AwaitingDecisionColleagues:  "11824",
+			},
+			Type: Type{
+				Bug:         "1",
+				NewFeature:  "2",
+				Task:        "3",
+				Improvement: "4",
+				Epic:        "5",
+			},
+			Priority: Priority{
+				Blocker: "2",
+				Minor:   "4",
+			},
+			Resolution: Resolution{
+				Fixed:   "1",
+				WontFix: "2",
+				Unknown: "100300",
+			},
+			Changelog: Changelog{
+				SingleItem: SingleItem{
+					Field: Field{
+						StoryPoints:   "Story Points",
+						BusinessValue: "Business Value",
+						WeightedJob:   "Weighted Job",
+					},
+				},
+				EventType: EventType{
+					Updated:  "issue_updated",
+					Generic:  "issue_generic",
+					Assigned: "issue_assigned",
+				},
+			},
+			Transitions: Transitions{
+				INNA: ProjectTransition{
+					FromBacklogToRate:        "51",
+					FromBacklogToDone:        "171",
+					FromRateToSelected:       "61",
+					FromRateToBacklog:        "161",
+					FromRateToDone:           "141",
+					FromSelectedToInProgress: "71",
+					FromSelectedToBacklog:    "131",
+					FromSelectedToDone:       "141",
+					FromInProgressToResolved: "81",
+					FromInProgressToBacklog:  "131",
+					FromInProgressToDelayed:  "111",
+					FromResolvedToDone:       "91",
+					FromResolvedToSelected:   "101",
+					FromResolvedToDelayed:    "111",
+					FromDelayedToInProgress:  "71",
+				},
+			},
+		},
+	}
 )
+
+type Fields struct {
+	Issue Issue // Задача
+}
+type Issue struct {
+	Status      // Статус
+	Type        // Тип
+	Priority    // Приоритет
+	Resolution  // Результат
+	Changelog   // Журнал изменения
+	Transitions // Возможные переходы статусов
+}
+type Status struct {
+	Open                        string // Открытый
+	ToDo                        string // К выполнению
+	InProgress                  string // В работе
+	Reopened                    string // Переоткрыт
+	Resolved                    string // Решенные
+	Closed                      string // Закрыт
+	TestingInProgress           string // Testing In Progress
+	CRInProgress                string // CR In Progress
+	Delay                       string // Отложен
+	New                         string // Новый
+	Assigned                    string // Назначен
+	InProgressHRP               string // В работе
+	ResolveSup                  string // Решен
+	Confirmed                   string // Подтвержден
+	Saved                       string // Сохранен
+	RequestInfo                 string // Запрос информации
+	Escalation                  string // Эскалация
+	Done                        string // Готово
+	Out                         string // Выход
+	AgreedHRP                   string // Согласовано
+	Cancelled                   string // Отменен
+	OnApproval                  string // На согласовании
+	CRCompleted                 string // CR завершен
+	Backlog                     string // Очередь
+	Selected                    string // Выбрано
+	OfferDone                   string // Сделан оффер
+	Rated                       string // Оценено
+	CodeReview                  string // Ревью кода
+	Deployed                    string // Deployed
+	SelectedForDevelopment      string // Selected for Development
+	TestReview                  string // Ревью тестирования
+	DesignReview                string // Ревью дизайна
+	AllOrganizedHRP             string // Всё организовано
+	Design                      string // Дизайн
+	ReadyForDevelopment         string // Готово к разработке
+	Development                 string // Разработка
+	Review                      string // Ревью
+	Analytics                   string // Аналитика
+	Requirements                string // Ревью требований
+	ReadyForTesting             string // Готово к тестированию
+	Testing                     string // Тестирование
+	Documentation               string // Документация
+	FirstAnswer                 string // Дан первичный ответ
+	NoNeedReaction              string // Не требует реакции
+	AssignedInQueue             string // Назначен (в очереди)
+	AnsweredButNeedImprovements string // Отвечено, но остались доделки
+	AwaitingCustomerResponse    string // Ожидает ответа заказчика
+	AwaitingDecisionColleagues  string // Ожидает решения от коллег
+}
+
+type EventType struct {
+	Updated  string // Обновлено
+	Generic  string // Создано
+	Assigned string // Назначено
+}
+
+type Type struct {
+	Bug         string // Ошибка
+	NewFeature  string // Новая функциональность
+	Task        string // Задача
+	Improvement string // Улучшение
+	Epic        string // Эпик
+}
+
+type Priority struct {
+	Blocker string // Блокирующий
+	Minor   string // Незначительный
+}
+
+type Resolution struct {
+	Fixed   string // Исправленный
+	WontFix string // Не будет исправлено
+	Unknown string // Неизвестно (нужно найти и заполнить)
+}
+
+type Changelog struct {
+	EventType  // Тип события
+	SingleItem // Что изменилось
+}
+
+type SingleItem struct {
+	Field // Поле
+}
+
+type Field struct {
+	StoryPoints   string // Story Points
+	BusinessValue string // Business Value
+	WeightedJob   string // Weighted Job
+}
+
+type Transitions struct {
+	INNA ProjectTransition
+}
+
+type ProjectTransition struct {
+	FromBacklogToRate string // Rate - Анализ задачи на исполняемость, атомарность и нужность. Оценка для получения индекса, по которому сортируется очередь задач
+	FromBacklogToDone string // Trash - Закрытие задачи без разработки
+
+	FromRateToSelected string // Plan - Планирование задач в спринт. Будет использоваться, чтобы понимать, успели запланированное в спринт или нет.
+	FromRateToBacklog  string // Revert
+	FromRateToDone     string // Close - Закрытие задачи без разработки
+
+	FromSelectedToInProgress string // Start - Начало разработки
+	FromSelectedToBacklog    string // Revert - Возврат задачи в бэклог
+	FromSelectedToDone       string // Close - Закрытие задачи без разработки
+
+	FromInProgressToResolved string // Finish - Окончание разработки
+	FromInProgressToBacklog  string // Revert - Возврат задачи в бэклог
+	FromInProgressToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
+
+	FromResolvedToDone     string // Verify and close - Успешное тестирование
+	FromResolvedToSelected string // Reopen - Возврат задачи в разработку, т.к. есть ошибки
+	FromResolvedToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
+
+	FromDelayedToInProgress string // Start - Начало разработки
+}

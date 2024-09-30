@@ -8,7 +8,7 @@ import (
 )
 
 func NewJira(baseUrl, user, password string) ApiJira {
-	return &jira{baseUrl, user, password}
+	return &jira{baseUrl, user, password, suggestions}
 }
 
 func (j *jira) GetIssueComments(issueKey string) ([]IssueComment, error) {
