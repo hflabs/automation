@@ -22,9 +22,11 @@ type IssueJira struct {
 }
 
 type ChangelogItem struct {
-	Field string `json:"field,omitempty,omitempty"`
-	From  string `json:"from,omitempty"`
-	To    string `json:"to,omitempty"`
+	Field      string `json:"field,omitempty,omitempty"`
+	From       string `json:"from,omitempty"`
+	To         string `json:"to,omitempty"`
+	FromString string `json:"from_string,omitempty"`
+	ToString   string `json:"to_string,omitempty"`
 }
 
 type FieldsIssue struct {
