@@ -3,10 +3,9 @@ package jira
 import "time"
 
 type jira struct {
-	BaseUrl     string
-	Username    string
-	Password    string
-	Suggestions Fields
+	BaseUrl  string
+	Username string
+	Password string
 }
 
 type WebhookIssue struct {

@@ -1,7 +1,7 @@
 package jira
 
-var (
-	suggestions = Fields{
+func GetJiraSuggestions() Fields {
+	return Fields{
 		Issue: Issue{
 			Status: Status{
 				Open:                        "1",
@@ -104,7 +104,7 @@ var (
 			},
 		},
 	}
-)
+}
 
 type Fields struct {
 	Issue Issue // Задача
