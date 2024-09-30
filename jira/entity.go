@@ -25,8 +25,8 @@ type ChangelogItem struct {
 	Field      string `json:"field,omitempty,omitempty"`
 	From       string `json:"from,omitempty"`
 	To         string `json:"to,omitempty"`
-	FromString string `json:"from_string,omitempty"`
-	ToString   string `json:"to_string,omitempty"`
+	FromString string `json:"fromString,omitempty"`
+	ToString   string `json:"toString,omitempty"`
 }
 
 type FieldsIssue struct {
