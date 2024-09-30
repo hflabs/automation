@@ -6,7 +6,7 @@ type ApiJira interface {
 	GetIssueComments(issueKey string) ([]IssueComment, error)
 	GetIssueWatchers(issueKey string) ([]JiraUser, error)
 
-	UpdateIssue(issueKey string, jsonBody interface{}) error
+	UpdateIssue(issueKey string, req UpdateIssueRequest) error
 	CommentIssue(issueKey, comment string) error
 	TransitionIssue(issueKey, transition string) error
 }

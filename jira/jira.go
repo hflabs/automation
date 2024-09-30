@@ -37,12 +37,12 @@ func (j *jira) GetIssueWatchers(issueKey string) ([]JiraUser, error) {
 	return resp.Watchers, nil
 }
 
-func (j *jira) UpdateIssue(issueKey string, jsonBody interface{}) error {
+func (j *jira) UpdateIssue(issueKey string, req UpdateIssueRequest) error {
 	return requests.New().
 		BaseURL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
 		Put().
 		BasicAuth(j.Username, j.Password).
-		BodyJSON(jsonBody).
+		BodyJSON(req).
 		Fetch(context.Background())
 }
 

@@ -81,3 +81,7 @@ type SearchResponse struct {
 	Total      int         `json:"total,omitempty"`
 	Issues     []IssueJira `json:"issues,omitempty"`
 }
+
+type UpdateIssueRequest struct {
+	Fields map[string]interface{} `json:"fields"`
+}
