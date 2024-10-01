@@ -69,6 +69,11 @@ func GetJiraSuggestions() Fields {
 				WontFix: "2",
 				Unknown: "100300",
 			},
+			Fields: IssueFields{
+				StoryPoints:   "customfield_10083",
+				BusinessValue: "customfield_10084",
+				WeightedJob:   "customfield_12580",
+			},
 			Transitions: Transitions{
 				INNA: ProjectTransition{
 					FromBacklogToRate:        "51",
@@ -117,6 +122,7 @@ type Issue struct {
 	Priority    Priority    // Приоритет
 	Resolution  Resolution  // Результат
 	Transitions Transitions // Возможные переходы статусов
+	Fields      IssueFields // Идентификаторы полей
 }
 type Status struct {
 	Open                        string // Открытый
@@ -210,6 +216,12 @@ type Field struct {
 
 type Transitions struct {
 	INNA ProjectTransition
+}
+
+type IssueFields struct {
+	StoryPoints   string // customfield_10083
+	BusinessValue string // customfield_10084
+	WeightedJob   string // customfield_12580
 }
 
 type ProjectTransition struct {
