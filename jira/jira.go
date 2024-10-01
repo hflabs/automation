@@ -71,6 +71,7 @@ func (j *jira) QueryTasks(query string) ([]IssueJira, error) {
 	}
 	err := requests.New().
 		BaseURL(fmt.Sprintf("%s/search?jql=%s", j.BaseUrl, url.QueryEscape(query))).
+		BasicAuth(j.Username, j.Password).
 		ToJSON(&tasks).
 		Fetch(context.Background())
 	if err != nil {
