@@ -72,7 +72,7 @@ type IssueCommentsResponse struct {
 type IssueComment struct {
 	Author  JiraUser  `json:"author,omitempty"`
 	Body    string    `json:"body,omitempty,omitempty"`
-	Created time.Time `json:"created,omitempty,omitempty,time_format=2006-01-02T15:04:05.000Z07:00"`
+	Created time.Time `json:"created,omitempty,omitempty,time_format=2006-01-02T15:04:05.000Z0700"`
 }
 
 type SearchResponse struct {
