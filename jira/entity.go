@@ -39,6 +39,7 @@ type FieldsIssue struct {
 	Resolution    IssueIdField `json:"resolution,omitempty"`
 	Assignee      JiraUser     `json:"assignee,omitempty"`
 	Creator       JiraUser     `json:"creator,omitempty"`
+	Reporter      JiraUser     `json:"reporter,omitempty"`
 }
 
 type IssueIdField struct {
