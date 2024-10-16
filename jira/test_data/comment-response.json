@@ -1,0 +1,44 @@
+{
+  "startAt": 0,
+  "maxResults": 1048576,
+  "total": 1,
+  "comments": [
+    {
+      "self": "https://jira.hflabs.ru/rest/api/2/issue/378972/comment/554640",
+      "id": "554640",
+      "author": {
+        "self": "https://jira.hflabs.ru/rest/api/2/user?username=petrsav",
+        "name": "petrsav",
+        "key": "JIRAUSER43200",
+        "emailAddress": "petrsav@hflabs.ru",
+        "avatarUrls": {
+          "48x48": "https://jira.hflabs.ru/secure/useravatar?ownerId=JIRAUSER43200&avatarId=27900",
+          "24x24": "https://jira.hflabs.ru/secure/useravatar?size=small&ownerId=JIRAUSER43200&avatarId=27900",
+          "16x16": "https://jira.hflabs.ru/secure/useravatar?size=xsmall&ownerId=JIRAUSER43200&avatarId=27900",
+          "32x32": "https://jira.hflabs.ru/secure/useravatar?size=medium&ownerId=JIRAUSER43200&avatarId=27900"
+        },
+        "displayName": "Пётр Савченко",
+        "active": true,
+        "timeZone": "Europe/Moscow"
+      },
+      "body": "Дока тут\r\n[https://confluence.hflabs.ru/pages/viewpage.action?pageId=1669267611]",
+      "updateAuthor": {
+        "self": "https://jira.hflabs.ru/rest/api/2/user?username=petrsav",
+        "name": "petrsav",
+        "key": "JIRAUSER43200",
+        "emailAddress": "petrsav@hflabs.ru",
+        "avatarUrls": {
+          "48x48": "https://jira.hflabs.ru/secure/useravatar?ownerId=JIRAUSER43200&avatarId=27900",
+          "24x24": "https://jira.hflabs.ru/secure/useravatar?size=small&ownerId=JIRAUSER43200&avatarId=27900",
+          "16x16": "https://jira.hflabs.ru/secure/useravatar?size=xsmall&ownerId=JIRAUSER43200&avatarId=27900",
+          "32x32": "https://jira.hflabs.ru/secure/useravatar?size=medium&ownerId=JIRAUSER43200&avatarId=27900"
+        },
+        "displayName": "Пётр Савченко",
+        "active": true,
+        "timeZone": "Europe/Moscow"
+      },
+      "created": "2024-04-09T11:35:17.000+0300",
+      "updated": "2024-04-09T11:35:17.000+0300"
+    }
+  ]
+}

@@ -1,7 +1,5 @@
 package jira
 
-import "time"
-
 type jira struct {
 	BaseUrl  string
 	Username string
@@ -71,9 +69,9 @@ type IssueCommentsResponse struct {
 }
 
 type IssueComment struct {
-	Author  JiraUser  `json:"author,omitempty"`
-	Body    string    `json:"body,omitempty,omitempty"`
-	Created time.Time `json:"created,omitempty,omitempty,time_format=2006-01-02T15:04:05.000Z0700"`
+	Author  JiraUser `json:"author,omitempty"`
+	Body    string   `json:"body,omitempty"`
+	Created JiraTime `json:"created,omitempty,time_format=2006-01-02T15:04:05.000"`
 }
 
 type SearchResponse struct {
