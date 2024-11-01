@@ -2,7 +2,9 @@ package logger
 
 import (
 	"fmt"
+	"github.com/natefinch/lumberjack"
 	log "github.com/rs/zerolog"
+	"io"
 	"os"
 	"strings"
 )
@@ -24,13 +26,14 @@ type Logger struct {
 	logger    *log.Logger
 	logFile   *os.File
 	formatter log.Formatter
+	rotating  bool
 	isSimple  bool
 }
 
 var _ Interface = (*Logger)(nil)
 
 // New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием
-func New(level, filename string, formatter log.Formatter) *Logger {
+func New(level, filename string, formatter log.Formatter, rotating bool) *Logger {
 	lev := parseLogLevel(level)
 	var output log.LevelWriter
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o666)
@@ -42,13 +45,17 @@ func New(level, filename string, formatter log.Formatter) *Logger {
 	if err != nil {
 		output = log.MultiLevelWriter(writer)
 	} else {
-		writerFile := log.ConsoleWriter{
-			Out:        file,
-			TimeFormat: "02.01.2006 15:04:05",
-			NoColor:    true,
+		var out io.Writer
+		if rotating {
+			out = &lumberjack.Logger{Filename: filename, MaxBackups: 30, MaxAge: 1, Compress: false}
+		} else {
+			out = file
 		}
-		if formatter != nil {
-			writerFile.FormatMessage = formatter
+		writerFile := log.ConsoleWriter{
+			Out:           out,
+			TimeFormat:    "02.01.2006 15:04:05",
+			NoColor:       true,
+			FormatMessage: formatter,
 		}
 		output = log.MultiLevelWriter(writerFile, writer)
 	}
@@ -58,6 +65,7 @@ func New(level, filename string, formatter log.Formatter) *Logger {
 		logger:    &logger,
 		logFile:   file,
 		formatter: formatter,
+		rotating:  rotating,
 		isSimple:  false,
 	}
 }
@@ -84,13 +92,18 @@ func (l *Logger) SetLogLevel(level string) {
 	if l.isSimple {
 		newLogger = NewSimple(level)
 	} else {
-		newLogger = New(level, l.logFile.Name(), l.formatter)
+		newLogger = New(level, l.logFile.Name(), l.formatter, l.rotating)
 	}
 	l.logger = newLogger.logger
 }
 
 func (l *Logger) GetLogLevel() string {
 	return l.logger.GetLevel().String()
+}
+
+// Trace - Обработка результата типа TRACE
+func (l *Logger) Trace(message interface{}, args ...interface{}) {
+	l.msg("trace", message, args...)
 }
 
 // Debug - Обработка результата типа DEBUG
@@ -133,6 +146,8 @@ func (l *Logger) log(level string, message string, args ...interface{}) {
 			l.logger.Info().Msg(message)
 		case "debug":
 			l.logger.Debug().Msg(message)
+		case "trace":
+			l.logger.Trace().Msg(message)
 		}
 	} else {
 		switch level {
@@ -146,6 +161,8 @@ func (l *Logger) log(level string, message string, args ...interface{}) {
 			l.logger.Info().Msgf(message, args...)
 		case "debug":
 			l.logger.Debug().Msgf(message, args...)
+		case "trace":
+			l.logger.Trace().Msgf(message, args...)
 		}
 	}
 }
@@ -176,6 +193,8 @@ func parseLogLevel(level string) log.Level {
 		lev = log.ErrorLevel
 	case "debug":
 		lev = log.DebugLevel
+	case "trace":
+		lev = log.TraceLevel
 	case "fatal":
 		lev = log.FatalLevel
 	case "disabled":
@@ -183,7 +202,7 @@ func parseLogLevel(level string) log.Level {
 	default:
 		lev = log.InfoLevel
 		fmt.Println("некорректное значения для переменной logging_level, ожидалось одно из списка: " +
-			"error, warn, info или debug. Используем умолчательное значение info")
+			"error, warn, info, debug или trace. Используем умолчательное значение info")
 	}
 	return lev
 }
