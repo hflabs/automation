@@ -32,10 +32,9 @@ type Logger struct {
 }
 
 type RotateConfig struct {
-	CurrentFileName string
-	DatePattern     string
-	RotationTime    time.Duration
-	RotationCount   int
+	DatePattern   string
+	RotationTime  time.Duration
+	RotationCount int
 }
 
 var _ Interface = (*Logger)(nil)
@@ -57,8 +56,8 @@ func New(level, filename string, formatter log.Formatter, rotating RotateConfig)
 		var out io.Writer
 		if rotating.DatePattern != "" {
 			out, err = rotatelogs.New(
-				fmt.Sprintf("%s.%s", rotating.CurrentFileName, rotating.DatePattern),
-				rotatelogs.WithLinkName(rotating.CurrentFileName),
+				fmt.Sprintf("%s.%s", filename, rotating.DatePattern),
+				rotatelogs.WithLinkName(filename),
 				rotatelogs.WithRotationTime(rotating.RotationTime),
 				rotatelogs.WithRotationCount(rotating.RotationCount),
 				rotatelogs.WithMaxAge(time.Duration(rotating.RotationCount)*rotating.RotationTime),
