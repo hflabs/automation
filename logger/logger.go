@@ -27,14 +27,21 @@ type Logger struct {
 	logger    *log.Logger
 	logFile   *os.File
 	formatter log.Formatter
-	rotating  bool
+	rotating  *RotateConfig
 	isSimple  bool
+}
+
+type RotateConfig struct {
+	CurrentFileName string
+	DatePattern     string
+	RotationTime    time.Duration
+	RotationCount   int
 }
 
 var _ Interface = (*Logger)(nil)
 
 // New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием
-func New(level, filename string, formatter log.Formatter, rotating bool) *Logger {
+func New(level, filename string, formatter log.Formatter, rotating RotateConfig) *Logger {
 	lev := parseLogLevel(level)
 	var output log.LevelWriter
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o666)
@@ -48,14 +55,15 @@ func New(level, filename string, formatter log.Formatter, rotating bool) *Logger
 		filename = ""
 	} else {
 		var out io.Writer
-		if rotating {
+		if rotating.DatePattern != "" {
 			out, err = rotatelogs.New(
-				fmt.Sprintf("%s.%s", filename, "%Y-%m-%d.%H:%M:%S"),
-				rotatelogs.WithMaxAge(time.Second*10),
-				rotatelogs.WithRotationTime(time.Second*10),
+				fmt.Sprintf("%s.%s", rotating.CurrentFileName, rotating.DatePattern),
+				rotatelogs.WithLinkName(rotating.CurrentFileName),
+				rotatelogs.WithRotationTime(rotating.RotationTime),
+				rotatelogs.WithRotationCount(rotating.RotationCount),
+				rotatelogs.WithMaxAge(time.Duration(rotating.RotationCount)*rotating.RotationTime),
 			)
 			if err != nil {
-				rotating = false
 				out = file
 			}
 		} else {
@@ -71,12 +79,14 @@ func New(level, filename string, formatter log.Formatter, rotating bool) *Logger
 	}
 
 	logger := log.New(output).Level(lev).With().Timestamp().Logger()
-	logger.Debug().Msgf("Configated logger with level - %s, filename - %s, rotating - %b, formatter - %v", lev.String(), filename, rotating, formatter)
+	logger.Debug().Msgf("Configated logger with level - %s, filename - %s, "+
+		"rotating - (rotationTime = %s, rotationCount = %d, datePattern = %s), formatter - %v",
+		lev.String(), filename, rotating.RotationTime.String(), rotating.RotationCount, rotating.DatePattern, &formatter)
 	return &Logger{
 		logger:    &logger,
 		logFile:   file,
 		formatter: formatter,
-		rotating:  rotating,
+		rotating:  &rotating,
 		isSimple:  false,
 	}
 }
@@ -103,7 +113,7 @@ func (l *Logger) SetLogLevel(level string) {
 	if l.isSimple {
 		newLogger = NewSimple(level)
 	} else {
-		newLogger = New(level, l.logFile.Name(), l.formatter, l.rotating)
+		newLogger = New(level, l.logFile.Name(), l.formatter, *l.rotating)
 	}
 	l.logger = newLogger.logger
 }
