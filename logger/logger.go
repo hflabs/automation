@@ -2,11 +2,12 @@ package logger
 
 import (
 	"fmt"
-	"github.com/natefinch/lumberjack"
+	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	log "github.com/rs/zerolog"
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
 // Interface -.
@@ -44,10 +45,19 @@ func New(level, filename string, formatter log.Formatter, rotating bool) *Logger
 	}
 	if err != nil {
 		output = log.MultiLevelWriter(writer)
+		filename = ""
 	} else {
 		var out io.Writer
 		if rotating {
-			out = &lumberjack.Logger{Filename: filename, MaxBackups: 30, MaxAge: 1, Compress: false}
+			out, err = rotatelogs.New(
+				fmt.Sprintf("%s.%s", filename, "%Y-%m-%d.%H:%M:%S"),
+				rotatelogs.WithMaxAge(time.Second*10),
+				rotatelogs.WithRotationTime(time.Second*10),
+			)
+			if err != nil {
+				rotating = false
+				out = file
+			}
 		} else {
 			out = file
 		}
@@ -61,6 +71,7 @@ func New(level, filename string, formatter log.Formatter, rotating bool) *Logger
 	}
 
 	logger := log.New(output).Level(lev).With().Timestamp().Logger()
+	logger.Debug().Msgf("Configated logger with level - %s, filename - %s, rotating - %b, formatter - %v", lev.String(), filename, rotating, formatter)
 	return &Logger{
 		logger:    &logger,
 		logFile:   file,
@@ -99,6 +110,9 @@ func (l *Logger) SetLogLevel(level string) {
 
 func (l *Logger) GetLogLevel() string {
 	return l.logger.GetLevel().String()
+}
+func (l *Logger) Rotate() {
+
 }
 
 // Trace - Обработка результата типа TRACE
