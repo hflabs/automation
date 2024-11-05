@@ -12,6 +12,7 @@ import (
 
 // Interface -.
 type Interface interface {
+	Trace(message interface{}, args ...interface{})
 	Debug(message interface{}, args ...interface{})
 	Info(message string, args ...interface{})
 	Warn(message string, args ...interface{})
