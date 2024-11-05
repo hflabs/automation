@@ -38,6 +38,10 @@ type RotateConfig struct {
 	MaxSize       int           // Максимальный размер файла в МБ
 }
 
+func (r *RotateConfig) GetDatePattern() string {
+	return strings.ReplaceAll(r.DatePattern, "%", "%%")
+}
+
 var _ Interface = (*Logger)(nil)
 
 // New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием и настройками ро
@@ -83,8 +87,8 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 
 	msg := fmt.Sprintf("Configated logger with level - %s, filename - %s", lev.String(), filename)
 	if rotating != nil {
-		msg += fmt.Sprintf(", rotating - (rotationTime = %s, rotationCount = %d, datePattern = %s)",
-			rotating.RotationTime.String(), rotating.RotationCount, rotating.DatePattern)
+		msg += fmt.Sprintf(", rotating - (rotationTime = %s, rotationCount = %d, datePattern = `%s`)",
+			rotating.RotationTime.String(), rotating.RotationCount, rotating.GetDatePattern())
 	}
 	if formatter != nil {
 		msg += ", with formatter"
