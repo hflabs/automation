@@ -7,9 +7,12 @@ type jira struct {
 }
 
 type WebhookIssue struct {
+	WebhookEvent   string    `json:"webhookEvent,omitempty"`
 	IssueEventType string    `json:"issue_event_type_name,omitempty"`
+	UserEvent      JiraUser  `json:"user,omitempty"`
 	Issue          IssueJira `json:"issue,omitempty"`
 	Changelog      struct {
+		Id    string          `json:"id,omitempty"`
 		Items []ChangelogItem `json:"items,omitempty"`
 	} `json:"changelog,omitempty"`
 }
@@ -21,6 +24,7 @@ type IssueJira struct {
 
 type ChangelogItem struct {
 	Field      string `json:"field,omitempty,omitempty"`
+	FieldType  string `json:"fieldType,omitempty"`
 	From       string `json:"from,omitempty"`
 	To         string `json:"to,omitempty"`
 	FromString string `json:"fromString,omitempty"`
@@ -32,7 +36,7 @@ type FieldsIssue struct {
 	StoryPoints   float64      `json:"customfield_10083,omitempty"`
 	WeightedJob   float64      `json:"customfield_12580,omitempty"`
 	Status        IssueField   `json:"status,omitempty"`
-	Issuetype     IssueIdField `json:"issuetype,omitempty"`
+	IssueType     IssueIdField `json:"issuetype,omitempty"`
 	Priority      IssueIdField `json:"priority,omitempty"`
 	Resolution    IssueIdField `json:"resolution,omitempty"`
 	Assignee      JiraUser     `json:"assignee,omitempty"`
