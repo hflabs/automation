@@ -1,5 +1,7 @@
 package jira
 
+import "time"
+
 type jira struct {
 	BaseUrl  string
 	Username string
@@ -7,6 +9,7 @@ type jira struct {
 }
 
 type WebhookIssue struct {
+	Timestamp      time.Time `json:"timestamp,omitempty"`
 	WebhookEvent   string    `json:"webhookEvent,omitempty"`
 	IssueEventType string    `json:"issue_event_type_name,omitempty"`
 	UserEvent      JiraUser  `json:"user,omitempty"`
@@ -15,6 +18,12 @@ type WebhookIssue struct {
 		Id    string          `json:"id,omitempty"`
 		Items []ChangelogItem `json:"items,omitempty"`
 	} `json:"changelog,omitempty"`
+}
+
+type WebhookComment struct {
+	Timestamp    time.Time    `json:"timestamp,omitempty"`
+	WebhookEvent string       `json:"webhookEvent,omitempty"`
+	Comment      IssueComment `json:"comment,omitempty"`
 }
 
 type IssueJira struct {
@@ -73,9 +82,11 @@ type IssueCommentsResponse struct {
 }
 
 type IssueComment struct {
-	Author  JiraUser `json:"author,omitempty"`
-	Body    string   `json:"body,omitempty"`
-	Created JiraTime `json:"created,omitempty,time_format=2006-01-02T15:04:05.000"`
+	Author       JiraUser `json:"author,omitempty"`
+	Body         string   `json:"body,omitempty"`
+	UpdateAuthor JiraUser `json:"update_author,omitempty"`
+	Created      JiraTime `json:"created,omitempty"`
+	Updated      JiraTime `json:"updated,omitempty"`
 }
 
 type SearchResponse struct {
