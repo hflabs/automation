@@ -2,11 +2,12 @@ package logger
 
 import (
 	"fmt"
-	"github.com/natefinch/lumberjack"
+	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	log "github.com/rs/zerolog"
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
 // Interface -.
@@ -26,14 +27,21 @@ type Logger struct {
 	logger    *log.Logger
 	logFile   *os.File
 	formatter log.Formatter
-	rotating  *lumberjack.Logger
+	rotating  *RotateConfig
 	isSimple  bool
+}
+
+type RotateConfig struct {
+	DatePattern   string        // Шаблон даты-времени, который будет добавляться после названия файла лога. В формате `%Y%m%d%H%M`
+	RotationTime  time.Duration // С какой периодичностью нужно производить ротацию файлов
+	RotationCount int           // Количество резервных файлов
+	MaxSize       int           // Максимальный размер файла в МБ
 }
 
 var _ Interface = (*Logger)(nil)
 
-// New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием
-func New(level, filename string, formatter log.Formatter, rotating *lumberjack.Logger) *Logger {
+// New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием и настройками ро
+func New(level, filename string, formatter log.Formatter, rotating *RotateConfig) *Logger {
 	lev := parseLogLevel(level)
 	var output log.LevelWriter
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o666)
@@ -47,8 +55,8 @@ func New(level, filename string, formatter log.Formatter, rotating *lumberjack.L
 		filename = ""
 	} else {
 		var out io.Writer
-		if rotating != nil {
-			/*out, err = rotatelogs.New(
+		if rotating.DatePattern != "" {
+			out, err = rotatelogs.New(
 				fmt.Sprintf("%s.%s", filename, rotating.DatePattern),
 				rotatelogs.WithLinkName(filename),
 				rotatelogs.WithRotationTime(rotating.RotationTime),
@@ -57,12 +65,10 @@ func New(level, filename string, formatter log.Formatter, rotating *lumberjack.L
 			)
 			if err != nil {
 				out = file
-				rotating = RotateConfig{}
-			}*/
-			out = rotating
+				rotating = nil
+			}
 		} else {
 			out = file
-			rotating = &lumberjack.Logger{}
 		}
 		writerFile := log.ConsoleWriter{
 			Out:           out,
@@ -74,9 +80,16 @@ func New(level, filename string, formatter log.Formatter, rotating *lumberjack.L
 	}
 
 	logger := log.New(output).Level(lev).With().Timestamp().Logger()
-	logger.Debug().Msgf("Configated logger with level - %s, filename - %s, "+
-		"rotating - (maxSize = %d, maxAgeDays = %d, maxBackups = %d), formatter - %v",
-		lev.String(), filename, rotating.MaxSize, rotating.MaxAge, rotating.MaxBackups, &formatter)
+
+	msg := fmt.Sprintf("Configated logger with level - %s, filename - %s", lev.String(), filename)
+	if rotating != nil {
+		msg += fmt.Sprintf(", rotating - (rotationTime = %s, rotationCount = %d, datePattern = %s)",
+			rotating.RotationTime.String(), rotating.RotationCount, rotating.DatePattern)
+	}
+	if formatter != nil {
+		msg += ", with formatter"
+	}
+	logger.Debug().Msgf(msg)
 	return &Logger{
 		logger:    &logger,
 		logFile:   file,
