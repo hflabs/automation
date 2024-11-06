@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/carlmjohnson/requests"
+	"io"
+	"net/http"
 )
 
 func NewCdiApi(url, username, password string) CdiApi {
@@ -29,11 +31,9 @@ func (c *cdiApi) SearchParty(query, partyType string) ([]Party, error) {
 		BasicAuth(c.username, c.password).
 		BodyJSON(req).
 		ToJSON(&parties).
+		AddValidator(c.validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		if parties.ErrorType != "" {
-			return nil, fmt.Errorf("%w:%s:%s", err, parties.ErrorType, parties.ErrorMessage)
-		}
 		return nil, err
 	}
 	return parties.Party, nil
@@ -48,21 +48,14 @@ func (c *cdiApi) GetPartyByHid(hid int32, lastChangeTimestamp int64, partyType s
 		LastChangeTimeStamp: lastChangeTimestamp,
 		Include:             Include{partyInfo}}
 	var party PartyResponse
-	body, err := json.Marshal(req)
-	if err != nil {
-		return Party{}, false, err
-	}
-	err = requests.New().Post().
+	err := requests.New().Post().
 		BaseURL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/getByHID", c.url)).
 		BasicAuth(c.username, c.password).
 		BodyJSON(req).
 		ToJSON(&party).
+		AddValidator(c.validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		println(string(body))
-		if party.ErrorType != "" {
-			return Party{}, false, fmt.Errorf("%w:%s:%s", err, party.ErrorType, party.ErrorMessage)
-		}
 		return Party{}, false, err
 	}
 	if party.NotModified {
@@ -83,6 +76,7 @@ func (c *cdiApi) SaveAndMerge(parties []Party) ([]Party, error) {
 		BasicAuth(c.username, c.password).
 		BodyJSON(SaveAndMergeRequest{Party: parties}).
 		ToJSON(&result).
+		AddValidator(c.validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		println(string(body))
@@ -101,31 +95,36 @@ func (c *cdiApi) Save(party Party) (Party, error) {
 		BasicAuth(c.username, c.password).
 		BodyJSON(SaveRequest{Party: party}).
 		ToJSON(&result).
+		AddValidator(c.validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		if result.ErrorType != "" {
-			return Party{}, fmt.Errorf("%w:%s:%s", err, result.ErrorType, result.ErrorMessage)
-		}
 		return Party{}, err
 	}
 	return result.Party, nil
 }
 
 func (c *cdiApi) SaveRelations(relations []Relation) error {
-	body, err := json.Marshal(RelationRequest{Relation: relations})
 	var result PartyResponse
-	err = requests.New().Post().
+	err := requests.New().Post().
 		BaseURL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/saveRelations", c.url)).
 		BasicAuth(c.username, c.password).
 		BodyJSON(RelationRequest{Relation: relations}).
 		ToJSON(&result).
+		AddValidator(c.validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		println(string(body))
-		if result.ErrorType != "" {
-			return fmt.Errorf("%w:%s:%s", err, result.ErrorType, result.ErrorMessage)
-		}
 		return err
 	}
 	return nil
+}
+
+func (c *cdiApi) validateStatus(resp *http.Response) error {
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		return nil
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	return fmt.Errorf("status code %v.\nBody:%s", resp.StatusCode, string(b))
 }
