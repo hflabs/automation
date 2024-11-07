@@ -7,6 +7,7 @@ type jira struct {
 }
 
 type WebhookIssue struct {
+	Timestamp      Timestamp    `json:"timestamp,omitempty"`
 	WebhookEvent   string       `json:"webhookEvent,omitempty"`
 	IssueEventType string       `json:"issue_event_type_name,omitempty"`
 	UserEvent      JiraUser     `json:"user,omitempty"`
@@ -19,6 +20,7 @@ type WebhookIssue struct {
 }
 
 type WebhookComment struct {
+	Timestamp    Timestamp    `json:"timestamp,omitempty"`
 	WebhookEvent string       `json:"webhookEvent,omitempty"`
 	Comment      IssueComment `json:"comment,omitempty"`
 }
