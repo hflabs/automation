@@ -26,6 +26,7 @@ type WebhookComment struct {
 }
 
 type IssueJira struct {
+	Id     string      `json:"id,omitempty"`
 	Key    string      `json:"key,omitempty"`
 	Fields FieldsIssue `json:"fields,omitempty"`
 }
