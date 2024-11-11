@@ -67,6 +67,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 				rotatelogs.WithRotationTime(rotating.RotationTime),
 				rotatelogs.WithRotationCount(rotating.RotationCount),
 				rotatelogs.WithMaxAge(time.Duration(rotating.RotationCount)*rotating.RotationTime),
+				rotatelogs.WithLocation(time.Local),
 			)
 			if err != nil {
 				out = file
