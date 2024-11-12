@@ -90,8 +90,8 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 
 	msg := fmt.Sprintf("Configated logger with level - %s, filename - %s", lev.String(), filename)
 	if rotating != nil {
-		msg += fmt.Sprintf(", rotating - (rotationTime = %s, rotationCount = %d, datePattern = `%s`)",
-			rotating.RotationTime.String(), rotating.RotationCount, rotating.GetDatePattern())
+		msg += fmt.Sprintf(", rotating - (rotationTime = %s, rotationCount = %d, datePattern = `%s`, location = %s)",
+			rotating.RotationTime.String(), rotating.RotationCount, rotating.GetDatePattern(), rotating.TimeLocation.String())
 	}
 	if formatter != nil {
 		msg += ", with formatter"
