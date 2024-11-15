@@ -67,7 +67,6 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 				rotatelogs.WithLinkName(filename),
 				rotatelogs.WithRotationTime(rotating.RotationTime),
 				rotatelogs.WithRotationCount(rotating.RotationCount),
-				rotatelogs.WithMaxAge(time.Duration(rotating.RotationCount)*rotating.RotationTime),
 				rotatelogs.WithLocation(rotating.TimeLocation),
 			)
 			if err != nil {
