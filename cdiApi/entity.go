@@ -15,7 +15,12 @@ type SearchPartyRequest struct {
 	LastChangeTimeStamp int64   `json:"lastChangeTimestamp,omitempty"`
 }
 
-type GetByHidRequest struct {
+type SearchRelatedPartiesRequest struct {
+	FirstPartySearch    SearchPartyRequest `json:"firstPartySearch,omitempty"`
+	SecondPartySearch   SearchPartyRequest `json:"secondPartySearch,omitempty"`
+	RelationTypes       RelationTypes      `json:"relationTypes,omitempty"`
+	Include             Include            `json:"include,omitempty"`
+	ReturnSourceParties bool               `json:"lastChangeTimestamp,omitempty"`
 }
 
 type Include struct {
@@ -58,6 +63,10 @@ type Party struct {
 	Relations    []Relation  `json:"relation,omitempty"`
 }
 
+type RelationTypes struct {
+	RelationType []string `json:"relationType,omitempty"`
+}
+
 type Relation struct {
 	Type       int           `json:"type,omitempty"`
 	First      *RelationEdge `json:"first,omitempty"`
@@ -71,6 +80,16 @@ type RelationEdge struct {
 	Hid          int32  `json:"hid,omitempty"`
 	SourceSystem string `json:"sourceSystem,omitempty"`
 	RawId        string `json:"rawId,omitempty"`
+}
+
+type RelatedParty struct {
+	FirstParty  Party      `json:"firstParty,omitempty"`
+	SecondParty Party      `json:"secondParty,omitempty"`
+	Relation    []Relation `json:"relation,omitempty"`
+}
+
+type RelatedPartyResponse struct {
+	Relations []RelatedParty `json:"relatedPartiesEntry,omitempty"`
 }
 
 type SaveAndMergeRequest struct {

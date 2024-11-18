@@ -39,6 +39,36 @@ func (c *cdiApi) SearchParty(query, partyType string) ([]Party, error) {
 	return parties.Party, nil
 }
 
+func (c *cdiApi) SearchRelatedParties(firstPartyQuery, firstPartyType, secondPartyQuery, secondPartyType string, relationTypes []string, returnSourceParties bool) ([]RelatedParty, error) {
+	req := SearchRelatedPartiesRequest{
+		FirstPartySearch: SearchPartyRequest{
+			Query:     firstPartyQuery,
+			PartyType: firstPartyType,
+		},
+		SecondPartySearch: SearchPartyRequest{
+			Query:     secondPartyQuery,
+			PartyType: secondPartyType,
+		},
+		RelationTypes: RelationTypes{
+			RelationType: relationTypes,
+		},
+		Include:             Include{partyInfo},
+		ReturnSourceParties: returnSourceParties,
+	}
+	var result RelatedPartyResponse
+	err := requests.New().Post().
+		BaseURL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/searchRelatedParties", c.url)).
+		BasicAuth(c.username, c.password).
+		BodyJSON(req).
+		ToJSON(&result).
+		AddValidator(c.validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return result.Relations, nil
+}
+
 // GetPartyByHid — метод поиска карточки по её HID. Если указать на входе lastChangeTimestamp,
 // то при отсутствии изменений с этой даты отдаст ответ мгновенно, в ответе будет пустой Party и NotModified=true
 func (c *cdiApi) GetPartyByHid(hid int32, lastChangeTimestamp int64, partyType string) (Party, bool, error) {
