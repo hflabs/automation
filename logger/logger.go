@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"time"
 )
 
 // Interface -.
@@ -30,14 +29,6 @@ type Logger struct {
 	formatter log.Formatter
 	rotating  *RotateConfig
 	isSimple  bool
-}
-
-type RotateConfig struct {
-	DatePattern   string         // Шаблон даты-времени, который будет добавляться после названия файла лога. В формате `%Y%m%d%H%M`
-	RotationTime  time.Duration  // С какой периодичностью нужно производить ротацию файлов
-	RotationCount int            // Количество резервных файлов
-	MaxSize       int            // Максимальный размер файла в МБ
-	TimeLocation  *time.Location // Часовой пояс, по которому происходит ротация
 }
 
 func (r *RotateConfig) GetDatePattern() string {
@@ -67,7 +58,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 				rotatelogs.WithLinkName(filename),
 				rotatelogs.WithRotationTime(rotating.RotationTime),
 				rotatelogs.WithRotationCount(rotating.RotationCount),
-				rotatelogs.WithLocation(rotating.TimeLocation),
+				rotatelogs.WithClock(rotatelogs.Local),
 			)
 			if err != nil {
 				out = file
