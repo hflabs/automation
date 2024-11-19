@@ -23,6 +23,22 @@ type SearchRelatedPartiesRequest struct {
 	ReturnSourceParties bool               `json:"lastChangeTimestamp,omitempty"`
 }
 
+type FuzzySearchPartyRequest struct {
+	Party              Party   `json:"party,omitempty"`
+	IncludePartyFields bool    `json:"includePartyFields,omitempty"`
+	IncludePartyInfo   Include `json:"include,omitempty"`
+}
+
+type FuzzySearchPartyResponse struct {
+	MatchedParties []MatchParty `json:"matchedParty,omitempty"`
+}
+
+type MatchParty struct {
+	MatchRule  int   `json:"matchRule"`
+	MatchScope int   `json:"matchScope"`
+	Party      Party `json:"party"`
+}
+
 type Include struct {
 	PartyInfo []string `json:"partyInfo,omitempty"`
 }
