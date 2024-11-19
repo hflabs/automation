@@ -2,7 +2,6 @@ package apiCdi
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/carlmjohnson/requests"
 	"io"
@@ -119,17 +118,18 @@ func (c *cdiApi) GetPartyByHid(hid int32, lastChangeTimestamp int64, partyType s
 
 func (c *cdiApi) SaveAndMerge(parties []Party) ([]Party, error) {
 	var result PartiesResponse
-	smr := SaveAndMergeRequest{Party: parties}
-	body, err := json.Marshal(smr)
-	err = requests.New().Post().
+	req := SaveAndMergeRequest{
+		Party:   parties,
+		Include: Include{partyInfo},
+	}
+	err := requests.New().Post().
 		BaseURL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/saveAndMerge", c.url)).
 		BasicAuth(c.username, c.password).
-		BodyJSON(SaveAndMergeRequest{Party: parties}).
+		BodyJSON(req).
 		ToJSON(&result).
 		AddValidator(c.validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		println(string(body))
 		if result.ErrorType != "" {
 			return nil, fmt.Errorf("%w:%s:%s", err, result.ErrorType, result.ErrorMessage)
 		}
@@ -139,11 +139,15 @@ func (c *cdiApi) SaveAndMerge(parties []Party) ([]Party, error) {
 }
 
 func (c *cdiApi) Save(party Party) (Party, error) {
+	req := SaveRequest{
+		Party:   party,
+		Include: Include{partyInfo},
+	}
 	var result PartyResponse
 	err := requests.New().Post().
 		BaseURL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/save", c.url)).
 		BasicAuth(c.username, c.password).
-		BodyJSON(SaveRequest{Party: party}).
+		BodyJSON(req).
 		ToJSON(&result).
 		AddValidator(c.validateStatus).
 		Fetch(context.Background())

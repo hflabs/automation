@@ -109,11 +109,13 @@ type RelatedPartyResponse struct {
 }
 
 type SaveAndMergeRequest struct {
-	Party []Party `json:"party"`
+	Party   []Party `json:"party"`
+	Include Include `json:"include"`
 }
 
 type SaveRequest struct {
-	Party Party `json:"party"`
+	Party   Party   `json:"party"`
+	Include Include `json:"include"`
 }
 
 type RelationRequest struct {
