@@ -2,7 +2,7 @@ package logger
 
 import (
 	"fmt"
-	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	log "github.com/rs/zerolog"
 	"io"
 	"os"
@@ -31,10 +31,6 @@ type Logger struct {
 	isSimple  bool
 }
 
-func (r *RotateConfig) GetDatePattern() string {
-	return strings.ReplaceAll(r.DatePattern, "%", "%%")
-}
-
 var _ Interface = (*Logger)(nil)
 
 // New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием и настройками ро
@@ -58,7 +54,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 				rotatelogs.WithLinkName(filename),
 				rotatelogs.WithRotationTime(rotating.RotationTime),
 				rotatelogs.WithRotationCount(rotating.RotationCount),
-				rotatelogs.WithClock(rotatelogs.Local),
+				rotatelogs.WithLocation(rotating.TimeLocation),
 			)
 			if err != nil {
 				out = file
