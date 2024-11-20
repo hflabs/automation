@@ -70,13 +70,20 @@ type PartyResponse struct {
 }
 
 type Party struct {
-	SourceSystem string      `json:"sourceSystem,omitempty"`
-	RawId        string      `json:"rawId,omitempty"`
-	Hid          int32       `json:"hid,omitempty"`
-	Type         string      `json:"type,omitempty"`
-	Fields       []Field     `json:"field,omitempty"`
-	Attributes   []Attribute `json:"attribute,omitempty"`
-	Relations    []Relation  `json:"relation,omitempty"`
+	SourceSystem  string      `json:"sourceSystem,omitempty"`
+	RawId         string      `json:"rawId,omitempty"`
+	Hid           int32       `json:"hid,omitempty"`
+	Type          string      `json:"type,omitempty"`
+	Fields        []Field     `json:"field,omitempty"`
+	Attributes    []Attribute `json:"attribute,omitempty"`
+	Relations     []Relation  `json:"relation,omitempty"`
+	SourceParties []Source    `json:"source,omitempty"`
+}
+
+type Source struct {
+	SourceSystem string `json:"sourceSystem,omitempty"`
+	RawId        string `json:"rawId,omitempty"`
+	Hid          int32  `json:"hid,omitempty"`
 }
 
 type RelationTypes struct {
