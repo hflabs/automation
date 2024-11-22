@@ -49,11 +49,17 @@ type Field struct {
 }
 
 type Attribute struct {
-	Hid     int32   `json:"hid,omitempty"`
-	RawId   string  `json:"rawId,omitempty"`
-	Type    string  `json:"type,omitempty"`
-	Fields  []Field `json:"field,omitempty"`
-	Deleted bool    `json:"deleted,omitempty"`
+	Hid           int32          `json:"hid,omitempty"`
+	RawId         string         `json:"rawId,omitempty"`
+	Type          string         `json:"type,omitempty"`
+	Fields        []Field        `json:"field,omitempty"`
+	SubAttributes []SubAttribute `json:"subattribute,omitempty"`
+	Deleted       bool           `json:"deleted,omitempty"`
+}
+
+type SubAttribute struct {
+	Type   string  `json:"type,omitempty"`
+	Fields []Field `json:"field,omitempty"`
 }
 
 type PartiesResponse struct {
