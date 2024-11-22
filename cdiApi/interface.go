@@ -10,4 +10,6 @@ type CdiApi interface {
 	SaveAndMerge(parties []Party) ([]Party, error)
 	Save(party Party) (Party, error)
 	SaveRelations(relations []Relation) error
+
+	CloseAttribute(partyType, attributeType string, attributeHid int32) error
 }

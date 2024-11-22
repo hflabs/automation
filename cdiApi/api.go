@@ -172,6 +172,19 @@ func (c *cdiApi) SaveRelations(relations []Relation) error {
 	return nil
 }
 
+func (c *cdiApi) CloseAttribute(partyType, attributeType string, attributeHid int32) error {
+	err := requests.New().Post().
+		BaseURL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/closeAttribute", c.url)).
+		BasicAuth(c.username, c.password).
+		BodyJSON(CloseAttributeRequest{PartyType: partyType, AttributeType: attributeType, AttributeHid: attributeHid}).
+		AddValidator(c.validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *cdiApi) validateStatus(resp *http.Response) error {
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		return nil

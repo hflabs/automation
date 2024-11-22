@@ -129,6 +129,12 @@ type RelationRequest struct {
 	Relation []Relation `json:"relation"`
 }
 
+type CloseAttributeRequest struct {
+	PartyType     string `json:"partyType,omitempty"`
+	AttributeType string `json:"attributeType,omitempty"`
+	AttributeHid  int32  `json:"attributeHid,omitempty"`
+}
+
 const (
 	PhysicalType = "PHYSICAL"
 	LegalType    = "LEGAL"
