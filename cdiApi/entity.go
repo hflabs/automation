@@ -34,9 +34,9 @@ type FuzzySearchPartyResponse struct {
 }
 
 type MatchParty struct {
-	MatchRule  int   `json:"matchRule"`
-	MatchScope int   `json:"matchScope"`
-	Party      Party `json:"party"`
+	MatchRule  string `json:"matchRule"`
+	MatchScope int    `json:"matchScope"`
+	Party      Party  `json:"party"`
 }
 
 type Include struct {
