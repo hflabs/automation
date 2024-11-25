@@ -52,6 +52,7 @@ type FieldsIssue struct {
 	Assignee      JiraUser     `json:"assignee,omitempty"`
 	Creator       JiraUser     `json:"creator,omitempty"`
 	Reporter      JiraUser     `json:"reporter,omitempty"`
+	Project       IssueField   `json:"project,omitempty"`
 }
 
 type IssueIdField struct {
@@ -65,6 +66,7 @@ type IssueNameField struct {
 type IssueField struct {
 	ID   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
+	Key  string `json:"key,omitempty"`
 }
 
 type JiraUser struct {
