@@ -26,10 +26,9 @@ type WebhookComment struct {
 }
 
 type IssueJira struct {
-	Id      string      `json:"id,omitempty"`
-	Key     string      `json:"key,omitempty"`
-	Summary string      `json:"summary,omitempty"`
-	Fields  FieldsIssue `json:"fields,omitempty"`
+	Id     string      `json:"id,omitempty"`
+	Key    string      `json:"key,omitempty"`
+	Fields FieldsIssue `json:"fields,omitempty"`
 }
 
 type ChangelogItem struct {
@@ -42,6 +41,7 @@ type ChangelogItem struct {
 }
 
 type FieldsIssue struct {
+	Summary       string       `json:"summary,omitempty"`
 	BusinessValue float64      `json:"customfield_10084,omitempty"`
 	StoryPoints   float64      `json:"customfield_10083,omitempty"`
 	WeightedJob   float64      `json:"customfield_12580,omitempty"`
