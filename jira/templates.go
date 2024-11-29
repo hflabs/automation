@@ -100,6 +100,7 @@ func GetJiraSuggestions() Fields {
 					StoryPoints:   "Story Points",
 					BusinessValue: "Business Value",
 					WeightedJob:   "Weighted Job",
+					Assignee:      "assignee",
 				},
 			},
 		},
@@ -212,6 +213,7 @@ type Field struct {
 	StoryPoints   string // Story Points
 	BusinessValue string // Business Value
 	WeightedJob   string // Weighted Job
+	Assignee      string // Исполнитель
 }
 
 type Transitions struct {
