@@ -1,6 +1,6 @@
 package jira
 
-func GetJiraSuggestions() Fields {
+func GetJiraConstants() Fields {
 	return Fields{
 		Issue: Issue{
 			Status: Status{
