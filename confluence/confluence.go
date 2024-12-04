@@ -21,6 +21,7 @@ func (c *confluence) GetContentById(id string) (string, error) {
 		URL(fmt.Sprintf("%s/%s?expand=body.storage", c.baseUrl, id)).
 		BasicAuth(c.user, c.password).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return resp.Body.Storage.Value, fmt.Errorf("GetContentById — get confluence pageId %s err: %w", id, err)
@@ -35,6 +36,7 @@ func (c *confluence) GetVersionInfoById(id string) (VersionResponse, error) {
 		ContentType("application/json").
 		BasicAuth(c.user, c.password).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 
 	if err != nil {
@@ -78,6 +80,7 @@ func (c *confluence) UpdatePageById(id string, content string, reCreate bool) er
 		ContentType("application/json").
 		BasicAuth(c.user, c.password).
 		BodyJSON(req).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return fmt.Errorf("UpdatePageById — update confluence pageId %s, content %s err: %w", id, content, err)
