@@ -24,6 +24,7 @@ func (a *artifactory) GetFileInfo(filePath string) (Item, error) {
 		Method(http.MethodPost).
 		BodyBytes(body).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return Item{}, err
@@ -43,6 +44,7 @@ func (a *artifactory) ListFolders(folderPath, sortType, sortBy string) ([]Item, 
 		Method(http.MethodPost).
 		BodyBytes(body).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return nil, err
@@ -60,6 +62,7 @@ func (a *artifactory) ListFiles(folderPath, sortType, sortBy string) ([]Item, er
 		Method(http.MethodPost).
 		BodyBytes(body).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return nil, err
