@@ -25,6 +25,7 @@ func (z *zimbra) GetMail(messageId string) (Mail, error) {
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
 		ToJSON(&messages).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return Mail{}, err
@@ -45,6 +46,7 @@ func (z *zimbra) GetMails(folder string, sorting SortType, limit, offset int) (M
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
 		ToJSON(&messages).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return Mails{}, err
@@ -60,6 +62,7 @@ func (z *zimbra) GetMailsByTopicId(topicId string) (Mails, error) {
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
 		ToJSON(&messages).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return Mails{}, err
@@ -75,6 +78,7 @@ func (z *zimbra) SearchMails(query string) (Mails, error) {
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
 		ToJSON(&messages).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return Mails{}, err
