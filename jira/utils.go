@@ -2,6 +2,9 @@ package jira
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 	"time"
 )
 
@@ -39,4 +42,15 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	}
 	t.Time = time.UnixMilli(unix).Local()
 	return nil
+}
+
+func validateStatus(resp *http.Response) error {
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		return nil
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	return fmt.Errorf("status code %v.\nBody:%s", resp.StatusCode, string(b))
 }

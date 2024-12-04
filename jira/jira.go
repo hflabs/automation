@@ -17,6 +17,7 @@ func (j *jira) GetIssueComments(issueKey string) ([]IssueComment, error) {
 		URL(fmt.Sprintf("%s/issue/%s/comment", j.BaseUrl, issueKey)).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return nil, err
@@ -30,6 +31,7 @@ func (j *jira) GetIssueWatchers(issueKey string) ([]JiraUser, error) {
 		URL(fmt.Sprintf("%s/issue/%s/watchers", j.BaseUrl, issueKey)).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return nil, err
@@ -43,6 +45,7 @@ func (j *jira) GetIssueById(issueId string) (IssueJira, error) {
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueId)).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&resp).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return IssueJira{}, err
@@ -56,6 +59,7 @@ func (j *jira) UpdateIssue(issueKey string, req UpdateIssueRequest) error {
 		Put().
 		BasicAuth(j.Username, j.Password).
 		BodyJSON(req).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 }
 
@@ -65,6 +69,7 @@ func (j *jira) TransitionIssue(issueKey, transition string) error {
 		Post().
 		BasicAuth(j.Username, j.Password).
 		BodyJSON(TransitionIssueRequest{IssueIdField{ID: transition}}).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 }
 
@@ -74,6 +79,7 @@ func (j *jira) CommentIssue(issueKey, comment string) error {
 		Post().
 		BasicAuth(j.Username, j.Password).
 		BodyJSON(IssueComment{Body: comment}).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 }
 
@@ -86,6 +92,7 @@ func (j *jira) QueryTasks(query string) ([]IssueJira, error) {
 		URL(fmt.Sprintf("%s/search?jql=%s", j.BaseUrl, url.QueryEscape(query))).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&tasks).
+		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
 		return nil, err
