@@ -5,12 +5,12 @@ import (
 	"time"
 )
 
-type Messages struct {
-	Messages []Message `json:"m"`
-	More     bool      `json:"more"`
+type Mails struct {
+	Mails []Mail `json:"m"`
+	More  bool   `json:"more"`
 }
 
-type Message struct {
+type Mail struct {
 	Id          string           `json:"id"`
 	TopicId     string           `json:"cid"`
 	Date        time.Time        `json:"d"`
@@ -106,8 +106,8 @@ const (
 	Invite Flag = "i"
 )
 
-func (m *Message) UnmarshalJSON(data []byte) error {
-	type Alias Message
+func (m *Mail) UnmarshalJSON(data []byte) error {
+	type Alias Mail
 	aux := &struct {
 		D int64 `json:"d"`
 		*Alias

@@ -17,8 +17,8 @@ func NewApiZimbra(url, account, password string) ApiZimbra {
 	return &zimbra{url: url, account: account, password: password}
 }
 
-func (z *zimbra) GetMail(messageId string) (Message, error) {
-	var messages Messages
+func (z *zimbra) GetMail(messageId string) (Mail, error) {
+	var messages Mails
 	err := requests.
 		URL(fmt.Sprintf("%s/%s/", z.url, z.account)).
 		Param("id", messageId).
@@ -27,16 +27,16 @@ func (z *zimbra) GetMail(messageId string) (Message, error) {
 		ToJSON(&messages).
 		Fetch(context.Background())
 	if err != nil {
-		return Message{}, err
+		return Mail{}, err
 	}
-	if len(messages.Messages) == 0 {
-		return Message{}, fmt.Errorf("no messages found by id %s", messageId)
+	if len(messages.Mails) == 0 {
+		return Mail{}, fmt.Errorf("no messages found by id %s", messageId)
 	}
-	return messages.Messages[0], nil
+	return messages.Mails[0], nil
 }
 
-func (z *zimbra) GetMails(folder string, sorting SortType, limit, offset int) (Messages, error) {
-	var messages Messages
+func (z *zimbra) GetMails(folder string, sorting SortType, limit, offset int) (Mails, error) {
+	var messages Mails
 	err := requests.
 		URL(fmt.Sprintf("%s/%s/%s", z.url, z.account, folder)).
 		Param("limit", strconv.Itoa(limit)).
@@ -47,7 +47,37 @@ func (z *zimbra) GetMails(folder string, sorting SortType, limit, offset int) (M
 		ToJSON(&messages).
 		Fetch(context.Background())
 	if err != nil {
-		return Messages{}, err
+		return Mails{}, err
+	}
+	return messages, nil
+}
+
+func (z *zimbra) GetMailsByTopicId(topicId string) (Mails, error) {
+	var messages Mails
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/", z.url, z.account)).
+		Param("query", fmt.Sprintf("cid:%s", topicId)).
+		Param("fmt", "json").
+		BasicAuth(z.account, z.password).
+		ToJSON(&messages).
+		Fetch(context.Background())
+	if err != nil {
+		return Mails{}, err
+	}
+	return messages, nil
+}
+
+func (z *zimbra) SearchMails(query string) (Mails, error) {
+	var messages Mails
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/", z.url, z.account)).
+		Param("query", query).
+		Param("fmt", "json").
+		BasicAuth(z.account, z.password).
+		ToJSON(&messages).
+		Fetch(context.Background())
+	if err != nil {
+		return Mails{}, err
 	}
 	return messages, nil
 }
