@@ -1,6 +1,9 @@
 package zimbra
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Messages struct {
 	Messages []Message `json:"m"`
@@ -8,19 +11,18 @@ type Messages struct {
 }
 
 type Message struct {
-	Id           string           `json:"id"`
-	TopicId      string           `json:"cid"`
-	Date         time.Time        `json:"d"`
-	Flags        string           `json:"f"`
-	SizeBytes    int              `json:"s"`
-	Addressees   []Addressee      `json:"a"`
-	Title        string           `json:"su"`
-	Fragment     string           `json:"fr"`
-	AutoSendTime time.Time        `json:"autoSendTime"`
-	Folder       string           `json:"folder"`
-	Tags         []string         `json:"tags"`
-	Attachments  []AttachmentFile `json:"attachments"`
-	Content      Content          `json:"content"`
+	Id          string           `json:"id"`
+	TopicId     string           `json:"cid"`
+	Date        time.Time        `json:"d"`
+	Flags       string           `json:"f"`
+	SizeBytes   int32            `json:"s"`
+	Addressees  []Addressee      `json:"a"`
+	Title       string           `json:"su"`
+	Fragment    string           `json:"fr"`
+	Folder      string           `json:"folder"`
+	Tags        []string         `json:"tags"`
+	Attachments []AttachmentFile `json:"attachments"`
+	Content     Content          `json:"content"`
 }
 
 type Content struct {
@@ -103,3 +105,18 @@ const (
 	// Invite — письмо содержит приглашение на событие
 	Invite Flag = "i"
 )
+
+func (m *Message) UnmarshalJSON(data []byte) error {
+	type Alias Message
+	aux := &struct {
+		D int64 `json:"d"`
+		*Alias
+	}{
+		Alias: (*Alias)(m),
+	}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	m.Date = time.UnixMilli(aux.D)
+	return nil
+}
