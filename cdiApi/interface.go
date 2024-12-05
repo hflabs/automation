@@ -12,4 +12,5 @@ type CdiApi interface {
 	SaveRelations(relations []Relation) error
 
 	CloseAttribute(partyType, attributeType string, attributeHid int32) error
+	CloseParty(hid int32, partyType string) error
 }

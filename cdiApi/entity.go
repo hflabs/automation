@@ -1,11 +1,5 @@
 package apiCdi
 
-type cdiApi struct {
-	url      string
-	username string
-	password string
-}
-
 type SearchPartyRequest struct {
 	Hid                 int32   `json:"hid,omitempty"`
 	Query               string  `json:"query,omitempty"`
@@ -139,6 +133,11 @@ type CloseAttributeRequest struct {
 	PartyType     string `json:"partyType,omitempty"`
 	AttributeType string `json:"attributeType,omitempty"`
 	AttributeHid  int32  `json:"attributeHid,omitempty"`
+}
+
+type CloseRequest struct {
+	Hid       int32  `json:"hid,omitempty"`
+	PartyType string `json:"partyType,omitempty"`
 }
 
 const (

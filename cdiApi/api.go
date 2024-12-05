@@ -6,6 +6,12 @@ import (
 	"github.com/carlmjohnson/requests"
 )
 
+type cdiApi struct {
+	url      string
+	username string
+	password string
+}
+
 func NewCdiApi(url, username, password string) CdiApi {
 	return &cdiApi{
 		url:      url,
@@ -183,6 +189,20 @@ func (c *cdiApi) CloseAttribute(partyType, attributeType string, attributeHid in
 		Post().
 		BasicAuth(c.username, c.password).
 		BodyJSON(CloseAttributeRequest{PartyType: partyType, AttributeType: attributeType, AttributeHid: attributeHid}).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *cdiApi) CloseParty(hid int32, partyType string) error {
+	err := requests.
+		URL(fmt.Sprintf("%s/soap/services/2_13/PartyRA/close", c.url)).
+		Post().
+		BasicAuth(c.username, c.password).
+		BodyJSON(CloseRequest{Hid: hid, PartyType: partyType}).
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
