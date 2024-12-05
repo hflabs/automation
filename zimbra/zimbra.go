@@ -20,7 +20,7 @@ func NewApiZimbra(url, account, password string) ApiZimbra {
 func (z *zimbra) GetMail(messageId string) (Mail, error) {
 	var messages Mails
 	err := requests.
-		URL(fmt.Sprintf("%s/%s/", z.url, z.account)).
+		URL(fmt.Sprintf("%s/home/%s/", z.url, z.account)).
 		Param("id", messageId).
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
@@ -39,7 +39,7 @@ func (z *zimbra) GetMail(messageId string) (Mail, error) {
 func (z *zimbra) GetMails(folder string, sorting SortType, limit, offset int) (Mails, error) {
 	var messages Mails
 	err := requests.
-		URL(fmt.Sprintf("%s/%s/%s", z.url, z.account, folder)).
+		URL(fmt.Sprintf("%s/home/%s/%s", z.url, z.account, folder)).
 		Param("limit", strconv.Itoa(limit)).
 		Param("offset", strconv.Itoa(offset)).
 		Param("sortBy", string(sorting)).
@@ -57,7 +57,7 @@ func (z *zimbra) GetMails(folder string, sorting SortType, limit, offset int) (M
 func (z *zimbra) GetMailsByTopicId(topicId string) (Mails, error) {
 	var messages Mails
 	err := requests.
-		URL(fmt.Sprintf("%s/%s/", z.url, z.account)).
+		URL(fmt.Sprintf("%s/home/%s/", z.url, z.account)).
 		Param("query", fmt.Sprintf("cid:%s", topicId)).
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
@@ -73,7 +73,7 @@ func (z *zimbra) GetMailsByTopicId(topicId string) (Mails, error) {
 func (z *zimbra) SearchMails(query string) (Mails, error) {
 	var messages Mails
 	err := requests.
-		URL(fmt.Sprintf("%s/%s/", z.url, z.account)).
+		URL(fmt.Sprintf("%s/home/%s/", z.url, z.account)).
 		Param("query", query).
 		Param("fmt", "json").
 		BasicAuth(z.account, z.password).
