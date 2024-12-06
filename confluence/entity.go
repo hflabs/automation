@@ -36,3 +36,17 @@ type VersionResponse struct {
 		} `json:"by"`
 	} `json:"version"`
 }
+
+type searchPagesResponse struct {
+	Results []PageInfo `json:"results"`
+	Start   int        `json:"start"`
+	Limit   int        `json:"limit"`
+	Size    int        `json:"size"`
+}
+
+type PageInfo struct {
+	Id     string `json:"id"`
+	Type   string `json:"type"`
+	Status string `json:"status"`
+	Title  string `json:"title"`
+}

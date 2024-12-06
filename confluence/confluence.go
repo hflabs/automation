@@ -7,12 +7,28 @@ import (
 	"fmt"
 	"github.com/carlmjohnson/requests"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 )
 
 func NewConfluence(baseUrl, user, password string) ApiConfluence {
 	return &confluence{user, password, baseUrl}
+}
+
+func (c *confluence) GetPagesByName(name, spaceKey string) ([]PageInfo, error) {
+	var resp searchPagesResponse
+	err := requests.
+		URL(fmt.Sprintf("%s/?title=%s&spaceKey=%s", c.baseUrl, url.QueryEscape(name), url.QueryEscape(spaceKey))).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return resp.Results, fmt.Errorf("GetPagesByName — get confluence page by name %s in space %s err: %w", name, spaceKey, err)
+	}
+	return resp.Results, nil
 }
 
 func (c *confluence) GetContentById(id string) (string, error) {
