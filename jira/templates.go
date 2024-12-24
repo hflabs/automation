@@ -88,6 +88,7 @@ func GetJiraConstants() Fields {
 					FromInProgressToBacklog:  "131",
 					FromInProgressToDelayed:  "111",
 					FromResolvedToDone:       "91",
+					FromResolvedToRelease:    "191",
 					FromResolvedToSelected:   "101",
 					FromResolvedToDelayed:    "111",
 					FromDelayedToInProgress:  "71",
@@ -245,6 +246,7 @@ type ProjectTransition struct {
 	FromResolvedToDone     string // Verify and close - Успешное тестирование
 	FromResolvedToSelected string // Reopen - Возврат задачи в разработку, т.к. есть ошибки
 	FromResolvedToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
+	FromResolvedToRelease  string // Verify and Release — Успешное тестирование
 
 	FromDelayedToInProgress string // Start - Начало разработки
 }
