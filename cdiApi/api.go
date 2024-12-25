@@ -20,7 +20,7 @@ func NewCdiApi(url, username, password string) CdiApi {
 	}
 }
 
-var partyInfo []string = []string{"REQUISITE", "ATTRIBUTE", "RELATION", "RELATION_ATTRIBUTE", "SOURCE"}
+var partyInfo []string = []string{"REQUISITE", "ATTRIBUTE", "SUBATTRIBUTE", "RELATION", "RELATION_ATTRIBUTE", "SOURCE"}
 
 func (c *cdiApi) SearchParty(query, partyType string) ([]Party, error) {
 	req := SearchPartyRequest{
