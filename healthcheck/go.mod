@@ -1,6 +1,6 @@
 module github.com/hflabs/automation/healthcheck
 
-go 1.23.1
+go 1.23
 
 require github.com/carlmjohnson/requests v0.24.3
 
