@@ -25,7 +25,8 @@ func MetricsMiddleware() gin.HandlerFunc {
 		c.Next()
 		duration := time.Since(start).Seconds()
 		_ = requests.
-			URL(fmt.Sprintf("%s/%s", url, "metrics")).Post().
+			URL(fmt.Sprintf("%s/%s", url, "metrics")).
+			Post().
 			BodyJSON(Metric{
 				ServiceName: serviceName,
 				Endpoint:    c.FullPath(),

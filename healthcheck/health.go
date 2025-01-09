@@ -19,7 +19,8 @@ type Healthcheck struct {
 func HealthcheckSender() {
 	for {
 		_ = requests.
-			URL(fmt.Sprintf("%s/%s", url, "healthcheck")).Post().
+			URL(fmt.Sprintf("%s/%s", url, "healthcheck")).
+			Post().
 			BodyJSON(Healthcheck{
 				ServiceName: serviceName,
 				Status:      1,
