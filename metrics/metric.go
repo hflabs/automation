@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"cmp"
 	"fmt"
 	"github.com/carlmjohnson/requests"
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,8 @@ func MetricsMiddleware() gin.HandlerFunc {
 		start := time.Now()
 		c.Next()
 		duration := time.Since(start).Seconds()
+		serviceName = cmp.Or(serviceName, os.Getenv("SERVICE_NAME"))
+		url = cmp.Or(url, os.Getenv("MONITORING_URL"))
 		_ = requests.
 			URL(fmt.Sprintf("%s/%s", url, "metrics")).
 			Post().
