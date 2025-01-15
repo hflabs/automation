@@ -20,6 +20,8 @@ type Healthcheck struct {
 
 func HealthcheckSender(minutes int) {
 	for {
+		serviceName = cmp.Or(serviceName, os.Getenv("SERVICE_NAME"))
+		url = cmp.Or(url, os.Getenv("MONITORING_URL"))
 		minutes = cmp.Or(minutes, 1)
 		_ = requests.
 			URL(fmt.Sprintf("%s/%s", url, "healthcheck")).
