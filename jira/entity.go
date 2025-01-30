@@ -17,6 +17,7 @@ type WebhookIssue struct {
 		Id    string          `json:"id,omitempty"`
 		Items []ChangelogItem `json:"items,omitempty"`
 	} `json:"changelog,omitempty"`
+	Version Version `json:"version,omitempty"`
 }
 
 type WebhookComment struct {
@@ -92,6 +93,18 @@ type IssueComment struct {
 	UpdateAuthor JiraUser `json:"update_author,omitempty"`
 	Created      JiraTime `json:"created,omitempty"`
 	Updated      JiraTime `json:"updated,omitempty"`
+}
+
+type Version struct {
+	Id              string `json:"id,omitempty"`
+	Name            string `json:"name,omitempty"`
+	Description     string `json:"description,omitempty"`
+	Archived        bool   `json:"archived,omitempty"`
+	Released        bool   `json:"released,omitempty"`
+	Overdue         bool   `json:"overdue,omitempty"`
+	UserReleaseDate string `json:"userReleaseDate,omitempty"`
+	ProjectId       int    `json:"projectId,omitempty"`
+	Self            string `json:"self,omitempty"`
 }
 
 type SearchResponse struct {
