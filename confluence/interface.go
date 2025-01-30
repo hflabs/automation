@@ -1,12 +1,12 @@
 package confluence
 
 type ApiConfluence interface {
-	GetContentById(id string) (string, error)
-	GetVersionInfoById(id string) (VersionResponse, error)
+	GetContentById(id int) (string, error)
+	GetVersionInfoById(id int) (VersionResponse, error)
 	GetPagesByName(name, spaceKey string) ([]PageInfo, error)
 
-	CreatePage(name, spaceKey, parentPageId, content string) (string, error)
+	CreatePage(name, spaceKey, content string, parentPageId int) (int, error)
 
-	UpdatePageById(id string, content string, reCreate bool) error
-	UpdatePageByIdWithCheck(id string, content string, reCreate bool) error
+	UpdatePageById(id int, content string, reCreate bool) error
+	UpdatePageByIdWithCheck(id int, content string, reCreate bool) error
 }

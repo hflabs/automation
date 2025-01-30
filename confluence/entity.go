@@ -9,7 +9,7 @@ type confluence struct {
 type pageRequestOrResponse struct {
 	Type    string                  `json:"type"`
 	Title   string                  `json:"title"`
-	Id      string                  `json:"id,omitempty"`
+	Id      int                     `json:"id,omitempty"`
 	Space   space                   `json:"space"`
 	Version pageVersion             `json:"version"`
 	Body    pageBody                `json:"body"`
@@ -17,7 +17,7 @@ type pageRequestOrResponse struct {
 }
 
 type space struct {
-	Id   string `json:"id"`
+	Id   int    `json:"id"`
 	Key  string `json:"key"`
 	Name string `json:"name"`
 }
