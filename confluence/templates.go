@@ -186,6 +186,7 @@ const (
 <ac:parameter ac:name="key">%s</ac:parameter>
 </ac:structured-macro>
 </ac:rich-text-body>
+</ac:structured-macro>
 `
 
 	BottomLine = `
