@@ -129,6 +129,7 @@ const (
 	H3  = `<h3>%s</h3>`
 	H4  = `<h4>%s</h4>`
 	Par = `<p>%s</p>`
+	Br  = `<br>` //перенос строки
 
 	Yes  = `<ac:emoticon ac:name="tick"></ac:emoticon>`
 	Link = `<ac:link>
