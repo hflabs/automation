@@ -151,6 +151,13 @@ const (
 </ac:structured-macro>
 </p>
 `
+	JiraLink = `
+<ac:structured-macro ac:macro-id="9adf347a-b785-48a1-a82a-43f786f5e648" ac:name="jira" ac:schema-version="1">
+<ac:parameter ac:name="server">Jira</ac:parameter>
+<ac:parameter ac:name="serverId">16e7f739-fad1-38d9-a5d2-5b2d285c144b</ac:parameter>
+<ac:parameter ac:name="key">%s</ac:parameter>
+</ac:structured-macro>
+`
 
 	Hide = `
 <ac:structured-macro ac:name="hfl" ac:schema-version="1">
@@ -168,6 +175,16 @@ const (
 <p>%s</p>
 </ac:rich-text-body>
 </ac:structured-macro>
+`
+	HideJiraLink = `
+<ac:structured-macro ac:macro-id="e85ae079-45f9-4e76-82ec-7ba5f203a8ac" ac:name="hfl" ac:schema-version="1">
+<ac:rich-text-body>
+<ac:structured-macro ac:macro-id="9adf347a-b785-48a1-a82a-43f786f5e648" ac:name="jira" ac:schema-version="1">
+<ac:parameter ac:name="server">Jira</ac:parameter>
+<ac:parameter ac:name="serverId">16e7f739-fad1-38d9-a5d2-5b2d285c144b</ac:parameter>
+<ac:parameter ac:name="key">%s</ac:parameter>
+</ac:structured-macro>
+</ac:rich-text-body>
 `
 
 	BottomLine = `
