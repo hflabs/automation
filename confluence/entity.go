@@ -10,10 +10,16 @@ type pageRequestOrResponse struct {
 	Type    string      `json:"type"`
 	Title   string      `json:"title"`
 	Id      string      `json:"id"`
+	Space   space       `json:"space"`
 	Version pageVersion `json:"version"`
 	Body    pageBody    `json:"body"`
 }
 
+type space struct {
+	Id   string `json:"id"`
+	Key  string `json:"key"`
+	Name string `json:"name"`
+}
 type pageVersion struct {
 	Number int `json:"number"`
 }

@@ -61,6 +61,33 @@ func (c *confluence) GetVersionInfoById(id string) (VersionResponse, error) {
 	return resp, nil
 }
 
+func (c *confluence) CreatePage(name, spaceKey, content string) (string, error) {
+	req := pageRequestOrResponse{
+		Type:  "page",
+		Title: name,
+		Space: space{Key: spaceKey},
+		Body: pageBody{
+			Storage: pageStorage{
+				Value:          content,
+				Representation: "storage",
+			},
+		},
+	}
+	err := requests.
+		URL(c.baseUrl).
+		Method(http.MethodPost).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		BodyJSON(req).
+		ToJSON(&req).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return "", fmt.Errorf("CreatePage — create confluence page `%s` in space `%s` with content `%s` err: %w", name, spaceKey, content, err)
+	}
+	return req.Id, nil
+}
+
 func (c *confluence) UpdatePageById(id string, content string, reCreate bool) error {
 	versionInfo, err := c.GetVersionInfoById(id)
 	if err != nil {
