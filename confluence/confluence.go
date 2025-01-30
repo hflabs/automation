@@ -66,7 +66,7 @@ func (c *confluence) CreatePage(name, spaceKey, parentPageId, content string) (s
 		Type:    "page",
 		Title:   name,
 		Space:   space{Key: spaceKey},
-		Parents: []pageRequestOrResponse{{Id: parentPageId}},
+		Parents: []pageRequestOrResponse{{Type: "page", Id: parentPageId}},
 		Body: pageBody{
 			Storage: pageStorage{
 				Value:          content,
