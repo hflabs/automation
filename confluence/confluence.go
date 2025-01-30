@@ -61,11 +61,12 @@ func (c *confluence) GetVersionInfoById(id string) (VersionResponse, error) {
 	return resp, nil
 }
 
-func (c *confluence) CreatePage(name, spaceKey, content string) (string, error) {
+func (c *confluence) CreatePage(name, spaceKey, parentPageId, content string) (string, error) {
 	req := pageRequestOrResponse{
-		Type:  "page",
-		Title: name,
-		Space: space{Key: spaceKey},
+		Type:    "page",
+		Title:   name,
+		Space:   space{Key: spaceKey},
+		Parents: []pageRequestOrResponse{{Id: parentPageId}},
 		Body: pageBody{
 			Storage: pageStorage{
 				Value:          content,

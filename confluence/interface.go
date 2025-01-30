@@ -5,7 +5,7 @@ type ApiConfluence interface {
 	GetVersionInfoById(id string) (VersionResponse, error)
 	GetPagesByName(name, spaceKey string) ([]PageInfo, error)
 
-	CreatePage(name, spaceKey, content string) (string, error)
+	CreatePage(name, spaceKey, parentPageId, content string) (string, error)
 
 	UpdatePageById(id string, content string, reCreate bool) error
 	UpdatePageByIdWithCheck(id string, content string, reCreate bool) error

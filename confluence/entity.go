@@ -7,12 +7,13 @@ type confluence struct {
 }
 
 type pageRequestOrResponse struct {
-	Type    string      `json:"type"`
-	Title   string      `json:"title"`
-	Id      string      `json:"id"`
-	Space   space       `json:"space"`
-	Version pageVersion `json:"version"`
-	Body    pageBody    `json:"body"`
+	Type    string                  `json:"type"`
+	Title   string                  `json:"title"`
+	Id      string                  `json:"id"`
+	Space   space                   `json:"space"`
+	Version pageVersion             `json:"version"`
+	Body    pageBody                `json:"body"`
+	Parents []pageRequestOrResponse `json:"ancestors"`
 }
 
 type space struct {
