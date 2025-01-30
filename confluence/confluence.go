@@ -31,10 +31,10 @@ func (c *confluence) GetPagesByName(name, spaceKey string) ([]PageInfo, error) {
 	return resp.Results, nil
 }
 
-func (c *confluence) GetContentById(id int) (string, error) {
+func (c *confluence) GetContentById(id string) (string, error) {
 	var resp pageRequestOrResponse
 	err := requests.
-		URL(fmt.Sprintf("%s/%d?expand=body.storage", c.baseUrl, id)).
+		URL(fmt.Sprintf("%s/%s?expand=body.storage", c.baseUrl, id)).
 		BasicAuth(c.user, c.password).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
@@ -45,10 +45,10 @@ func (c *confluence) GetContentById(id int) (string, error) {
 	return resp.Body.Storage.Value, err
 }
 
-func (c *confluence) GetVersionInfoById(id int) (VersionResponse, error) {
+func (c *confluence) GetVersionInfoById(id string) (VersionResponse, error) {
 	var resp VersionResponse
 	err := requests.
-		URL(fmt.Sprintf("%s/%d?expand=version", c.baseUrl, id)).
+		URL(fmt.Sprintf("%s/%s?expand=version", c.baseUrl, id)).
 		ContentType("application/json").
 		BasicAuth(c.user, c.password).
 		ToJSON(&resp).
@@ -56,12 +56,12 @@ func (c *confluence) GetVersionInfoById(id int) (VersionResponse, error) {
 		Fetch(context.Background())
 
 	if err != nil {
-		return resp, fmt.Errorf("GetLastVersionInfoById — get confluence pageId %d err: %w", id, err)
+		return resp, fmt.Errorf("GetLastVersionInfoById — get confluence pageId %s err: %w", id, err)
 	}
 	return resp, nil
 }
 
-func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId int) (int, error) {
+func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId string) (string, error) {
 	req := pageRequestOrResponse{
 		Type:    "page",
 		Title:   name,
@@ -84,12 +84,12 @@ func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId int
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return 0, fmt.Errorf("CreatePage — create confluence page `%s` in space `%s` with content `%s` err: %w", name, spaceKey, content, err)
+		return "", fmt.Errorf("CreatePage — create confluence page `%s` in space `%s` with content `%s` err: %w", name, spaceKey, content, err)
 	}
 	return req.Id, nil
 }
 
-func (c *confluence) UpdatePageById(id int, content string, reCreate bool) error {
+func (c *confluence) UpdatePageById(id string, content string, reCreate bool) error {
 	versionInfo, err := c.GetVersionInfoById(id)
 	if err != nil {
 		return err
@@ -119,7 +119,7 @@ func (c *confluence) UpdatePageById(id int, content string, reCreate bool) error
 		}
 	}
 	err = requests.
-		URL(fmt.Sprintf("%s/%d", c.baseUrl, id)).
+		URL(fmt.Sprintf("%s/%s", c.baseUrl, id)).
 		Method(http.MethodPut).
 		ContentType("application/json").
 		BasicAuth(c.user, c.password).
@@ -127,12 +127,12 @@ func (c *confluence) UpdatePageById(id int, content string, reCreate bool) error
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return fmt.Errorf("UpdatePageById — update confluence pageId %d, content %s err: %w", id, content, err)
+		return fmt.Errorf("UpdatePageById — update confluence pageId %s, content %s err: %w", id, content, err)
 	}
 	return nil
 }
 
-func (c *confluence) UpdatePageByIdWithCheck(id int, content string, reCreate bool) error {
+func (c *confluence) UpdatePageByIdWithCheck(id string, content string, reCreate bool) error {
 	hash := md5.Sum([]byte(content))
 	hashcode := hex.EncodeToString(hash[:])
 	versionInfo, err := c.GetVersionInfoById(id)
