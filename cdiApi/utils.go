@@ -22,15 +22,18 @@ func GetFieldValue(fields map[string]string, field string) string {
 	return ""
 }
 
-func GetRelationHid(relation Relation) int32 {
+func GetRelationHid(relation Relation) (int32, string) {
 	var hid int32
+	var partyType string
 	if relation.First != nil {
 		hid = relation.First.Hid
+		partyType = relation.First.Type
 	}
 	if relation.Second != nil {
 		hid = relation.Second.Hid
+		partyType = relation.Second.Type
 	}
-	return hid
+	return hid, partyType
 }
 
 func validateStatus(resp *http.Response) error {
