@@ -10,10 +10,10 @@ type pageRequestOrResponse struct {
 	Type    string                  `json:"type,omitempty"`
 	Title   string                  `json:"title,omitempty"`
 	Id      string                  `json:"id,omitempty"`
-	Space   space                   `json:"space,omitempty"`
-	Version pageVersion             `json:"version,omitempty"`
-	Body    pageBody                `json:"body,omitempty"`
-	Parents []pageRequestOrResponse `json:"ancestors,omitempty"`
+	Space   space                   `json:"space"`
+	Version pageVersion             `json:"version"`
+	Body    pageBody                `json:"body"`
+	Parents []pageRequestOrResponse `json:"ancestors"`
 }
 
 type space struct {
@@ -26,7 +26,7 @@ type pageVersion struct {
 }
 
 type pageBody struct {
-	Storage pageStorage `json:"storage,omitempty"`
+	Storage pageStorage `json:"storage"`
 }
 
 type pageStorage struct {
@@ -40,12 +40,12 @@ type VersionResponse struct {
 		Number int `json:"number,omitempty"`
 		Editor struct {
 			Username string `json:"username,omitempty"`
-		} `json:"by,omitempty"`
-	} `json:"version,omitempty"`
+		} `json:"by"`
+	} `json:"version"`
 }
 
 type searchPagesResponse struct {
-	Results []PageInfo `json:"results,omitempty"`
+	Results []PageInfo `json:"results"`
 	Start   int        `json:"start,omitempty"`
 	Limit   int        `json:"limit,omitempty"`
 	Size    int        `json:"size,omitempty"`
