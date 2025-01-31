@@ -163,6 +163,7 @@ func (c *confluence) UpdatePageParentById(id, parentId string) error {
 	req := pageRequestOrResponse{
 		Id:      id,
 		Type:    "page",
+		Title:   versionInfo.Title,
 		Version: pageVersion{Number: versionInfo.Version.Number + 1},
 		Parents: []pageRequestOrResponse{{Type: "page", Id: parentId}},
 	}
