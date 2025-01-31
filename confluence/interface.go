@@ -9,5 +9,5 @@ type ApiConfluence interface {
 
 	UpdatePageById(id string, content string, reCreate bool) error
 	UpdatePageByIdWithCheck(id string, content string, reCreate bool) error
-	UpdatePageParentById(id, parentId string) error
+	UpdatePageParentById(id, title, parentId string) error
 }
