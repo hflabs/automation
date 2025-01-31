@@ -10,9 +10,9 @@ type pageRequestOrResponse struct {
 	Type    string                  `json:"type,omitempty"`
 	Title   string                  `json:"title,omitempty"`
 	Id      string                  `json:"id,omitempty"`
-	Space   space                   `json:"space,omitempty"`
-	Version pageVersion             `json:"version,omitempty"`
-	Body    pageBody                `json:"body,omitempty"`
+	Space   *space                  `json:"space,omitempty"`
+	Version *pageVersion            `json:"version,omitempty"`
+	Body    *pageBody               `json:"body,omitempty"`
 	Parents []pageRequestOrResponse `json:"ancestors,omitempty"`
 }
 

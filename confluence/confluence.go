@@ -65,9 +65,9 @@ func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId str
 	req := pageRequestOrResponse{
 		Type:    "page",
 		Title:   name,
-		Space:   space{Key: spaceKey},
+		Space:   &space{Key: spaceKey},
 		Parents: []pageRequestOrResponse{{Type: "page", Id: parentPageId}},
-		Body: pageBody{
+		Body: &pageBody{
 			Storage: pageStorage{
 				Value:          content,
 				Representation: "storage",
@@ -99,8 +99,8 @@ func (c *confluence) UpdatePageById(id string, content string, reCreate bool) er
 		Type:    "page",
 		Title:   versionInfo.Title,
 		Id:      id,
-		Version: pageVersion{Number: versionInfo.Version.Number + 1},
-		Body:    pageBody{pageStorage{Value: content, Representation: "storage"}},
+		Version: &pageVersion{Number: versionInfo.Version.Number + 1},
+		Body:    &pageBody{pageStorage{Value: content, Representation: "storage"}},
 	}
 	oldContent, err := c.GetContentById(id)
 	if err != nil {
@@ -164,7 +164,7 @@ func (c *confluence) UpdatePageParentById(id, parentId string) error {
 		Id:      id,
 		Type:    "page",
 		Title:   versionInfo.Title,
-		Version: pageVersion{Number: versionInfo.Version.Number + 1},
+		Version: &pageVersion{Number: versionInfo.Version.Number + 1},
 		Parents: []pageRequestOrResponse{{Type: "page", Id: parentId}},
 	}
 	err = c.updatePage(id, req)
