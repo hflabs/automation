@@ -156,12 +156,17 @@ func (c *confluence) updatePage(id string, req pageRequestOrResponse) error {
 }
 
 func (c *confluence) UpdatePageParentById(id, parentId string) error {
+	versionInfo, err := c.GetVersionInfoById(id)
+	if err != nil {
+		return err
+	}
 	req := pageRequestOrResponse{
 		Id:      id,
 		Type:    "page",
+		Version: pageVersion{Number: versionInfo.Version.Number + 1},
 		Parents: []pageRequestOrResponse{{Type: "page", Id: parentId}},
 	}
-	err := c.updatePage(id, req)
+	err = c.updatePage(id, req)
 	if err != nil {
 		return fmt.Errorf("UpdatePageParentById — update confluence pageId %s, newParentId %s err: %w", id, parentId, err)
 	}
