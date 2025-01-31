@@ -118,14 +118,7 @@ func (c *confluence) UpdatePageById(id string, content string, reCreate bool) er
 			req.Body.Storage.Value = contentToSaveStart + CheckLine + content + CheckLine + contentToSaveEnd
 		}
 	}
-	err = requests.
-		URL(fmt.Sprintf("%s/%s", c.baseUrl, id)).
-		Method(http.MethodPut).
-		ContentType("application/json").
-		BasicAuth(c.user, c.password).
-		BodyJSON(req).
-		AddValidator(validateStatus).
-		Fetch(context.Background())
+	err = c.updatePage(id, req)
 	if err != nil {
 		return fmt.Errorf("UpdatePageById — update confluence pageId %s, content %s err: %w", id, content, err)
 	}
@@ -149,6 +142,30 @@ func (c *confluence) UpdatePageByIdWithCheck(id string, content string, reCreate
 	}
 	content = fmt.Sprintf(HideHash, hashcode) + "\n" + content
 	return c.UpdatePageById(id, content, reCreate)
+}
+
+func (c *confluence) updatePage(id string, req pageRequestOrResponse) error {
+	return requests.
+		URL(fmt.Sprintf("%s/%s", c.baseUrl, id)).
+		Method(http.MethodPut).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		BodyJSON(req).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+}
+
+func (c *confluence) UpdatePageParentById(id, parentId string) error {
+	req := pageRequestOrResponse{
+		Id:      id,
+		Type:    "page",
+		Parents: []pageRequestOrResponse{{Type: "page", Id: parentId}},
+	}
+	err := c.updatePage(id, req)
+	if err != nil {
+		return fmt.Errorf("UpdatePageParentById — update confluence pageId %s, newParentId %s err: %w", id, parentId, err)
+	}
+	return nil
 }
 
 func extractHashcodeFromContent(content string) string {

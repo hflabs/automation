@@ -7,53 +7,53 @@ type confluence struct {
 }
 
 type pageRequestOrResponse struct {
-	Type    string                  `json:"type"`
-	Title   string                  `json:"title"`
+	Type    string                  `json:"type,omitempty"`
+	Title   string                  `json:"title,omitempty"`
 	Id      string                  `json:"id,omitempty"`
-	Space   space                   `json:"space"`
-	Version pageVersion             `json:"version"`
-	Body    pageBody                `json:"body"`
-	Parents []pageRequestOrResponse `json:"ancestors"`
+	Space   space                   `json:"space,omitempty"`
+	Version pageVersion             `json:"version,omitempty"`
+	Body    pageBody                `json:"body,omitempty"`
+	Parents []pageRequestOrResponse `json:"ancestors,omitempty"`
 }
 
 type space struct {
-	Id   int    `json:"id"`
-	Key  string `json:"key"`
-	Name string `json:"name"`
+	Id   int    `json:"id,omitempty"`
+	Key  string `json:"key,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 type pageVersion struct {
-	Number int `json:"number"`
+	Number int `json:"number,omitempty"`
 }
 
 type pageBody struct {
-	Storage pageStorage `json:"storage"`
+	Storage pageStorage `json:"storage,omitempty"`
 }
 
 type pageStorage struct {
-	Value          string `json:"value"`
-	Representation string `json:"representation"`
+	Value          string `json:"value,omitempty"`
+	Representation string `json:"representation,omitempty"`
 }
 
 type VersionResponse struct {
-	Title   string `json:"title"`
+	Title   string `json:"title,omitempty"`
 	Version struct {
-		Number int `json:"number"`
+		Number int `json:"number,omitempty"`
 		Editor struct {
-			Username string `json:"username"`
-		} `json:"by"`
-	} `json:"version"`
+			Username string `json:"username,omitempty"`
+		} `json:"by,omitempty"`
+	} `json:"version,omitempty"`
 }
 
 type searchPagesResponse struct {
-	Results []PageInfo `json:"results"`
-	Start   int        `json:"start"`
-	Limit   int        `json:"limit"`
-	Size    int        `json:"size"`
+	Results []PageInfo `json:"results,omitempty"`
+	Start   int        `json:"start,omitempty"`
+	Limit   int        `json:"limit,omitempty"`
+	Size    int        `json:"size,omitempty"`
 }
 
 type PageInfo struct {
-	Id     string `json:"id"`
-	Type   string `json:"type"`
-	Status string `json:"status"`
-	Title  string `json:"title"`
+	Id     string `json:"id,omitempty"`
+	Type   string `json:"type,omitempty"`
+	Status string `json:"status,omitempty"`
+	Title  string `json:"title,omitempty"`
 }
