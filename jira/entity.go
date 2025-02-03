@@ -78,6 +78,16 @@ type JiraUser struct {
 	Email string `json:"emailAddress,omitempty"`
 }
 
+type ProjectVersion struct {
+	ID              string `json:"id"`
+	Name            string `json:"name"`
+	Archived        bool   `json:"archived"`
+	Released        bool   `json:"released"`
+	ReleaseDate     string `json:"releaseDate"`
+	UserReleaseDate string `json:"userReleaseDate"`
+	ProjectID       int    `json:"projectId"`
+}
+
 type IssueWatchersResponse struct {
 	Watchers []JiraUser `json:"watchers,omitempty"`
 }

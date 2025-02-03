@@ -39,6 +39,20 @@ func (j *jira) GetIssueWatchers(issueKey string) ([]JiraUser, error) {
 	return resp.Watchers, nil
 }
 
+func (j *jira) GetProjectVersions(projectKey string) ([]ProjectVersion, error) {
+	var resp []ProjectVersion
+	err := requests.
+		URL(fmt.Sprintf("%s/project/%s/versions", j.BaseUrl, projectKey)).
+		BasicAuth(j.Username, j.Password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (j *jira) GetIssueById(issueId string) (IssueJira, error) {
 	var resp IssueJira
 	err := requests.

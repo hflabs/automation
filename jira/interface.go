@@ -11,4 +11,6 @@ type ApiJira interface {
 	UpdateIssue(issueKey string, req UpdateIssueRequest) error
 	CommentIssue(issueKey, comment string) error
 	TransitionIssue(issueKey, transition string) error
+
+	GetProjectVersions(projectKey string) ([]ProjectVersion, error)
 }
