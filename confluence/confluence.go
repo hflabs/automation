@@ -190,6 +190,26 @@ func (c *confluence) AddLabelToPage(pageId, label string) error {
 	return nil
 }
 
+func (c *confluence) GetLabels(pageId string) ([]string, error) {
+	var resp []labelRequest
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/label", c.baseUrl, pageId)).
+		Method(http.MethodGet).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("GetLabels — get confluence pageId %s labels err: %w", pageId, err)
+	}
+	var labels []string
+	for _, v := range resp {
+		labels = append(labels, v.Name)
+	}
+	return labels, nil
+}
+
 func extractHashcodeFromContent(content string) string {
 	match := regexp.MustCompile(hashcode_pattern).FindStringSubmatch(content)
 	if len(match) > 1 {
