@@ -174,6 +174,22 @@ func (c *confluence) UpdatePageParentById(id, parentId string) error {
 	return nil
 }
 
+func (c *confluence) AddLabelToPage(pageId, label string) error {
+	req := labelRequest{Prefix: "global", Name: label}
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/label", c.baseUrl, pageId)).
+		Method(http.MethodPost).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		BodyJSON(req).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return fmt.Errorf("AddLabelToPage — update confluence pageId %s, label %s err: %w", pageId, label, err)
+	}
+	return nil
+}
+
 func extractHashcodeFromContent(content string) string {
 	match := regexp.MustCompile(hashcode_pattern).FindStringSubmatch(content)
 	if len(match) > 1 {

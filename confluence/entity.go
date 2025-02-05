@@ -34,6 +34,10 @@ type pageStorage struct {
 	Representation string `json:"representation,omitempty"`
 }
 
+type labelRequest struct {
+	Prefix string `json:"prefix,omitempty"`
+	Name   string `json:"name,omitempty"`
+}
 type VersionResponse struct {
 	Title   string `json:"title,omitempty"`
 	Version struct {

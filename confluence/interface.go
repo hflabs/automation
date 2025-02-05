@@ -7,6 +7,8 @@ type ApiConfluence interface {
 
 	CreatePage(name, spaceKey, content string, parentPageId string) (string, error)
 
+	AddLabelToPage(pageId, label string) error
+
 	UpdatePageById(id string, content string, reCreate bool) error
 	UpdatePageByIdWithCheck(id string, content string, reCreate bool) error
 	UpdatePageParentById(id, parentId string) error
