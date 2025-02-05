@@ -191,7 +191,7 @@ func (c *confluence) UpdatePageParentById(id, parentId string) error {
 }
 
 func (c *confluence) AddLabelToPage(pageId, label string) error {
-	req := labelRequest{Prefix: "global", Name: label}
+	req := Label{Prefix: "global", Name: label}
 	err := requests.
 		URL(fmt.Sprintf("%s/%s/label", c.baseUrl, pageId)).
 		Method(http.MethodPost).
@@ -207,7 +207,7 @@ func (c *confluence) AddLabelToPage(pageId, label string) error {
 }
 
 func (c *confluence) GetLabels(pageId string) ([]string, error) {
-	var resp []labelRequest
+	var resp labelResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/%s/label", c.baseUrl, pageId)).
 		Method(http.MethodGet).
@@ -220,8 +220,8 @@ func (c *confluence) GetLabels(pageId string) ([]string, error) {
 		return nil, fmt.Errorf("GetLabels — get confluence pageId %s labels err: %w", pageId, err)
 	}
 	var labels []string
-	for _, v := range resp {
-		labels = append(labels, v.Name)
+	for _, label := range resp.Results {
+		labels = append(labels, label.Name)
 	}
 	return labels, nil
 }

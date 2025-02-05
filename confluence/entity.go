@@ -34,9 +34,17 @@ type pageStorage struct {
 	Representation string `json:"representation,omitempty"`
 }
 
-type labelRequest struct {
+type Label struct {
 	Prefix string `json:"prefix,omitempty"`
 	Name   string `json:"name,omitempty"`
+}
+
+type labelResponse struct {
+	Results    []Label `json:"results"`
+	TotalCount int     `json:"totalCount"`
+	StartIndex int     `json:"start"`
+	Limit      int     `json:"limit"`
+	Size       int     `json:"size"`
 }
 type VersionResponse struct {
 	Title   string `json:"title,omitempty"`
