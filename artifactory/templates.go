@@ -13,6 +13,8 @@ const (
 	SortBySize    = "size"
 )
 
+const searchLimitTemplate = ".limit(%v)"
+
 const searchTemplate = `
 items.find({
     "repo": "%s",
