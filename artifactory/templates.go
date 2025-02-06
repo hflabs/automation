@@ -13,54 +13,21 @@ const (
 	SortBySize    = "size"
 )
 
-const searchLimitTemplate = ".limit(%v)"
+const findTemplate = "items.find(%s)"
 
-const searchTemplate = `
-items.find({
-    "repo": "%s",
-    "path": "%s",
-    "type": "%s"
-}).include(
+const includeTemplate = `.include(
     "repo",
     "path",
     "name",
     "created",
     "type",
 	"size"
-)
-`
+)`
 
-const searchTemplateWithSort = `
-items.find({
-    "repo": "%s",
-    "path": "%s",
-    "type": "%s"
-}).include(
-    "repo",
-    "path",
-    "name",
-    "created",
-    "type",
-	"size"
-).sort({
+const sortTemplate = `.sort({
     "$%s": [
         "%s"
     ]
-})
-`
+})`
 
-const searchTemplateFile = `
-items.find({
-    "repo": "%s",
-    "path": "%s",
-	"name": "%s",
-    "type": "file"
-}).include(
-    "repo",
-    "path",
-    "name",
-    "created",
-    "type",
-	"size"
-)
-`
+const limitTemplate = ".limit(%v)"
