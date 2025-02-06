@@ -74,7 +74,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 
 	logger := log.New(output).Level(lev).With().Timestamp().Logger()
 
-	msg := fmt.Sprintf("Configated logger with level - %s, filename - %s", lev.String(), filename)
+	msg := fmt.Sprintf("Configured logger with level - %s, filename - %s", lev.String(), filename)
 	if rotating != nil {
 		msg += fmt.Sprintf(", rotating - (rotationTime = %s, rotationCount = %d, datePattern = `%s`, location = %s)",
 			rotating.RotationTime.String(), rotating.RotationCount, rotating.GetDatePattern(), rotating.TimeLocation.String())

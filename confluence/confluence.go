@@ -19,7 +19,7 @@ func NewConfluence(baseUrl, user, password string) ApiConfluence {
 func (c *confluence) GetPagesByName(name, spaceKey string) ([]PageInfo, error) {
 	var resp searchPagesResponse
 	err := requests.
-		URL(fmt.Sprintf("%s/?title=%s&spaceKey=%s", c.baseUrl, url.QueryEscape(name), url.QueryEscape(spaceKey))).
+		URL(fmt.Sprintf("%s?title=%s&spaceKey=%s&type=page", c.baseUrl, url.QueryEscape(name), url.QueryEscape(spaceKey))).
 		ContentType("application/json").
 		BasicAuth(c.user, c.password).
 		ToJSON(&resp).
@@ -27,6 +27,22 @@ func (c *confluence) GetPagesByName(name, spaceKey string) ([]PageInfo, error) {
 		Fetch(context.Background())
 	if err != nil {
 		return resp.Results, fmt.Errorf("GetPagesByName — get confluence page by name %s in space %s err: %w", name, spaceKey, err)
+	}
+	return resp.Results, nil
+}
+
+func (c *confluence) GetPagesByIncludedName(name, spaceKey string) ([]PageInfo, error) {
+	cqlQuery := fmt.Sprintf("space=\"%s\" AND type=\"page\" AND title~\"%s\"", spaceKey, name)
+	var resp searchPagesResponse
+	err := requests.
+		URL(fmt.Sprintf("%s/search?cql=%s", c.baseUrl, url.QueryEscape(cqlQuery))).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return resp.Results, fmt.Errorf("GetPagesByIncludedName — get confluence page by include name %s in space %s err: %w", name, spaceKey, err)
 	}
 	return resp.Results, nil
 }
@@ -172,6 +188,42 @@ func (c *confluence) UpdatePageParentById(id, parentId string) error {
 		return fmt.Errorf("UpdatePageParentById — update confluence pageId %s, newParentId %s err: %w", id, parentId, err)
 	}
 	return nil
+}
+
+func (c *confluence) AddLabelToPage(pageId, label string) error {
+	req := Label{Prefix: "global", Name: label}
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/label", c.baseUrl, pageId)).
+		Method(http.MethodPost).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		BodyJSON(req).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return fmt.Errorf("AddLabelToPage — update confluence pageId %s, label %s err: %w", pageId, label, err)
+	}
+	return nil
+}
+
+func (c *confluence) GetLabels(pageId string) ([]string, error) {
+	var resp labelResponse
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/label", c.baseUrl, pageId)).
+		Method(http.MethodGet).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("GetLabels — get confluence pageId %s labels err: %w", pageId, err)
+	}
+	var labels []string
+	for _, label := range resp.Results {
+		labels = append(labels, label.Name)
+	}
+	return labels, nil
 }
 
 func extractHashcodeFromContent(content string) string {
