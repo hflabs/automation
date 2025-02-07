@@ -26,13 +26,13 @@ func (c *confluence) GetPagesByName(name, spaceKey string) ([]PageInfo, error) {
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return resp.Results, fmt.Errorf("GetPagesByName — get confluence page by name %s in space %s err: %w", name, spaceKey, err)
+		return resp.Results, fmt.Errorf("GetPagesByName — get confluence page by name %s in Space %s err: %w", name, spaceKey, err)
 	}
 	return resp.Results, nil
 }
 
 func (c *confluence) GetPagesByIncludedName(name, spaceKey string) ([]PageInfo, error) {
-	cqlQuery := fmt.Sprintf("space=\"%s\" AND type=\"page\" AND title~\"%s\"", spaceKey, name)
+	cqlQuery := fmt.Sprintf("Space=\"%s\" AND type=\"page\" AND title~\"%s\"", spaceKey, name)
 	var resp searchPagesResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/search?cql=%s", c.baseUrl, url.QueryEscape(cqlQuery))).
@@ -42,13 +42,13 @@ func (c *confluence) GetPagesByIncludedName(name, spaceKey string) ([]PageInfo, 
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return resp.Results, fmt.Errorf("GetPagesByIncludedName — get confluence page by include name %s in space %s err: %w", name, spaceKey, err)
+		return resp.Results, fmt.Errorf("GetPagesByIncludedName — get confluence page by include name %s in Space %s err: %w", name, spaceKey, err)
 	}
 	return resp.Results, nil
 }
 
 func (c *confluence) GetContentById(id string) (string, error) {
-	var resp pageRequestOrResponse
+	var resp PageInfo
 	err := requests.
 		URL(fmt.Sprintf("%s/%s?expand=body.storage", c.baseUrl, id)).
 		BasicAuth(c.user, c.password).
@@ -78,13 +78,13 @@ func (c *confluence) GetVersionInfoById(id string) (VersionResponse, error) {
 }
 
 func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId string) (string, error) {
-	req := pageRequestOrResponse{
+	req := PageInfo{
 		Type:    "page",
 		Title:   name,
-		Space:   &space{Key: spaceKey},
-		Parents: []pageRequestOrResponse{{Type: "page", Id: parentPageId}},
-		Body: &pageBody{
-			Storage: pageStorage{
+		Space:   &Space{Key: spaceKey},
+		Parents: []PageInfo{{Type: "page", Id: parentPageId}},
+		Body: &PageBody{
+			Storage: PageStorage{
 				Value:          content,
 				Representation: "storage",
 			},
@@ -100,7 +100,7 @@ func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId str
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return "", fmt.Errorf("CreatePage — create confluence page `%s` in space `%s` with content `%s` err: %w", name, spaceKey, content, err)
+		return "", fmt.Errorf("CreatePage — create confluence page `%s` in Space `%s` with content `%s` err: %w", name, spaceKey, content, err)
 	}
 	return req.Id, nil
 }
@@ -111,12 +111,12 @@ func (c *confluence) UpdatePageById(id string, content string, reCreate bool) er
 		return err
 	}
 
-	req := pageRequestOrResponse{
+	req := PageInfo{
 		Type:    "page",
 		Title:   versionInfo.Title,
 		Id:      id,
-		Version: &pageVersion{Number: versionInfo.Version.Number + 1},
-		Body:    &pageBody{pageStorage{Value: content, Representation: "storage"}},
+		Version: &PageVersion{Number: versionInfo.Version.Number + 1},
+		Body:    &PageBody{PageStorage{Value: content, Representation: "storage"}},
 	}
 	oldContent, err := c.GetContentById(id)
 	if err != nil {
@@ -160,7 +160,7 @@ func (c *confluence) UpdatePageByIdWithCheck(id string, content string, reCreate
 	return c.UpdatePageById(id, content, reCreate)
 }
 
-func (c *confluence) updatePage(id string, req pageRequestOrResponse) error {
+func (c *confluence) updatePage(id string, req PageInfo) error {
 	return requests.
 		URL(fmt.Sprintf("%s/%s", c.baseUrl, id)).
 		Method(http.MethodPut).
@@ -176,12 +176,12 @@ func (c *confluence) UpdatePageParentById(id, parentId string) error {
 	if err != nil {
 		return err
 	}
-	req := pageRequestOrResponse{
+	req := PageInfo{
 		Id:      id,
 		Type:    "page",
 		Title:   versionInfo.Title,
-		Version: &pageVersion{Number: versionInfo.Version.Number + 1},
-		Parents: []pageRequestOrResponse{{Type: "page", Id: parentId}},
+		Version: &PageVersion{Number: versionInfo.Version.Number + 1},
+		Parents: []PageInfo{{Type: "page", Id: parentId}},
 	}
 	err = c.updatePage(id, req)
 	if err != nil {

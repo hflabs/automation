@@ -6,30 +6,20 @@ type confluence struct {
 	baseUrl  string
 }
 
-type pageRequestOrResponse struct {
-	Type    string                  `json:"type,omitempty"`
-	Title   string                  `json:"title,omitempty"`
-	Id      string                  `json:"id,omitempty"`
-	Space   *space                  `json:"space,omitempty"`
-	Version *pageVersion            `json:"version,omitempty"`
-	Body    *pageBody               `json:"body,omitempty"`
-	Parents []pageRequestOrResponse `json:"ancestors,omitempty"`
-}
-
-type space struct {
+type Space struct {
 	Id   int    `json:"id,omitempty"`
 	Key  string `json:"key,omitempty"`
 	Name string `json:"name,omitempty"`
 }
-type pageVersion struct {
+type PageVersion struct {
 	Number int `json:"number,omitempty"`
 }
 
-type pageBody struct {
-	Storage pageStorage `json:"storage"`
+type PageBody struct {
+	Storage PageStorage `json:"storage"`
 }
 
-type pageStorage struct {
+type PageStorage struct {
 	Value          string `json:"value,omitempty"`
 	Representation string `json:"representation,omitempty"`
 }
@@ -64,8 +54,13 @@ type searchPagesResponse struct {
 }
 
 type PageInfo struct {
-	Id     string `json:"id,omitempty"`
-	Type   string `json:"type,omitempty"`
-	Status string `json:"status,omitempty"`
-	Title  string `json:"title,omitempty"`
+	Status  string       `json:"status,omitempty"`
+	Type    string       `json:"type,omitempty"`
+	Title   string       `json:"title,omitempty"`
+	Id      string       `json:"id,omitempty"`
+	Space   *Space       `json:"Space,omitempty"`
+	Version *PageVersion `json:"version,omitempty"`
+	Body    *PageBody    `json:"body,omitempty"`
+	Parents []PageInfo   `json:"ancestors,omitempty"`
+	Labels  []Label      `json:"labels,omitempty"`
 }
