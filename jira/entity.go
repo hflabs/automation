@@ -48,7 +48,7 @@ type FieldsIssue struct {
 	WeightedJob   float64      `json:"customfield_12580,omitempty"`
 	ReleaseNotes  string       `json:"customfield_13081,omitempty"`
 	Status        IssueField   `json:"status,omitempty"`
-	IssueType     IssueIdField `json:"issuetype,omitempty"`
+	IssueType     IssueField   `json:"issuetype,omitempty"`
 	Priority      IssueIdField `json:"priority,omitempty"`
 	Resolution    IssueIdField `json:"resolution,omitempty"`
 	Assignee      JiraUser     `json:"assignee,omitempty"`
