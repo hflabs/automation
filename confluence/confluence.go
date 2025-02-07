@@ -266,6 +266,42 @@ func (c *confluence) GetChildrenByIdRecursive(pageId string) ([]PageInfo, error)
 	return children, nil
 }
 
+func (c *confluence) SetRestriction(pageId, username, action string) error {
+	// метод работает только в экспериментальном апи, поэтому делаем подмену
+	baseUrl := strings.Replace(c.baseUrl, "/api/", "/experimental/", 1)
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/restriction/byOperation/%s/user?userName=%s", baseUrl, pageId, action, username)).
+		Method(http.MethodPut).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return fmt.Errorf("SetRestriction — set restriction '%s' wit user '%s' on pageId %s err: %w", action, username, pageId, err)
+	}
+	return nil
+}
+
+func (c *confluence) SetRestrictionsForHFLabsOnly(pageId string) error {
+	err := c.SetRestriction(pageId, c.user, "update")
+	if err != nil {
+		return err
+	}
+	err = c.SetRestriction(pageId, c.user, "read")
+	if err != nil {
+		return err
+	}
+	err = c.SetRestriction(pageId, "hfl-conf-worker", "update")
+	if err != nil {
+		return err
+	}
+	err = c.SetRestriction(pageId, "hfl-conf-worker", "read")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func extractHashcodeFromContent(content string) string {
 	match := regexp.MustCompile(hashcode_pattern).FindStringSubmatch(content)
 	if len(match) > 1 {
