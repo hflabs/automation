@@ -62,5 +62,4 @@ type PageInfo struct {
 	Version *PageVersion `json:"version,omitempty"`
 	Body    *PageBody    `json:"body,omitempty"`
 	Parents []PageInfo   `json:"ancestors,omitempty"`
-	Labels  []Label      `json:"labels,omitempty"`
 }
