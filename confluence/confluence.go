@@ -226,6 +226,46 @@ func (c *confluence) GetLabels(pageId string) ([]string, error) {
 	return labels, nil
 }
 
+func (c *confluence) GetChildrenById(pageId string) ([]PageInfo, error) {
+	var resp searchPagesResponse
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/child/page?limit=250", c.baseUrl, pageId)).
+		Method(http.MethodGet).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("GetChildrenById — get confluence pageId %s children err: %w", pageId, err)
+	}
+	return resp.Results, nil
+}
+
+func (c *confluence) GetChildrenByIdRecursive(pageId string) ([]PageInfo, error) {
+	var children []PageInfo
+	childrenFirstLevel, err := c.GetChildrenById(pageId)
+	if err != nil {
+		return nil, fmt.Errorf("GetChildrenByIdRecursive — get confluence pageId %s children first level err: %w", pageId, err)
+	}
+	for _, child := range childrenFirstLevel {
+		childrenNextLevel, err := c.GetChildrenById(child.Id)
+		if err != nil {
+			return nil, fmt.Errorf("GetChildrenByIdRecursive — get confluence pageId %s children next level err: %w", pageId, err)
+		}
+		children = append(children, child)
+		if len(childrenNextLevel) == 0 {
+			continue
+		}
+		recursiveChildren, err := c.GetChildrenByIdRecursive(child.Id)
+		if err != nil {
+			return nil, fmt.Errorf("GetChildrenByIdRecursive — get confluence pageId %s children recursive level err: %w", pageId, err)
+		}
+		children = append(children, recursiveChildren...)
+	}
+	return children, nil
+}
+
 func extractHashcodeFromContent(content string) string {
 	match := regexp.MustCompile(hashcode_pattern).FindStringSubmatch(content)
 	if len(match) > 1 {

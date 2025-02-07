@@ -6,6 +6,9 @@ type ApiConfluence interface {
 	GetPagesByName(name, spaceKey string) ([]PageInfo, error)
 	GetPagesByIncludedName(name, spaceKey string) ([]PageInfo, error)
 
+	GetChildrenById(pageId string) ([]PageInfo, error)
+	GetChildrenByIdRecursive(pageId string) ([]PageInfo, error)
+
 	CreatePage(name, spaceKey, content string, parentPageId string) (string, error)
 
 	AddLabelToPage(pageId, label string) error
