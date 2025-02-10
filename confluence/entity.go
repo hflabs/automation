@@ -58,7 +58,7 @@ type PageInfo struct {
 	Type    string       `json:"type,omitempty"`
 	Title   string       `json:"title,omitempty"`
 	Id      string       `json:"id,omitempty"`
-	Space   *Space       `json:"Space,omitempty"`
+	Space   *Space       `json:"space,omitempty"`
 	Version *PageVersion `json:"version,omitempty"`
 	Body    *PageBody    `json:"body,omitempty"`
 	Parents []PageInfo   `json:"ancestors,omitempty"`
