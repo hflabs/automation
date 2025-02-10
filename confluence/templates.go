@@ -133,7 +133,7 @@ const (
 
 	Yes  = `<ac:emoticon ac:name="tick"></ac:emoticon>`
 	Link = `<ac:link>
-<ri:page ri:content-title="%s" ri:Space-key="%s"></ri:page>
+<ri:page ri:content-title="%s" ri:space-key="%s"></ri:page>
 <ac:plain-text-link-body><![CDATA[%s]]></ac:plain-text-link-body>
 </ac:link>`
 
@@ -146,7 +146,7 @@ const (
 <ac:structured-macro ac:name="include">
 <ac:parameter ac:name="">
 <ac:link>
-<ri:page ri:Space-key="%s" ri:content-title="%s" />
+<ri:page ri:space-key="%s" ri:content-title="%s" />
 </ac:link>
 </ac:parameter>
 </ac:structured-macro>

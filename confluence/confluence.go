@@ -26,13 +26,13 @@ func (c *confluence) GetPagesByName(name, spaceKey string) ([]PageInfo, error) {
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return resp.Results, fmt.Errorf("GetPagesByName — get confluence page by name %s in Space %s err: %w", name, spaceKey, err)
+		return resp.Results, fmt.Errorf("GetPagesByName — get confluence page by name %s in space %s err: %w", name, spaceKey, err)
 	}
 	return resp.Results, nil
 }
 
 func (c *confluence) GetPagesByIncludedName(name, spaceKey string) ([]PageInfo, error) {
-	cqlQuery := fmt.Sprintf("Space=\"%s\" AND type=\"page\" AND title~\"%s\"", spaceKey, name)
+	cqlQuery := fmt.Sprintf("space=\"%s\" AND type=\"page\" AND title~\"%s\"", spaceKey, name)
 	var resp searchPagesResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/search?cql=%s", c.baseUrl, url.QueryEscape(cqlQuery))).
@@ -42,7 +42,7 @@ func (c *confluence) GetPagesByIncludedName(name, spaceKey string) ([]PageInfo, 
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return resp.Results, fmt.Errorf("GetPagesByIncludedName — get confluence page by include name %s in Space %s err: %w", name, spaceKey, err)
+		return resp.Results, fmt.Errorf("GetPagesByIncludedName — get confluence page by include name %s in space %s err: %w", name, spaceKey, err)
 	}
 	return resp.Results, nil
 }
@@ -95,7 +95,7 @@ func (c *confluence) CreatePage(name, spaceKey, content string, parentPageId str
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return "", fmt.Errorf("CreatePage — create confluence page `%s` in Space `%s` with content `%s` err: %w", name, spaceKey, content, err)
+		return "", fmt.Errorf("CreatePage — create confluence page `%s` in space `%s` with content `%s` err: %w", name, spaceKey, content, err)
 	}
 	return req.Id, nil
 }
