@@ -261,7 +261,7 @@ func (c *confluence) GetChildrenByIdRecursive(pageId string) ([]PageInfo, error)
 	return children, nil
 }
 
-func (c *confluence) SetRestriction(pageId, username, action string) error {
+func (c *confluence) SetRestrictionUser(pageId, username, action string) error {
 	// метод работает только в экспериментальном апи, поэтому делаем подмену
 	baseUrl := strings.Replace(c.baseUrl, "/api/", "/experimental/", 1)
 	err := requests.
@@ -272,25 +272,41 @@ func (c *confluence) SetRestriction(pageId, username, action string) error {
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return fmt.Errorf("SetRestriction — set restriction '%s' wit user '%s' on pageId %s err: %w", action, username, pageId, err)
+		return fmt.Errorf("SetRestrictionUser — set restriction '%s' with user '%s' on pageId %s err: %w", action, username, pageId, err)
+	}
+	return nil
+}
+
+func (c *confluence) SetRestrictionGroup(pageId, groupName, action string) error {
+	// метод работает только в экспериментальном апи, поэтому делаем подмену
+	baseUrl := strings.Replace(c.baseUrl, "/api/", "/experimental/", 1)
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/restriction/byOperation/%s/group/%s", baseUrl, pageId, action, groupName)).
+		Method(http.MethodPut).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return fmt.Errorf("SetRestrictionGroup — set restriction '%s' with group '%s' on pageId %s err: %w", action, groupName, pageId, err)
 	}
 	return nil
 }
 
 func (c *confluence) SetRestrictionsForHFLabsOnly(pageId string) error {
-	err := c.SetRestriction(pageId, c.user, "update")
+	err := c.SetRestrictionUser(pageId, c.user, "update")
 	if err != nil {
 		return err
 	}
-	err = c.SetRestriction(pageId, c.user, "read")
+	err = c.SetRestrictionUser(pageId, c.user, "read")
 	if err != nil {
 		return err
 	}
-	err = c.SetRestriction(pageId, "hfl-conf-worker", "update")
+	err = c.SetRestrictionGroup(pageId, "hfl-conf-worker", "update")
 	if err != nil {
 		return err
 	}
-	err = c.SetRestriction(pageId, "hfl-conf-worker", "read")
+	err = c.SetRestrictionGroup(pageId, "hfl-conf-worker", "read")
 	if err != nil {
 		return err
 	}

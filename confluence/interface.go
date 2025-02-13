@@ -18,6 +18,7 @@ type ApiConfluence interface {
 	UpdatePageByIdWithCheck(id string, content string, reCreate bool) error
 	UpdatePageParentById(id, parentId string) error
 
-	SetRestriction(pageId, username, action string) error
+	SetRestrictionUser(pageId, username, action string) error
+	SetRestrictionGroup(pageId, groupName, action string) error
 	SetRestrictionsForHFLabsOnly(pageId string) error
 }
