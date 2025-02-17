@@ -42,22 +42,22 @@ type ChangelogItem struct {
 }
 
 type FieldsIssue struct {
-	Summary       string       `json:"summary,omitempty"`
-	Description   string       `json:"description,omitempty"`
-	BusinessValue float64      `json:"customfield_10084,omitempty"`
-	StoryPoints   float64      `json:"customfield_10083,omitempty"`
-	WeightedJob   float64      `json:"customfield_12580,omitempty"`
-	ReleaseNotes  string       `json:"customfield_13082,omitempty"`
-	Instruction   string       `json:"customfield_13081,omitempty"`
-	Status        IssueField   `json:"status,omitempty"`
-	IssueType     IssueField   `json:"issuetype,omitempty"`
-	Priority      IssueIdField `json:"priority,omitempty"`
-	Resolution    IssueIdField `json:"resolution,omitempty"`
-	Assignee      JiraUser     `json:"assignee,omitempty"`
-	Creator       JiraUser     `json:"creator,omitempty"`
-	Reporter      JiraUser     `json:"reporter,omitempty"`
-	Project       IssueField   `json:"project,omitempty"`
-	Components    []IssueField `json:"components,omitempty"`
+	Summary            string       `json:"summary,omitempty"`
+	Description        string       `json:"description,omitempty"`
+	BusinessValue      float64      `json:"customfield_10084,omitempty"`
+	StoryPoints        float64      `json:"customfield_10083,omitempty"`
+	WeightedJob        float64      `json:"customfield_12580,omitempty"`
+	ReleaseNotes       string       `json:"customfield_13082,omitempty"`
+	ReleaseInstruction string       `json:"customfield_13081,omitempty"`
+	Status             IssueField   `json:"status,omitempty"`
+	IssueType          IssueField   `json:"issuetype,omitempty"`
+	Priority           IssueIdField `json:"priority,omitempty"`
+	Resolution         IssueIdField `json:"resolution,omitempty"`
+	Assignee           JiraUser     `json:"assignee,omitempty"`
+	Creator            JiraUser     `json:"creator,omitempty"`
+	Reporter           JiraUser     `json:"reporter,omitempty"`
+	Project            IssueField   `json:"project,omitempty"`
+	Components         []IssueField `json:"components,omitempty"`
 }
 
 type IssueIdField struct {

@@ -70,11 +70,12 @@ func GetJiraConstants() Fields {
 				Unknown: "100300",
 			},
 			Fields: IssueFields{
-				StoryPoints:   "customfield_10083",
-				BusinessValue: "customfield_10084",
-				WeightedJob:   "customfield_12580",
-				ReleaseNotes:  "customfield_13081",
-				Components:    "components",
+				StoryPoints:        "customfield_10083",
+				BusinessValue:      "customfield_10084",
+				WeightedJob:        "customfield_12580",
+				ReleaseNotes:       "customfield_13082",
+				ReleaseInstruction: "customfield_13081",
+				Components:         "components",
 			},
 			Transitions: Transitions{
 				INNA: ProjectTransition{
@@ -228,11 +229,12 @@ type Transitions struct {
 }
 
 type IssueFields struct {
-	StoryPoints   string // customfield_10083
-	BusinessValue string // customfield_10084
-	WeightedJob   string // customfield_12580
-	ReleaseNotes  string // customfield_13081
-	Components    string // components
+	StoryPoints        string // customfield_10083
+	BusinessValue      string // customfield_10084
+	WeightedJob        string // customfield_12580
+	ReleaseNotes       string // customfield_13082
+	ReleaseInstruction string // customfield_13081
+	Components         string // components
 }
 
 type ProjectTransition struct {
