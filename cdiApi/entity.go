@@ -146,11 +146,12 @@ const (
 
 	RawSourceField = "rawSource"
 
-	FullNameField   = "fullNameRawSource"
-	SurnameField    = "surname"
-	NameField       = "name"
-	PatronymicField = "patronymic"
-	GenderField     = "gender"
+	FullNameField     = "fullNameRawSource"
+	BirthdateRawField = "birthdateRawSource"
+	SurnameField      = "surname"
+	NameField         = "name"
+	PatronymicField   = "patronymic"
+	GenderField       = "gender"
 
 	EmailTypeField  = "type"
 	EmailValueField = "email"
@@ -162,8 +163,11 @@ const (
 	PhoneNumberField      = "number"
 	PhoneTypeMobile       = "MOBILE"
 
-	AttributeTypePhone = "PHONE"
-	AttributeTypeEmail = "EMAIL"
+	AddressTypeField = "type"
+
+	AttributeTypePhone   = "PHONE"
+	AttributeTypeEmail   = "EMAIL"
+	AttributeTypeAddress = "ADDRESS"
 
 	LastChangeField = "lastChangeTimestamp"
 
