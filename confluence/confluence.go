@@ -56,7 +56,7 @@ func (c *confluence) GetContentById(id string) (string, error) {
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 	if err != nil {
-		return resp.Body.Storage.Value, fmt.Errorf("GetContentById — get confluence pageId %s err: %w", id, err)
+		return "", fmt.Errorf("GetContentById — get confluence pageId %s err: %w", id, err)
 	}
 	return resp.Body.Storage.Value, err
 }
