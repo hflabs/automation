@@ -152,6 +152,7 @@ const (
 	NameField         = "name"
 	PatronymicField   = "patronymic"
 	GenderField       = "gender"
+	IndustryField     = "industry"
 
 	EmailTypeField  = "type"
 	EmailValueField = "email"
