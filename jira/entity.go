@@ -13,7 +13,7 @@ type WebhookIssue struct {
 	UserEvent      JiraUser     `json:"user,omitempty"`
 	Issue          IssueJira    `json:"issue,omitempty"`
 	Comment        IssueComment `json:"comment,omitempty"`
-	Changelog      Changelog    `json:"changelog,omitempty"`
+	Changelog      ChangeLog    `json:"changelog,omitempty"`
 	Version        Version      `json:"version,omitempty"`
 }
 
