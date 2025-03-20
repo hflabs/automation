@@ -76,6 +76,8 @@ func GetJiraConstants() Fields {
 				ReleaseNotes:       "customfield_13082",
 				ReleaseInstruction: "customfield_13081",
 				Components:         "components",
+				DueDate:            "duedate",
+				Participants:       "customfield_10380",
 			},
 			Transitions: Transitions{
 				INNA: ProjectTransition{
@@ -107,6 +109,8 @@ func GetJiraConstants() Fields {
 					Assignee:      "assignee",
 					ReleaseNotes:  "Released Notes",
 					Components:    "components",
+					DueDate:       "Срок исполнения",
+					Participants:  "Участники",
 				},
 			},
 		},
@@ -222,6 +226,8 @@ type Field struct {
 	Assignee      string // Исполнитель
 	ReleaseNotes  string // Ссылка на RN
 	Components    string // Компоненты
+	DueDate       string // Срок исполнения
+	Participants  string // Участники
 }
 
 type Transitions struct {
@@ -235,6 +241,8 @@ type IssueFields struct {
 	ReleaseNotes       string // customfield_13082
 	ReleaseInstruction string // customfield_13081
 	Components         string // components
+	DueDate            string // duedate
+	Participants       string // customfield_10380
 }
 
 type ProjectTransition struct {
