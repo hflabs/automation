@@ -13,11 +13,22 @@ type WebhookIssue struct {
 	UserEvent      JiraUser     `json:"user,omitempty"`
 	Issue          IssueJira    `json:"issue,omitempty"`
 	Comment        IssueComment `json:"comment,omitempty"`
-	Changelog      struct {
-		Id    string          `json:"id,omitempty"`
-		Items []ChangelogItem `json:"items,omitempty"`
-	} `json:"changelog,omitempty"`
-	Version Version `json:"version,omitempty"`
+	Changelog      Changelog    `json:"changelog,omitempty"`
+	Version        Version      `json:"version,omitempty"`
+}
+
+type ChangeLog struct {
+	Id    string          `json:"id,omitempty"`
+	Items []ChangelogItem `json:"items,omitempty"`
+}
+
+func (c ChangeLog) FindItemByField(field string) ChangelogItem {
+	for _, item := range c.Items {
+		if field == item.Field {
+			return item
+		}
+	}
+	return ChangelogItem{}
 }
 
 type WebhookComment struct {
