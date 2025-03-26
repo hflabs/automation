@@ -115,6 +115,7 @@ func GetJiraConstants() Fields {
 			},
 		},
 		EventType: EventType{
+			Created:  "issue_created",
 			Updated:  "issue_updated",
 			Generic:  "issue_generic",
 			Assigned: "issue_assigned",
@@ -187,6 +188,7 @@ type Status struct {
 }
 
 type EventType struct {
+	Created  string // Создано
 	Updated  string // Обновлено
 	Generic  string // Создано
 	Assigned string // Назначено
