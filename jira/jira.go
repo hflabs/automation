@@ -97,13 +97,17 @@ func (j *jira) CommentIssue(issueKey, comment string) error {
 		Fetch(context.Background())
 }
 
-func (j *jira) QueryTasks(query string) ([]IssueJira, error) {
+func (j *jira) QueryTasks(query string, pageSize int) ([]IssueJira, error) {
 	var tasks SearchResponse
 	if query == "" {
 		return nil, fmt.Errorf("query is empty")
 	}
+	if pageSize != 0 {
+		query = fmt.Sprintf("%s&maxResults=%d", query, pageSize)
+	}
+	query = url.QueryEscape(query)
 	err := requests.
-		URL(fmt.Sprintf("%s/search?jql=%s", j.BaseUrl, url.QueryEscape(query))).
+		URL(fmt.Sprintf("%s/search?jql=%s", j.BaseUrl, query)).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&tasks).
 		AddValidator(validateStatus).

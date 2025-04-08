@@ -1,7 +1,7 @@
 package jira
 
 type ApiJira interface {
-	QueryTasks(query string) ([]IssueJira, error)
+	QueryTasks(query string, pageSize int) ([]IssueJira, error)
 
 	GetIssueComments(issueKey string) ([]IssueComment, error)
 	GetIssueWatchers(issueKey string) ([]JiraUser, error)
