@@ -84,9 +84,10 @@ type FieldsIssue struct {
 }
 
 type IssueField struct {
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
-	Key  string `json:"key,omitempty"`
+	ID    string `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Key   string `json:"key,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 
 type JiraUser struct {
