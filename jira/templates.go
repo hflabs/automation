@@ -59,6 +59,7 @@ func GetJiraConstants() Fields {
 				Task:        "3",
 				Improvement: "4",
 				Epic:        "5",
+				Learning:    "10600",
 			},
 			Priority: Priority{
 				Blocker: "2",
@@ -224,6 +225,7 @@ type Type struct {
 	Task        string // Задача
 	Improvement string // Улучшение
 	Epic        string // Эпик
+	Learning    string // Обучение
 }
 
 type Priority struct {
