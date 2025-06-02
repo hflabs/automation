@@ -91,9 +91,11 @@ type IssueField struct {
 }
 
 type JiraUser struct {
-	Name  string `json:"name,omitempty"`
-	Key   string `json:"key,omitempty"`
-	Email string `json:"emailAddress,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Key         string `json:"key,omitempty"`
+	Email       string `json:"emailAddress,omitempty"`
+	DisplayName string `json:"displayName"`
+	Active      bool   `json:"active,omitempty"`
 }
 
 type ProjectVersion struct {
