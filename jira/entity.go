@@ -63,22 +63,24 @@ type FieldsIssue struct {
 	DueDate            string       `json:"duedate,omitempty"`
 	Status             IssueField   `json:"status,omitempty"`
 	IssueType          IssueField   `json:"issuetype,omitempty"`
-	Priority           IssueIdField `json:"priority,omitempty"`
-	Resolution         IssueIdField `json:"resolution,omitempty"`
+	Priority           IssueField   `json:"priority,omitempty"`
+	Resolution         IssueField   `json:"resolution,omitempty"`
 	Assignee           JiraUser     `json:"assignee,omitempty"`
 	Creator            JiraUser     `json:"creator,omitempty"`
 	Reporter           JiraUser     `json:"reporter,omitempty"`
 	Participants       []JiraUser   `json:"customfield_10380,omitempty"`
 	Project            IssueField   `json:"project,omitempty"`
 	Components         []IssueField `json:"components,omitempty"`
-}
-
-type IssueIdField struct {
-	ID string `json:"id,omitempty"`
-}
-
-type IssueNameField struct {
-	Name string `json:"name,omitempty"`
+	LearnTime          string       `json:"customfield_14481,omitempty"`
+	LearnForWho        string       `json:"customfield_13881,omitempty"`
+	LearnWhatLike      string       `json:"customfield_14483,omitempty"`
+	LearnWhatUseful    string       `json:"customfield_13784,omitempty"`
+	LearnWhatBad       string       `json:"customfield_14484,omitempty"`
+	LearnWhatLearned   string       `json:"customfield_13880,omitempty"`
+	LearnWillRecommend string       `json:"customfield_13882,omitempty"`
+	LearnPeoples       []JiraUser   `json:"customfield_14480,omitempty"`
+	LearnField         IssueField   `json:"customfield_14380,omitempty"`
+	LearnLink          string       `json:"customfield_13782,omitempty"`
 }
 
 type IssueField struct {
@@ -144,5 +146,5 @@ type UpdateIssueRequest struct {
 }
 
 type TransitionIssueRequest struct {
-	Transition IssueIdField `json:"transition,omitempty"`
+	Transition IssueField `json:"transition,omitempty"`
 }

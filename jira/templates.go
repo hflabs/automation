@@ -78,6 +78,17 @@ func GetJiraConstants() Fields {
 				Components:         "components",
 				DueDate:            "duedate",
 				Participants:       "customfield_10380",
+
+				LearnTime:          "customfield_14481",
+				LearnForWho:        "customfield_13881",
+				LearnWhatLike:      "customfield_14483",
+				LearnWhatUseful:    "customfield_13784",
+				LearnWhatBad:       "customfield_14484",
+				LearnWhatLearned:   "customfield_13880",
+				LearnWillRecommend: "customfield_13882",
+				LearnPeoples:       "customfield_14480",
+				LearnField:         "customfield_14380",
+				LearnLink:          "customfield_13782",
 			},
 			Transitions: Transitions{
 				INNA: ProjectTransition{
@@ -111,6 +122,17 @@ func GetJiraConstants() Fields {
 					Components:    "components",
 					DueDate:       "Срок исполнения",
 					Participants:  "Участники",
+
+					LearnTime:          "Месяц и год обучения",
+					LearnForWho:        "Для кого еще подходит это обучение?",
+					LearnWhatLike:      "Что тебе понравилось в обучении?",
+					LearnWhatUseful:    "Что было полезного/ценного в обучении для тебя?",
+					LearnWhatBad:       "Было ли что-то, что не понравилось на обучении? Расскажи",
+					LearnWhatLearned:   "Чему научился(ась)? Что планируешь применять в работе?",
+					LearnWillRecommend: "Порекомендуешь ли обучение коллегам?",
+					LearnPeoples:       "Участники обучения",
+					LearnField:         "Сфера обучения",
+					LearnLink:          "Ссылка на курс",
 				},
 			},
 		},
@@ -119,6 +141,7 @@ func GetJiraConstants() Fields {
 			Updated:  "issue_updated",
 			Generic:  "issue_generic",
 			Assigned: "issue_assigned",
+			Closed:   "issue_closed",
 		},
 	}
 }
@@ -192,6 +215,7 @@ type EventType struct {
 	Updated  string // Обновлено
 	Generic  string // Создано
 	Assigned string // Назначено
+	Closed   string // Закрыто
 }
 
 type Type struct {
@@ -230,6 +254,17 @@ type Field struct {
 	Components    string // Компоненты
 	DueDate       string // Срок исполнения
 	Participants  string // Участники
+
+	LearnTime          string // Месяц и год обучения
+	LearnForWho        string // Для кого еще подходит это обучение?
+	LearnWhatLike      string // Что тебе понравилось в обучении?
+	LearnWhatUseful    string // Что было полезного/ценного в обучении для тебя?
+	LearnWhatBad       string // Было ли что-то, что не понравилось на обучении? Расскажи
+	LearnWhatLearned   string // Чему научился(ась)? Что планируешь применять в работе?
+	LearnWillRecommend string // Порекомендуешь ли обучение коллегам?
+	LearnPeoples       string // Участники обучения
+	LearnField         string // Сфера обучения
+	LearnLink          string // Ссылка на курс
 }
 
 type Transitions struct {
@@ -245,6 +280,17 @@ type IssueFields struct {
 	Components         string // components
 	DueDate            string // duedate
 	Participants       string // customfield_10380
+
+	LearnTime          string // Месяц и год обучения
+	LearnForWho        string // Для кого еще подходит это обучение?
+	LearnWhatLike      string // Что тебе понравилось в обучении?
+	LearnWhatUseful    string // Что было полезного/ценного в обучении для тебя?
+	LearnWhatBad       string // Было ли что-то, что не понравилось на обучении? Расскажи
+	LearnWhatLearned   string // Чему научился(ась)? Что планируешь применять в работе?
+	LearnWillRecommend string // Порекомендуешь ли обучение коллегам?
+	LearnPeoples       string // Участники обучения
+	LearnField         string // Сфера обучения
+	LearnLink          string // Ссылка на курс
 }
 
 type ProjectTransition struct {
