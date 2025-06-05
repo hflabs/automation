@@ -87,7 +87,7 @@ func GetJiraConstants() Fields {
 				LearnWhatBad:       "customfield_14484",
 				LearnWhatLearned:   "customfield_13880",
 				LearnWillRecommend: "customfield_13882",
-				LearnPeoples:       "customfield_14480",
+				LearnPeople:        "customfield_14480",
 				LearnField:         "customfield_14380",
 				LearnLink:          "customfield_13782",
 			},
@@ -131,7 +131,7 @@ func GetJiraConstants() Fields {
 					LearnWhatBad:       "Было ли что-то, что не понравилось на обучении? Расскажи",
 					LearnWhatLearned:   "Чему научился(ась)? Что планируешь применять в работе?",
 					LearnWillRecommend: "Порекомендуешь ли обучение коллегам?",
-					LearnPeoples:       "Участники обучения",
+					LearnPeople:        "Участники обучения",
 					LearnField:         "Сфера обучения",
 					LearnLink:          "Ссылка на курс",
 				},
@@ -264,7 +264,7 @@ type Field struct {
 	LearnWhatBad       string // Было ли что-то, что не понравилось на обучении? Расскажи
 	LearnWhatLearned   string // Чему научился(ась)? Что планируешь применять в работе?
 	LearnWillRecommend string // Порекомендуешь ли обучение коллегам?
-	LearnPeoples       string // Участники обучения
+	LearnPeople        string // Участники обучения
 	LearnField         string // Сфера обучения
 	LearnLink          string // Ссылка на курс
 }
@@ -290,7 +290,7 @@ type IssueFields struct {
 	LearnWhatBad       string // Было ли что-то, что не понравилось на обучении? Расскажи
 	LearnWhatLearned   string // Чему научился(ась)? Что планируешь применять в работе?
 	LearnWillRecommend string // Порекомендуешь ли обучение коллегам?
-	LearnPeoples       string // Участники обучения
+	LearnPeople        string // Участники обучения
 	LearnField         string // Сфера обучения
 	LearnLink          string // Ссылка на курс
 }
