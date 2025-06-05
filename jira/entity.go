@@ -78,7 +78,7 @@ type FieldsIssue struct {
 	LearnWhatBad       string       `json:"customfield_14484,omitempty"`
 	LearnWhatLearned   string       `json:"customfield_13880,omitempty"`
 	LearnWillRecommend string       `json:"customfield_13882,omitempty"`
-	LearnPeoples       []JiraUser   `json:"customfield_14480,omitempty"`
+	LearnPeople        []JiraUser   `json:"customfield_14480,omitempty"`
 	LearnField         IssueField   `json:"customfield_14380,omitempty"`
 	LearnLink          string       `json:"customfield_13782,omitempty"`
 }
