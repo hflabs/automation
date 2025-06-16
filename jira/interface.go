@@ -12,6 +12,9 @@ type ApiJira interface {
 	UpdateIssue(issueKey string, req UpdateIssueRequest) error
 	CommentIssue(issueKey, comment string) error
 	TransitionIssue(issueKey, transition string) error
+	UpdateIssueAssignee(issueKey string, assigneeName string) error
 
 	GetProjectVersions(projectKey string) ([]ProjectVersion, error)
+
+	GetUserByKey(userKey string) (JiraUser, error)
 }

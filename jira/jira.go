@@ -68,6 +68,20 @@ func (j *jira) GetIssueById(issueId string) (IssueJira, error) {
 	return resp, nil
 }
 
+func (j *jira) GetUserByKey(userKey string) (JiraUser, error) {
+	var resp JiraUser
+	err := requests.
+		URL(fmt.Sprintf("%s/user?key=%s", j.BaseUrl, url.QueryEscape(userKey))).
+		BasicAuth(j.Username, j.Password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return JiraUser{}, err
+	}
+	return resp, nil
+}
+
 func (j *jira) GetIssueChangelog(issueId string) ([]ChangeLog, error) {
 	var resp IssueJira
 	err := requests.
@@ -88,6 +102,16 @@ func (j *jira) UpdateIssue(issueKey string, req UpdateIssueRequest) error {
 		Put().
 		BasicAuth(j.Username, j.Password).
 		BodyJSON(req).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+}
+
+func (j *jira) UpdateIssueAssignee(issueKey, assigneeName string) error {
+	return requests.
+		URL(fmt.Sprintf("%s/issue/%s/assignee", j.BaseUrl, issueKey)).
+		Put().
+		BasicAuth(j.Username, j.Password).
+		BodyJSON(JiraUser{Name: assigneeName}).
 		AddValidator(validateStatus).
 		Fetch(context.Background())
 }

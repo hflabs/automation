@@ -102,7 +102,7 @@ type JiraUser struct {
 	Name        string `json:"name,omitempty"`
 	Key         string `json:"key,omitempty"`
 	Email       string `json:"emailAddress,omitempty"`
-	DisplayName string `json:"displayName"`
+	DisplayName string `json:"displayName,omitempty"`
 	Active      bool   `json:"active,omitempty"`
 }
 
