@@ -20,7 +20,7 @@ type WebhookIssue struct {
 type ChangeLog struct {
 	Id      string          `json:"id,omitempty"`
 	Author  JiraUser        `json:"author,omitempty"`
-	Created Timestamp       `json:"created,omitempty"`
+	Created JiraTime        `json:"created,omitempty"`
 	Items   []ChangelogItem `json:"items,omitempty"`
 }
 
