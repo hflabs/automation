@@ -116,6 +116,7 @@ func GetJiraConstants() Fields {
 		Changelog: Changelog{
 			SingleItem: SingleItem{
 				Field: Field{
+					Status:        "status",
 					StoryPoints:   "Story Points",
 					BusinessValue: "Business Value",
 					WeightedJob:   "Weighted Job",
@@ -250,6 +251,7 @@ type SingleItem struct {
 }
 
 type Field struct {
+	Status        string // Статус
 	StoryPoints   string // Story Points
 	BusinessValue string // Business Value
 	WeightedJob   string // Weighted Job
