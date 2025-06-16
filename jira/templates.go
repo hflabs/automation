@@ -9,6 +9,7 @@ func GetJiraConstants() Fields {
 				InProgress:                  "3",
 				Reopened:                    "4",
 				Resolved:                    "5",
+				ToRelease:                   "11920",
 				Closed:                      "6",
 				TestingInProgress:           "1006",
 				CRInProgress:                "10008",
@@ -166,6 +167,7 @@ type Status struct {
 	InProgress                  string // В работе
 	Reopened                    string // Переоткрыт
 	Resolved                    string // Решенные
+	ToRelease                   string // To Release
 	Closed                      string // Закрыт
 	TestingInProgress           string // Testing In Progress
 	CRInProgress                string // CR In Progress
