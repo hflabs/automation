@@ -68,6 +68,20 @@ func (j *jira) GetIssueById(issueId string) (IssueJira, error) {
 	return resp, nil
 }
 
+func (j *jira) GetIssueChangelog(issueId string) ([]ChangeLog, error) {
+	var resp IssueJira
+	err := requests.
+		URL(fmt.Sprintf("%s/issue/%s?expand=changelog", j.BaseUrl, issueId)).
+		BasicAuth(j.Username, j.Password).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return resp.Changelog.Histories, nil
+}
+
 func (j *jira) UpdateIssue(issueKey string, req UpdateIssueRequest) error {
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).

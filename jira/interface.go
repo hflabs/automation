@@ -7,6 +7,7 @@ type ApiJira interface {
 	GetIssueWatchers(issueKey string) ([]JiraUser, error)
 
 	GetIssueById(issueId string) (IssueJira, error)
+	GetIssueChangelog(issueId string) ([]ChangeLog, error)
 
 	UpdateIssue(issueKey string, req UpdateIssueRequest) error
 	CommentIssue(issueKey, comment string) error

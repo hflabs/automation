@@ -18,8 +18,10 @@ type WebhookIssue struct {
 }
 
 type ChangeLog struct {
-	Id    string          `json:"id,omitempty"`
-	Items []ChangelogItem `json:"items,omitempty"`
+	Id      string          `json:"id,omitempty"`
+	Author  JiraUser        `json:"author,omitempty"`
+	Created Timestamp       `json:"created,omitempty"`
+	Items   []ChangelogItem `json:"items,omitempty"`
 }
 
 func (c ChangeLog) FindItemByField(field string) ChangelogItem {
@@ -38,9 +40,15 @@ type WebhookComment struct {
 }
 
 type IssueJira struct {
-	Id     string      `json:"id,omitempty"`
-	Key    string      `json:"key,omitempty"`
-	Fields FieldsIssue `json:"fields,omitempty"`
+	Id        string       `json:"id,omitempty"`
+	Key       string       `json:"key,omitempty"`
+	Fields    FieldsIssue  `json:"fields,omitempty"`
+	Changelog IssueHistory `json:"changelog,omitempty"`
+}
+
+type IssueHistory struct {
+	Total     int         `json:"total,omitempty"`
+	Histories []ChangeLog `json:"histories,omitempty"`
 }
 
 type ChangelogItem struct {
