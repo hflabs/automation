@@ -63,13 +63,14 @@ func GetJiraConstants() Fields {
 				Learning:    "10600",
 			},
 			Priority: Priority{
-				Blocker: "2",
-				Minor:   "4",
+				Blocker:  "1",
+				Critical: "2",
+				Minor:    "4",
 			},
 			Resolution: Resolution{
-				Fixed:   "1",
-				WontFix: "2",
-				Unknown: "100300",
+				Fixed:      "1",
+				WontFix:    "2",
+				NeedBugFix: "10300",
 			},
 			Fields: IssueFields{
 				StoryPoints:        "customfield_10083",
@@ -232,14 +233,15 @@ type Type struct {
 }
 
 type Priority struct {
-	Blocker string // Блокирующий
-	Minor   string // Незначительный
+	Blocker  string // Блокирующий
+	Critical string // Критический
+	Minor    string // Незначительный
 }
 
 type Resolution struct {
-	Fixed   string // Исправленный
-	WontFix string // Не будет исправлено
-	Unknown string // Неизвестно (нужно найти и заполнить)
+	Fixed      string // Исправленный
+	WontFix    string // Не будет исправлено
+	NeedBugFix string // Нужен багфикс
 }
 
 type Changelog struct {
