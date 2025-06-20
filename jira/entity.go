@@ -89,6 +89,8 @@ type FieldsIssue struct {
 	LearnPeople        []JiraUser   `json:"customfield_14480,omitempty"`
 	LearnField         IssueField   `json:"customfield_14380,omitempty"`
 	LearnLink          string       `json:"customfield_13782,omitempty"`
+	Created            JiraTime     `json:"created,omitempty"`
+	Updated            JiraTime     `json:"updated,omitempty"`
 }
 
 type IssueField struct {

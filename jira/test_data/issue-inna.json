@@ -1,0 +1,423 @@
+{
+  "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+  "id": "418688",
+  "self": "https://jira/rest/api/2/issue/418688",
+  "key": "INNA-842",
+  "fields": {
+    "customfield_13180": [],
+    "issuetype": {
+      "self": "https://jira/rest/api/2/issuetype/3",
+      "id": "3",
+      "description": "Задание для выполнения.",
+      "iconUrl": "https://jira/secure/viewavatar?size=xsmall&avatarId=16318&avatarType=issuetype",
+      "name": "Задача",
+      "subtask": false,
+      "avatarId": 16318
+    },
+    "customfield_13580": "{panel:borderColor=blue}\r\nМне только спросить.\r\n\r\nДля логов по вопросам от заказчиков:\r\n* А можете сделать так-то и так-то?\r\n* А сколько стоит это сделать?\r\n* Мы хотим вот это, пообщайтесь с нами. \r\n{panel}\r\n",
+    "customfield_13381": null,
+    "timespent": 12600,
+    "customfield_11480": "0|i0hnov:",
+    "customfield_11681": null,
+    "project": {
+      "self": "https://jira/rest/api/2/project/18510",
+      "id": "18510",
+      "key": "INNA",
+      "name": "Inner Automation",
+      "projectTypeKey": "software",
+      "avatarUrls": {
+        "48x48": "https://jira/secure/projectavatar?pid=18510&avatarId=29500",
+        "24x24": "https://jira/secure/projectavatar?size=small&pid=18510&avatarId=29500",
+        "16x16": "https://jira/secure/projectavatar?size=xsmall&pid=18510&avatarId=29500",
+        "32x32": "https://jira/secure/projectavatar?size=medium&pid=18510&avatarId=29500"
+      },
+      "projectCategory": {
+        "self": "https://jira/rest/api/2/projectCategory/10013",
+        "id": "10013",
+        "description": "",
+        "name": "Внутренний проект"
+      }
+    },
+    "fixVersions": [],
+    "aggregatetimespent": 12600,
+    "resolution": {
+      "self": "https://jira/rest/api/2/resolution/10300",
+      "id": "10300",
+      "description": "В решеной задаче обнаружены баги, которые требуют исправления или задача не доделана до конца",
+      "name": "Нужен багфикс"
+    },
+    "resolutiondate": "2025-04-01T19:55:33.000+0300",
+    "workratio": -1,
+    "lastViewed": "2025-06-16T16:19:38.753+0300",
+    "watches": {
+      "self": "https://jira/rest/api/2/issue/INNA-842/watchers",
+      "watchCount": 1,
+      "isWatching": true
+    },
+    "customfield_12480": "{summaryBean=com.atlassian.jira.plugin.devstatus.rest.SummaryBean@37da81fc[summary={pullrequest=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@1a757626[overall=PullRequestOverallBean{stateCount=0, state='OPEN', details=PullRequestOverallDetails{openCount=0, mergedCount=0, declinedCount=0}},byInstanceType={}], build=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@2dee020d[overall=com.atlassian.jira.plugin.devstatus.summary.beans.BuildOverallBean@1c9b85d0[failedBuildCount=0,successfulBuildCount=0,unknownBuildCount=0,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], review=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@4659da6b[overall=com.atlassian.jira.plugin.devstatus.summary.beans.ReviewsOverallBean@4d70179c[stateCount=0,state=<null>,dueDate=<null>,overDue=false,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], deployment-environment=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@10d39a55[overall=com.atlassian.jira.plugin.devstatus.summary.beans.DeploymentOverallBean@5026389a[topEnvironments=[],showProjects=false,successfulCount=0,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], repository=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@58242a77[overall=com.atlassian.jira.plugin.devstatus.summary.beans.CommitOverallBean@15a51a18[count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], branch=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@19a82bcb[overall=com.atlassian.jira.plugin.devstatus.summary.beans.BranchOverallBean@78ab228c[count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}]},errors=[],configErrors=[]], devSummaryJson={\"cachedValue\":{\"errors\":[],\"configErrors\":[],\"summary\":{\"pullrequest\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"stateCount\":0,\"state\":\"OPEN\",\"details\":{\"openCount\":0,\"mergedCount\":0,\"declinedCount\":0,\"total\":0},\"open\":true},\"byInstanceType\":{}},\"build\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"failedBuildCount\":0,\"successfulBuildCount\":0,\"unknownBuildCount\":0},\"byInstanceType\":{}},\"review\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"stateCount\":0,\"state\":null,\"dueDate\":null,\"overDue\":false,\"completed\":false},\"byInstanceType\":{}},\"deployment-environment\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"topEnvironments\":[],\"showProjects\":false,\"successfulCount\":0},\"byInstanceType\":{}},\"repository\":{\"overall\":{\"count\":0,\"lastUpdated\":null},\"byInstanceType\":{}},\"branch\":{\"overall\":{\"count\":0,\"lastUpdated\":null},\"byInstanceType\":{}}}},\"isStale\":false}}",
+    "customfield_10380": [
+      {
+        "self": "https://jira/rest/api/2/user?username=ilyavas",
+        "name": "ilyavas",
+        "key": "JIRAUSER45200",
+        "emailAddress": "test@yandex.ru",
+        "avatarUrls": {
+          "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+          "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+          "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+          "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+        },
+        "displayName": "Илья Васильев",
+        "active": true,
+        "timeZone": "Europe/Moscow"
+      }
+    ],
+    "customfield_12680": [
+      {
+        "self": "https://jira/rest/api/2/customFieldOption/11854",
+        "value": "Всем в HFLabs",
+        "id": "11854",
+        "disabled": false
+      }
+    ],
+    "created": "2025-01-17T12:03:44.000+0300",
+    "customfield_10063": null,
+    "customfield_10064": null,
+    "priority": {
+      "self": "https://jira/rest/api/2/priority/4",
+      "iconUrl": "https://jira/images/icons/priorities/minor.svg",
+      "name": "Незначительный",
+      "id": "4"
+    },
+    "customfield_10980": null,
+    "labels": [],
+    "timeestimate": 0,
+    "aggregatetimeoriginalestimate": null,
+    "issuelinks": [],
+    "assignee": {
+      "self": "https://jira/rest/api/2/user?username=ilyavas",
+      "name": "ilyavas",
+      "key": "JIRAUSER45200",
+      "emailAddress": "test@yandex.ru",
+      "avatarUrls": {
+        "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+        "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+        "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+        "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+      },
+      "displayName": "Илья Васильев",
+      "active": true,
+      "timeZone": "Europe/Moscow"
+    },
+    "updated": "2025-04-01T19:55:33.000+0300",
+    "status": {
+      "self": "https://jira/rest/api/2/status/10425",
+      "description": "Задача включена в спринт",
+      "iconUrl": "https://jira/",
+      "name": "Выбрано",
+      "id": "10425",
+      "statusCategory": {
+        "self": "https://jira/rest/api/2/statuscategory/2",
+        "id": 2,
+        "key": "new",
+        "colorName": "default",
+        "name": "К выполнению"
+      }
+    },
+    "components": [
+      {
+        "self": "https://jira/rest/api/2/component/48150",
+        "id": "48150",
+        "name": "Jira (Джира)"
+      }
+    ],
+    "customfield_13082": null,
+    "customfield_13280": null,
+    "customfield_11380": null,
+    "customfield_13481": null,
+    "customfield_13480": null,
+    "customfield_11580": null,
+    "customfield_13483": null,
+    "customfield_13482": null,
+    "customfield_13680": null,
+    "timeoriginalestimate": null,
+    "customfield_11780": null,
+    "description": "(?)",
+    "timetracking": {
+      "remainingEstimate": "0ч",
+      "timeSpent": "3,5ч",
+      "remainingEstimateSeconds": 0,
+      "timeSpentSeconds": 12600
+    },
+    "attachment": [
+      {
+        "self": "https://jira/rest/api/2/attachment/384267",
+        "id": "384267",
+        "filename": "screenshot-1.png",
+        "author": {
+          "self": "https://jira/rest/api/2/user?username=ilyavas",
+          "name": "ilyavas",
+          "key": "JIRAUSER45200",
+          "emailAddress": "test@yandex.ru",
+          "avatarUrls": {
+            "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+            "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+            "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+            "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+          },
+          "displayName": "Илья Васильев",
+          "active": true,
+          "timeZone": "Europe/Moscow"
+        },
+        "created": "2025-03-14T14:33:04.000+0300",
+        "size": 65978,
+        "mimeType": "image/png",
+        "content": "https://jira/secure/attachment/384267/screenshot-1.png",
+        "thumbnail": "https://jira/secure/thumbnail/384267/_thumb_384267.png"
+      }
+    ],
+    "aggregatetimeestimate": 0,
+    "summary": "Мелкие улучшения дайджеста",
+    "customfield_14281": null,
+    "creator": {
+      "self": "https://jira/rest/api/2/user?username=ilyavas",
+      "name": "ilyavas",
+      "key": "JIRAUSER45200",
+      "emailAddress": "test@yandex.ru",
+      "avatarUrls": {
+        "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+        "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+        "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+        "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+      },
+      "displayName": "Илья Васильев",
+      "active": true,
+      "timeZone": "Europe/Moscow"
+    },
+    "customfield_10080": null,
+    "customfield_10081": null,
+    "customfield_10280": "9223372036854775807",
+    "customfield_12380": null,
+    "subtasks": [],
+    "customfield_10083": 8.0,
+    "customfield_10084": 5.0,
+    "customfield_10480": "9223372036854775807",
+    "customfield_12580": 5.0,
+    "customfield_10085": null,
+    "customfield_10481": null,
+    "customfield_12780": null,
+    "reporter": {
+      "self": "https://jira/rest/api/2/user?username=ilyavas",
+      "name": "ilyavas",
+      "key": "JIRAUSER45200",
+      "emailAddress": "test@yandex.ru",
+      "avatarUrls": {
+        "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+        "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+        "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+        "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+      },
+      "displayName": "Илья Васильев",
+      "active": true,
+      "timeZone": "Europe/Moscow"
+    },
+    "customfield_12981": null,
+    "customfield_10000": "Сделать лучше",
+    "customfield_10880": "INNA-224",
+    "customfield_12980": null,
+    "aggregateprogress": {
+      "progress": 12600,
+      "total": 12600,
+      "percent": 100
+    },
+    "customfield_12983": null,
+    "customfield_12982": null,
+    "customfield_12984": null,
+    "environment": null,
+    "duedate": null,
+    "progress": {
+      "progress": 12600,
+      "total": 12600,
+      "percent": 100
+    },
+    "comment": {
+      "comments": [
+        {
+          "self": "https://jira/rest/api/2/issue/418688/comment/588475",
+          "id": "588475",
+          "author": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "body": "Наблюдаю за результатом и ждём задачки для определения пола",
+          "updateAuthor": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "created": "2025-02-06T13:21:50.000+0300",
+          "updated": "2025-02-06T13:21:50.000+0300"
+        }
+      ],
+      "maxResults": 1,
+      "total": 1,
+      "startAt": 0
+    },
+    "votes": {
+      "self": "https://jira/rest/api/2/issue/INNA-842/votes",
+      "votes": 0,
+      "hasVoted": false
+    },
+    "worklog": {
+      "startAt": 0,
+      "maxResults": 20,
+      "total": 3,
+      "worklogs": [
+        {
+          "self": "https://jira/rest/api/2/issue/418688/worklog/929670",
+          "author": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "updateAuthor": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "comment": "",
+          "created": "2025-02-04T13:27:35.000+0300",
+          "updated": "2025-02-04T19:05:49.000+0300",
+          "started": "2025-02-04T11:27:00.000+0300",
+          "timeSpent": "2h 30m",
+          "timeSpentSeconds": 9000,
+          "id": "929670",
+          "issueId": "418688"
+        },
+        {
+          "self": "https://jira/rest/api/2/issue/418688/worklog/929966",
+          "author": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "updateAuthor": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "comment": "",
+          "created": "2025-02-05T13:57:38.000+0300",
+          "updated": "2025-02-05T13:57:38.000+0300",
+          "started": "2025-02-05T13:27:00.000+0300",
+          "timeSpent": "30m",
+          "timeSpentSeconds": 1800,
+          "id": "929966",
+          "issueId": "418688"
+        },
+        {
+          "self": "https://jira/rest/api/2/issue/418688/worklog/936825",
+          "author": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "updateAuthor": {
+            "self": "https://jira/rest/api/2/user?username=ilyavas",
+            "name": "ilyavas",
+            "key": "JIRAUSER45200",
+            "emailAddress": "test@yandex.ru",
+            "avatarUrls": {
+              "48x48": "https://jira/secure/useravatar?ownerId=JIRAUSER45200&avatarId=28800",
+              "24x24": "https://jira/secure/useravatar?size=small&ownerId=JIRAUSER45200&avatarId=28800",
+              "16x16": "https://jira/secure/useravatar?size=xsmall&ownerId=JIRAUSER45200&avatarId=28800",
+              "32x32": "https://jira/secure/useravatar?size=medium&ownerId=JIRAUSER45200&avatarId=28800"
+            },
+            "displayName": "Илья Васильев",
+            "active": true,
+            "timeZone": "Europe/Moscow"
+          },
+          "comment": "",
+          "created": "2025-03-05T20:08:32.000+0300",
+          "updated": "2025-03-05T20:08:32.000+0300",
+          "started": "2025-03-05T19:38:00.000+0300",
+          "timeSpent": "30m",
+          "timeSpentSeconds": 1800,
+          "id": "936825",
+          "issueId": "418688"
+        }
+      ]
+    }
+  }
+}
