@@ -146,13 +146,15 @@ const (
 
 	RawSourceField = "rawSource"
 
-	FullNameField     = "fullNameRawSource"
-	BirthdateRawField = "birthdateRawSource"
-	SurnameField      = "surname"
-	NameField         = "name"
-	PatronymicField   = "patronymic"
-	GenderField       = "gender"
-	IndustryField     = "industry"
+	FullNameField      = "fullNameRawSource"
+	BirthdateRawField  = "birthdateRawSource"
+	SurnameField       = "surname"
+	NameField          = "name"
+	PatronymicField    = "patronymic"
+	GenderField        = "gender"
+	IndustryField      = "industry"
+	TgField            = "tg"
+	SocialNetworkField = "sAccount"
 
 	EmailTypeField  = "type"
 	EmailValueField = "email"
