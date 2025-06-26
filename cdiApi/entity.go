@@ -80,6 +80,15 @@ type Party struct {
 	SourceParties []Source    `json:"source,omitempty"`
 }
 
+func (p *Party) GetFieldValue(fieldName string) (value string, ok bool) {
+	for _, f := range p.Fields {
+		if f.Name == fieldName {
+			return f.Value, true
+		}
+	}
+	return "", false
+}
+
 type Source struct {
 	SourceSystem string `json:"sourceSystem,omitempty"`
 	RawId        string `json:"rawId,omitempty"`
