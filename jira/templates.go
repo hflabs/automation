@@ -112,6 +112,9 @@ func GetJiraConstants() Fields {
 					FromResolvedToDelayed:    "111",
 					FromDelayedToInProgress:  "71",
 				},
+				CDI: ProjectTransition{
+					FromCodeReviewToResolved: "5",
+				},
 			},
 		},
 		Changelog: Changelog{
@@ -277,6 +280,7 @@ type Field struct {
 
 type Transitions struct {
 	INNA ProjectTransition
+	CDI  ProjectTransition
 }
 
 type IssueFields struct {
@@ -323,4 +327,6 @@ type ProjectTransition struct {
 	FromResolvedToRelease  string // Verify and Release — Успешное тестирование
 
 	FromDelayedToInProgress string // Start - Начало разработки
+
+	FromCodeReviewToResolved string // Resolved — Резолюция выбрана и ожидает подтверждения автора. Здесь проблемы либо открываются вновь, либо закрываются.
 }
