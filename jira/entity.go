@@ -91,6 +91,7 @@ type FieldsIssue struct {
 	LearnLink          string       `json:"customfield_13782,omitempty"`
 	Created            JiraTime     `json:"created,omitempty"`
 	Updated            JiraTime     `json:"updated,omitempty"`
+	FreeStringValue    string       `json:"freeValue,omitempty"`
 }
 
 type IssueField struct {
