@@ -1,10 +1,10 @@
 module github.com/hflabs/automation/logger
 
-go 1.23.1
+go 1.25
 
 require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 )
 
 require (

@@ -2,12 +2,15 @@ package logger
 
 import (
 	"fmt"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
-	log "github.com/rs/zerolog"
 	"io"
 	"os"
 	"strings"
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	log "github.com/rs/zerolog"
 )
+
+const HumanTimeFormat = "02.01.2006 15:04:05"
 
 // Interface -.
 type Interface interface {
@@ -17,18 +20,22 @@ type Interface interface {
 	Warn(message string, args ...interface{})
 	Error(message interface{}, args ...interface{})
 	Fatal(message interface{}, args ...interface{})
+	Lifecycle(message string, args ...interface{})
 	SetLogLevel(level string)
 	GetLogLevel() string
+	GetLifecycleFilename() string
 	Close() error
 }
 
 // Logger - структура логера
 type Logger struct {
-	logger    *log.Logger
-	logFile   *os.File
-	formatter log.Formatter
-	rotating  *RotateConfig
-	isSimple  bool
+	logger        *log.Logger
+	lifecycleLog  *log.Logger // Отдельный логгер для lifecycle событий
+	logFile       *os.File
+	lifecycleFile *os.File // Файл для lifecycle
+	formatter     log.Formatter
+	rotating      *RotateConfig
+	isSimple      bool
 }
 
 var _ Interface = (*Logger)(nil)
@@ -40,7 +47,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o666)
 	writer := log.ConsoleWriter{
 		Out:        os.Stdout,
-		TimeFormat: "02.01.2006 15:04:05",
+		TimeFormat: HumanTimeFormat,
 		NoColor:    false,
 	}
 	if err != nil {
@@ -82,13 +89,19 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 	if formatter != nil {
 		msg += ", with formatter"
 	}
-	logger.Debug().Msgf(msg)
+	logger.Debug().Msg(msg)
+	lifecycleLogger, lifecycleFile, lErr := SetLifecycleLogFile(filename)
+	if lErr != nil {
+		logger.Error().Msgf("Failed to create lifecycle log: %v\n", lErr)
+	}
 	return &Logger{
-		logger:    &logger,
-		logFile:   file,
-		formatter: formatter,
-		rotating:  rotating,
-		isSimple:  false,
+		logger:        &logger,
+		lifecycleLog:  lifecycleLogger,
+		logFile:       file,
+		lifecycleFile: lifecycleFile,
+		formatter:     formatter,
+		rotating:      rotating,
+		isSimple:      false,
 	}
 }
 
@@ -115,6 +128,8 @@ func (l *Logger) SetLogLevel(level string) {
 		newLogger = NewSimple(level)
 	} else {
 		newLogger = New(level, l.logFile.Name(), l.formatter, l.rotating)
+		l.lifecycleLog = newLogger.lifecycleLog
+		l.lifecycleFile = newLogger.lifecycleFile
 	}
 	l.logger = newLogger.logger
 }
