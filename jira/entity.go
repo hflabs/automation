@@ -1,11 +1,5 @@
 package jira
 
-type jira struct {
-	BaseUrl  string
-	Username string
-	Password string
-}
-
 type WebhookIssue struct {
 	Timestamp      Timestamp    `json:"timestamp,omitempty"`
 	WebhookEvent   string       `json:"webhookEvent,omitempty"`
@@ -161,4 +155,14 @@ type UpdateIssueRequest struct {
 
 type TransitionIssueRequest struct {
 	Transition IssueField `json:"transition,omitempty"`
+}
+type TransitionsResponse struct {
+	Expand      string       `json:"expand"`
+	Transitions []Transition `json:"transitions"`
+}
+
+type Transition struct {
+	ID   string     `json:"id"`
+	Name string     `json:"name"` // Название перехода (например "Start Progress")
+	To   IssueField `json:"to"`   // Целевой статус
 }
