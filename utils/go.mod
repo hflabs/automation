@@ -1,10 +1,10 @@
 module github.com/hflabs/automation/utils
 
-go 1.25.5
+go 1.25
 
 require (
 	github.com/carlmjohnson/requests v0.25.1
-	github.com/mymmrac/telego v1.3.3
+	github.com/mymmrac/telego v1.2.0
 	github.com/stretchr/testify v1.11.1
 )
 

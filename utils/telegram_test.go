@@ -47,6 +47,8 @@ func Test_SplitTextIntoChunks(t *testing.T) {
 			wantPrefix: "Борис, привет!", wantParts: 5},
 		{name: "2. Код-ревью от LLM с HTML разметкой", sourceFile: "code_review_ai_html_markdown.html",
 			wantPrefix: "## PR Reviewer Guide", wantParts: 2},
+		{name: "3. Оповещение о комментарии в МР с код-ревью от LLM с HTML разметкой", sourceFile: "notification_comment_with_code_review_ai_html_markdown.html",
+			wantPrefix: "Петр(@petr) оставил комментарий в твоём Merge Request Тестовый", wantParts: 2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

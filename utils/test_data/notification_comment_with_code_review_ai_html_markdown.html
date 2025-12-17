@@ -1,0 +1,83 @@
+Петр(@petr) оставил комментарий в твоём Merge Request Тестовый:\n\
+<code>
+    ## PR Reviewer Guide 🔍
+
+Here are some key observations to aid the review process:
+
+<table>
+    <tr><td>⏱️&nbsp;<strong>Estimated effort to review</strong>: 3 🔵🔵🔵⚪⚪</td></tr>
+    <tr><td>🧪&nbsp;<strong>No relevant tests</strong></td></tr>
+    <tr><td>🔒&nbsp;<strong>No security concerns identified</strong></td></tr>
+    <tr><td>⚡&nbsp;<strong>Recommended focus areas for review</strong><br><br>
+
+        <details><summary><a href='https://gitlab.ru/company/common/automation/project/product/-/blob/feature-171-bugfix/internal/usecase/process-event/process_event.go?ref_type=heads#L201-216'><strong>Incorrect error handling in ProcessNewRegistration</strong></a>
+
+            The function now captures the error from `p.saveAttendance` into `saveErr`, sets the attendee's Error field, but continues to convert and upsert rows regardless of that failure. This can lead to processing incomplete or invalid data and may mask the original error because only `saveErr` is returned at the end. An early return or conditional skip should be added after a failed saveAttendance.
+        </summary>
+
+            ```go
+            var saveErr error
+            if saveErr = p.saveAttendance(&attendees[0], table.EventId, table.EventDate.Time, nil); saveErr != nil {
+            saveErr = fmt.Errorf("saveAttendance: %v", saveErr)
+            attendees[0].Error = saveErr.Error()
+            }
+            upsertRows, err := convertToUpsertRows([]entity.Attendee{attendees[0]}, rowFields)
+            if err != nil {
+            return fmt.Errorf("create rows failed: %w", err)
+            }
+
+            if err = p.g.UpsertRowsInTableById(ctx, table.DocID, table.TableID, upsertRows); err != nil {
+            return fmt.Errorf("save rows failed: %w", err)
+            }
+            // Единственная ошибка, которую получится впихнуть в attendees[0].Error это ошибка сохранения.
+            // Остальные вообще не дадут сроку обновить
+            return saveErr
+            ```
+
+        </details>
+
+        <details><summary><a href='https://gitlab.ru/company/common/automation/project/product/-/blob/feature-171-bugfix/internal/usecase/process-event/process_event.go?ref_type=heads#L258-268'><strong>Inconsistent error propagation in ProcessRegistrationTable</strong></a>
+
+            When `p.saveAttendance` fails for an attendee, the code now assigns the error to `attendee.Error` and continues. While this preserves the error information, it also skips adding that attendee to `toGristAttendees`. Ensure that downstream logic correctly handles attendees with non‑nil Error fields and that any required cleanup or retry mechanisms are in place.
+        </summary>
+
+            ```go
+            continue
+            }
+            if attendee.RegistrationStatus == RegistartionStatus.Duplicate {
+            continue
+            }
+            attendee.Hash = attendeeHash
+            if err = p.saveAttendance(&attendee, eventId, table.EventDate.Time, nil); err != nil {
+            zerolog.Error("p.saveAttendance (%s): %v", attendee.UUid, err)
+            attendee.Error = fmt.Sprintf("saveAttendance: %v", err)
+            continue
+            }
+            ```
+
+        </details>
+
+        <details><summary><a href='https://gitlab.ru/company/common/automation/project/product/-/blob/feature-171-bugfix/internal/usecase/process-event/process_event.go?ref_type=heads#L258-268'><strong>Inconsistent error propagation in ProcessRegistrationTable</strong></a>
+
+            When `p.saveAttendance` fails for an attendee, the code now assigns the error to `attendee.Error` and continues. While this preserves the error information, it also skips adding that attendee to `toGristAttendees`. Ensure that downstream logic correctly handles attendees with non‑nil Error fields and that any required cleanup or retry mechanisms are in place.
+        </summary>
+
+            ```go
+            continue
+            }
+            if attendee.RegistrationStatus == RegistartionStatus.Duplicate {
+            continue
+            }
+            attendee.Hash = attendeeHash
+            if err = p.saveAttendance(&attendee, eventId, table.EventDate.Time, nil); err != nil {
+            zerolog.Error("p.saveAttendance (%s): %v", attendee.UUid, err)
+            attendee.Error = fmt.Sprintf("saveAttendance: %v", err)
+            continue
+            }
+            ```
+
+        </details>
+
+    </td></tr>
+</table>
+</code>
