@@ -3,9 +3,10 @@ package utils
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/carlmjohnson/requests"
 	"github.com/mymmrac/telego"
-	"strings"
 )
 
 const (
@@ -105,4 +106,78 @@ func ConvertTgLinks(msgText string, msgEntities []telego.MessageEntity) string {
 	}
 	result.WriteString(string(runes[offset:]))
 	return result.String()
+}
+
+func SmartSplitTextIntoChunks(s string, chunkSize int) []string {
+	var chunks []string
+	if len(s) < chunkSize {
+		return []string{s}
+	}
+	rows := strings.Split(s, "\n")
+	var extraRows string
+	var chunk string
+	for _, row := range rows {
+		originalRow := row + "\n"
+		// Добавляем доп строки от прошлой части
+		if extraRows != "" {
+			originalRow = extraRows + originalRow
+			extraRows = ""
+		}
+		if len(chunk)+len(originalRow) < chunkSize {
+			chunk = chunk + originalRow
+			continue
+		}
+		// Проверяем у текущей части базовую разметку HTML, если есть проблемы пытаемся исправить их переносом строки в следующую часть
+		if !CheckBasicHTML(chunk) {
+			chunk, extraRows = fixHtmlChunk(chunk)
+		}
+		chunks = append(chunks, chunk)
+		chunk = originalRow
+	}
+	if chunk != "" {
+		chunks = append(chunks, chunk)
+	}
+	return chunks
+}
+
+// Пытаемся исправить часть, отрезая от её конца по 1 строке, каждый раз проверяя стала ли часть проходить проверку по HTML-тэгам
+func fixHtmlChunk(sourceChunk string) (chunk string, extraRows string) {
+	rows := strings.Split(sourceChunk, "\n")
+	if len(rows) > 0 {
+		extraRows += rows[len(rows)-1]
+		rows = rows[:len(rows)-1]
+		chunk = strings.Join(rows, "\n")
+		if CheckBasicHTML(chunk) {
+			return chunk, extraRows
+		}
+	}
+	return chunk, extraRows
+}
+
+func CheckBasicHTML(html string) bool {
+	openTags := []string{}
+	for _, tag := range strings.Split(html, "<") {
+		if strings.HasPrefix(tag, "/") {
+			index := strings.Index(tag, ">")
+			if index == -1 {
+				continue
+			}
+			tagName := strings.TrimSpace(tag[1:index])
+			if len(openTags) > 0 && openTags[len(openTags)-1] == tagName {
+				openTags = openTags[:len(openTags)-1]
+			} else {
+				return false
+			}
+		} else if strings.Contains(tag, " href='http") {
+			openTags = append(openTags, "a")
+		} else if strings.Contains(tag, ">") {
+			index := strings.Index(tag, ">")
+			if index == -1 {
+				continue
+			}
+			tagName := strings.TrimSpace(tag[:index])
+			openTags = append(openTags, tagName)
+		}
+	}
+	return len(openTags) == 0
 }

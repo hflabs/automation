@@ -1,9 +1,13 @@
 package utils
 
 import (
+	"fmt"
+	"os"
+	"strings"
+	"testing"
+
 	"github.com/mymmrac/telego"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestConvertTgLinks(t *testing.T) {
@@ -28,6 +32,29 @@ func TestConvertTgLinks(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := ConvertTgLinks(tt.msgText, tt.msgEntities)
 			require.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_SplitTextIntoChunks(t *testing.T) {
+	tests := []struct {
+		name       string
+		sourceFile string
+		wantPrefix string
+		wantParts  int
+	}{
+		{name: "1. Длинный кусок текста с HTML тэгами посреди которых может порезаться сообщение", sourceFile: "long_text_with_html.html",
+			wantPrefix: "Борис, привет!", wantParts: 5},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			file, err := os.ReadFile(fmt.Sprintf("./test_data/%s", tt.sourceFile))
+			require.NoError(t, err)
+			got := SmartSplitTextIntoChunks(string(file), 4096)
+			if !strings.HasPrefix(got[0], tt.wantPrefix) {
+				t.Errorf("splitTextIntoChunks() = %v, want %v", got, tt.wantPrefix)
+			}
+			require.Equal(t, tt.wantParts, len(got))
 		})
 	}
 }

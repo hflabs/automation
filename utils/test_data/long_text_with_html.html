@@ -1,0 +1,190 @@
+Борис, привет!
+У меня для тебя небольшая сводка новостей за <code>13.12-16.12</code> по отслеживаемым задачам.
+
+
+<b>Новые задачи:</b>
+<a href='https://jira.ru/browse/AB-482'>AB-482</a> <i>XY Оповестить проверку статусов в системе мониторинга (ВК чат)</i> (<code>logintestusr</code>)
+<a href='https://jira.ru/browse/AB-481'>AB-481</a> <i>XY Проверить динамический анализ набора параметров</i> (<code>logintestusr</code>)
+<a href='https://jira.ru/browse/ALPHA-581'>ALPHA-581</a> <i>Согласование макета 10.10</i> (<code>robot_test</code>)
+<a href='https://jira.ru/browse/ALPHA-582'>ALPHA-582</a> <i>Согласование макета 10.10 – добавление описания</i> (<code>robot_test</code>)
+<a href='https://jira.ru/browse/TSK-4192'>TSK-4192</a> <i>Обновить MD 10.10</i> (<code>robot_test</code>)
+<a href='https://jira.ru/browse/TSK-4195'>TSK-4195</a> <i>TEST – Согласование макета 10.10</i> (<code>robot_test</code>)
+<a href='https://jira.ru/browse/TSK-4198'>TSK-4198</a> <i>Убрать базовые и тестовые поля у партнеров без ИНН и КПП</i> (<code>Александра Прокофьева</code>)
+<a href='https://jira.ru/browse/AB-483'>AB-483</a> <i>XY Валидация параметров</i> (<code>logintestusr</code>)
+<a href='https://jira.ru/browse/TSK-4191'>TSK-4191</a> <i>Макет 10.10</i> (<code>robot_test</code>)
+<a href='https://jira.ru/browse/AB-485'>AB-485</a> <i>BACKEND Ошибка контроля в systemParamsCode </i> (<code>logintestusr</code>)
+
+
+<b>Изменения по задачам:</b>
+• <a href='https://jira.ru/browse/TSK-4155'>TSK-4155</a> <i>В логах отсутствует детализация после выполнения джобы</i>
+— <code>Валентина Петрова</code> изменил <code>Релиз, куда пробросить</code> с <code>24.17</code> на <code>24.25</code>,
+— <code>Валентина Петрова</code> изменил <code>Fix Version</code> на <code>24.25</code>
+• <a href='https://jira.ru/browse/ALPHA-42'>ALPHA-42</a> <i>Миграция на ПО 5.0</i>
+— <code>Игорь Сурков</code> новый исполнитель,
+— <code>Светлана Нова</code> изменил <code>Релиз, куда пробросить</code> с <code>24.24</code> на <code>24.25</code>
+• <a href='https://jira.ru/browse/AB-215'>AB-215</a> <i>BACKEND Проверка кнопки "Загрузить архив" - Тестовая кампания</i>
+— <code>logintestusr</code> приложил файл <code>2024_12_16_13_20_25.mp4</code>
+• <a href='https://jira.ru/browse/TSK-4121'>TSK-4121</a> <i>Обновить MD 24.23</i>
+— <code>Александра Прокофьева</code> изменил <code>resolution</code> на <code>Fixed</code>
+• <a href='https://jira.ru/browse/TST-82'>TST-82</a> <i>Регулярные диагностирования по справочникам ТИП Спектра</i>
+— <code>Сергей Иваненко</code> изменил <code>resolution</code> с <code>Done</code> на <code>Пусто</code>
+
+
+<b>Комментарии:</b>
+• <a href='https://jira.ru/browse/TSK-3921'>TSK-3921</a> <i>Сохранить таблицы данных по условиям</i>
+— <code>Мария Сидоренко</code> написал <code>Глянули выгрузку опен:
+    1. Не хватает детализированного описания условий, напр. у телефонов:
+    &lt;bean id="phoneMergeWeigher.custom" parent="complexAttributeWeigher"&gt;
+    &lt;constructor-arg index="0"&gt;
+    &lt;util:list&gt;
+    &lt;!-- Правила слияния для телефонов c типами отличными от OTP --&gt;
+    &lt;bean parent="attributeIfTypeNotInThen"&gt;
+    &lt;property name="values"&gt;
+    &lt;list value-type="org.product.project.model.attributes.phone.PhoneType"&gt;
+    &lt;value&gt;OTP&lt;/value&gt;
+    &lt;value&gt;MOON_OTP&lt;/value&gt;
+    &lt;/list&gt;
+    &lt;/property&gt;
+    &lt;constructor-arg type="org.product.project.service.merge.Weigher" ref="phoneMergeWeigher.notOtp"/&gt;
+    &lt;/bean&gt;
+    Нужно вытаскивать информацию про указанные типы OTP и MOON_OTP.
+    2. Для атрибутов нигде не указывается тип КА, к которому относится. А в рамках одного заказчика могут быть разные правила для атрибутов одного типа.
+    &lt;bean id="clientSegmentMergeRule" class="org.product.project.service.merge.weigher.attributes.PartyTypeAwareWeigher"&gt;
+    &lt;constructor-arg index="0"&gt;
+    &lt;util:map&gt;
+    &lt;entry key-ref="legalPartyType" value-ref="clientSegmentMergeRule.legal"/&gt;
+    &lt;/util:map&gt;
+    &lt;/constructor-arg&gt;
+    &lt;constructor-arg index="1" ref="clientSegmentMergeRule.default"/&gt;
+    &lt;/bean&gt;
+    Щас потеряли инфу о ЮЛ, выгружена инфа тока по физикам
+    3. В конфигах еще есть полезная информация о деталях сравнения атрибутов при слияния/обновлении, инфа какие именно поля значимы:
+    - updateCompareService — описание какие именно поля учитывать при проверке на равенство в обновлении
+    - mergeCompareService — описание какие именно поля учитывать при проверке на равенство в слиянии
+    - emptyCheckService — описание какие именно поля учитывать при проверке на пустоту
+    &lt;util:set id="additionalAddressNonSignificantFields.custom"&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.REGISTRATION_DATE"/&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.ARCHIVE"/&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.ADDR_ASV"/&gt;
+    &lt;/util:set&gt;
+    &lt;!-- Расширение стандартного набора полей, которые не нужно учитывать при проверке атрибута на пустоту. --&gt;
+    &lt;bean id="empty.excludedAddressFields.custom" class="com.google.common.collect.Sets" factory-method="union"&gt;
+    &lt;constructor-arg index="0" ref="empty.excludedAddressFields.core"/&gt;
+    &lt;constructor-arg index="1"&gt;
+    &lt;util:set&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.REGISTRATION_DATE"/&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.ARCHIVE"/&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.ADDR_ASV"/&gt;
+    &lt;/util:set&gt;
+    &lt;/constructor-arg&gt;
+    &lt;/bean&gt;
+    &lt;!-- Расширение стандартного набора полей, которые не нужно учитывать при проверке равенство адресов при слиянии --&gt;
+    &lt;bean id="merge.excludedAddressFields.custom" class="com.google.common.collect.Sets" factory-method="union"&gt;
+    &lt;constructor-arg index="0" ref="merge.excludedAddressFields.core"/&gt;
+    &lt;constructor-arg index="1"&gt;
+    &lt;util:set&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.ARCHIVE"/&gt;
+    &lt;util:constant static-field="org.product.project.model.attributes.address.OpenAddress.ADDR_ASV"/&gt;
+    &lt;/util:set&gt;
+    &lt;/constructor-arg&gt;
+    &lt;/bean&gt;
+    ~sergeytest давай ее тоже выгружать, если получиться.
+    4. В условиях (condition) нет никакого названия или описания этого условия.
+    Например по адресам:
+    cdi-open\cdi-services\src\mainesources\service\attribute\services-attribute-address.xml
+    &lt;bean id="addressUpdateWeigher.custom" parent="complexAttributeWeigher"&gt;
+    &lt;constructor-arg index="0"&gt;
+    &lt;util:list&gt;
+    &lt;ref bean="keepArchiveFlag"/&gt;
+    &lt;bean parent="whenBothPrimaryThen"&gt;
+    &lt;constructor-arg name="conditionSatisfiedWeigher"&gt;
+    &lt;bean id="addressUpdateRule.bothTrusted" parent="addressUpdateWeigher.sameValue.core"/&gt;
+    &lt;/constructor-arg&gt;
+    &lt;constructor-arg name="conditionFailedWeigher"&gt;
+    &lt;bean parent="whenAnyPrimaryThen"&gt;
+    &lt;constructor-arg name="conditionSatisfiedWeigher"&gt;
+    &lt;bean id="addressUpdateRule.oneTrusted" parent="primaryWinsRule"/&gt;
+    &lt;/constructor-arg&gt;
+    &lt;constructor-arg name="conditionFailedWeigher"&gt;
+    &lt;bean id="addressUpdateRule.noTrusted" parent="addressUpdateWeigher.sameValue.core"/&gt;
+    &lt;/constructor-arg&gt;
+    &lt;/bean&gt;
+    &lt;/constructor-arg&gt;
+    &lt;/bean&gt;
+    &lt;/util:list&gt;
+    &lt;/constructor-arg&gt;
+    &lt;/bean&gt;
+    Видим, что есть условия whenBothPrimaryThen и whenAnyPrimaryThen, но вы выгрузке на этом место пусто. Поле rule пустое, поле description заполнено заглушкой "TODO".
+    В итоге при &lt;a href='https://confluence.ru/pages/viewpage.action?pageId=18032325548'&gt;попытке это отобразить получаем пустые блоки&lt;/a&gt;.
+    Предполагаем, что ничего не выгружается, т.к. бин id не определены для условий, в таком случае хотим получать значение из parent
+
+
+    Оценка доработки от разработчика:
+    СергейТест: Посмотрел задачу, по пунктам 1,2,4 надо подебажить и скорее всего пару условий в код добавить. Это примерно по полдня на каждый пункт.
+    По третьему отдельный метод надо писать, который будет бины вытаскивать, это около дня.
+    Итого получается 2.5 дня, я бы до трёх округлил</code>
+• <a href='https://jira.ru/browse/AB-485'>AB-485</a> <i>BACKEND Ошибка контроля в systemParamsCode </i>
+— <code>Людмила Комарова</code> написал <code>Будет поправлено на бэке в рамках AB-233</code>
+• <a href='https://jira.ru/browse/AB-411'>AB-411</a> <i>BACKEND Ошибка согласования запланированных кампаний</i>
+— <code>Людмила Комарова</code> написал <code>"Черновик" должен был появляться только у кампаний у которых есть расписание, но она на него не поставлена. Но в планах новый список с кампаниями, где от этой подписи мы отказались, так что пока можно закрыть задачу</code>,
+— <code>logintestusr</code> написал <code>Закрыто.</code>
+• <a href='https://jira.ru/browse/AB-215'>AB-215</a> <i>BACKEND Проверка кнопки "Загрузить архив" - Тестовая кампания</i> — <code>logintestusr, Людмила Комарова</code> понаписали аж 3 комментариев!
+
+
+<b>Смена статусов:</b>
+<code>Done</code> → <code>Backlog</code>
+<a href='https://jira.ru/browse/TST-82'>TST-82</a> <i>Регулярные диагностирования по справочникам ТИП Спектра</i>
+
+<code>Backlog</code> → <code>Development</code>
+<a href='https://jira.ru/browse/AB-255'>AB-255</a> <i>BACKEND Анализ генератора автоописания в Массиве (после удаления фильтра)</i>
+<a href='https://jira.ru/browse/AB-433'>AB-433</a> <i>BACKEND Анализ расписания (неверный контракт)</i>
+
+<code>Development</code> → <code>Ready for test</code>
+<a href='https://jira.ru/browse/AB-231'>AB-231</a> <i>FRONTEND Остановка кампании вручную не приводит к остановке процессов пересчета и запуска</i>
+
+<code>Design</code> → <code>Testing</code>
+<a href='https://jira.ru/browse/AB-219'>AB-219</a> <i>UXНастройка списка кампаний</i>
+
+<code>Open</code> → <code>Delayed</code>
+<a href='https://jira.ru/browse/TSK-4198'>TSK-4198</a> <i>Убрать базовые и тестовые поля у партнеров без ИНН и КПП</i>
+
+<code>In Progress</code> → <code>Resolved</code>
+<a href='https://jira.ru/browse/TSK-4121'>TSK-4121</a> <i>Обновить MD 24.23</i>
+
+<code>Backlog</code> → <code>Closed</code>
+<a href='https://jira.ru/browse/AB-411'>AB-411</a> <i>BACKEND Ошибка согласования запланированных кампаний</i>
+
+<code>Done</code> → <code>Closed</code>
+<a href='https://jira.ru/browse/AB-211'>AB-211</a> <i>BACKEND Параметры каналов на предпросмотре</i>
+
+
+
+<b>Ворклоги</b>
+• <a href='https://jira.ru/browse/AB-233'>AB-233</a> <i>FRONTEND Запуск кампании по расписанию</i>
+— Денис Иванов <code>Правка конфликтов, правка бага
+    Фича что по умолчанию теперь проставляется NONE в параметры запуска.</code> (2h)
+• <a href='https://jira.ru/browse/WORK-2'>WORK-2</a> <i>Курс по DQ</i>
+— Дарья Свиридова <code>курс, подготовкапро онлайн думала
+    .</code> (26h)
+• <a href='https://jira.ru/browse/TSK-4158'>TSK-4158</a> <i>Не отключаются триггеры в админке 2.0</i>
+— Андрей Соколов <code>Воркэраунд</code> (6h)
+• <a href='https://jira.ru/browse/AB-231'>AB-231</a> <i>FRONTEND Остановка кампании вручную не приводит к остановке процессов пересчета и запуска</i>
+— Денис Иванов <code>Проработка логики всей цепочки работы веток, чтобы стопить лишние отправки и функционал, когда приходит сигнал остановки</code> (3h 30m)
+• <a href='https://jira.ru/browse/HELP-44'>HELP-44</a> <i>Поддержка</i>
+— Виктория Павлова <code>Фактор. RE: Сбой на первой ноде 02.09 (Дособрала логи , подняла Фактор на аналитике, запустила задачу, созвон с Антоном по обсуждению статуса проблемы ). CDI. Ежедневный разбор мониторинга (Запрос данных, мониторинг).</code> (121h 30m)
+• <a href='https://jira.ru/browse/TSK-4155'>TSK-4155</a> <i>В логах отсутствует детализация после выполнения джобы</i>
+— Андрей Соколов <code>Working on issue TSK-4155</code> (4h)
+• <a href='https://jira.ru/browse/ALPHA-49'>ALPHA-49</a> <i>Преданализ задач Союз + организационные</i>
+— Светлана Нова <code>Подготовка к статусу+статус с банком</code> (30m)
+• <a href='https://jira.ru/browse/TSK-4192'>TSK-4192</a> <i>Обновить MD 10.10</i>
+— Александра Прокофьева <code>РН, инструкция</code> (1h 45m)
+• <a href='https://jira.ru/browse/AB-44'>AB-44</a> <i>Комбайн для Лабса (внутренний пилот)</i>
+— Дарья Свиридова <code>разбиралась как идентификаторы передавать</code> (10h)
+• <a href='https://jira.ru/browse/TSK-4153'>TSK-4153</a> <i>Переделать генерилку данных в ЕК</i>
+— Андрей Соколов <code>пу-пу-пуу</code> (2h)
+• <a href='https://jira.ru/browse/TSK-4182'>TSK-4182</a> <i>Отслеживать срок действия ssl-сертов в ЕК (LDAP, UI\SOAP, ОП, etc)</i>
+— Виктор Семенов <code>Обсуждение внутри поддержки + в общем чате + задача</code> (1h 15m)
+• <a href='https://jira.ru/browse/ALPHA-52'>ALPHA-52</a> <i>Подключить Центр управления согласиями</i>
+— Кирилл Морозов <code>Исправление замечаний тестирования + переименовал тип согласия в миграционнике</code> (2h 30m)
+• <a href='https://jira.ru/browse/ALPHA-33'>ALPHA-33</a> <i>Административное</i>
+— Елизавета Кравцова <code>синк с заказчиком</code> (10m)
