@@ -1,9 +1,10 @@
 package confluence
 
 import (
-	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestExtractHashcodeFromContent(t *testing.T) {

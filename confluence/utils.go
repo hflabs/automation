@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 )
 
 func validateStatus(resp *http.Response) error {
@@ -15,4 +16,12 @@ func validateStatus(resp *http.Response) error {
 		return err
 	}
 	return fmt.Errorf("status code %v.\nBody:%s", resp.StatusCode, string(b))
+}
+
+func extractHashcodeFromContent(content string) string {
+	match := regexp.MustCompile(hashcode_pattern).FindStringSubmatch(content)
+	if len(match) > 1 {
+		return match[1]
+	}
+	return ""
 }
