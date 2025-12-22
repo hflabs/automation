@@ -184,4 +184,7 @@ const (
 	LastChangeField = "lastChangeTimestamp"
 
 	RelationAttributeFieldValue = "value"
+
+	InnField    = "inn"
+	InnRawField = "innRawSource"
 )
