@@ -8,6 +8,9 @@ type ApiConfluence interface {
 	GetPagesByName(ctx context.Context, name, spaceKey string) ([]PageInfo, error)
 	GetPagesByIncludedName(ctx context.Context, name, spaceKey string) ([]PageInfo, error)
 
+	GetUserByUsername(ctx context.Context, username string) (*User, error)
+	GetUserByKey(ctx context.Context, key string) (*User, error)
+
 	GetChildrenById(ctx context.Context, id string, limit int) ([]PageInfo, error)
 	GetChildrenByIdRecursive(ctx context.Context, id string, limit int) ([]PageInfo, error)
 

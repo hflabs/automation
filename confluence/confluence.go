@@ -87,6 +87,39 @@ func (c *confluence) GetVersionById(ctx context.Context, id string) (VersionResp
 	return resp, nil
 }
 
+func (c *confluence) GetUserByUsername(ctx context.Context, username string) (*User, error) {
+	if username == "" {
+		return nil, fmt.Errorf("username cannot be empty")
+	}
+	return c.getUser(ctx, "username", username)
+}
+
+func (c *confluence) GetUserByKey(ctx context.Context, key string) (*User, error) {
+	if key == "" {
+		return nil, fmt.Errorf("key cannot be empty")
+	}
+	return c.getUser(ctx, "key", key)
+}
+
+func (c *confluence) getUser(ctx context.Context, paramName, paramValue string) (*User, error) {
+	var u User
+	// baseUrl обычно используем https://confluence.ru/rest/api/content
+	baseUrl := strings.Replace(c.baseUrl, "/content", "/user", 1)
+	err := requests.
+		URL(baseUrl).
+		Method(http.MethodGet).
+		Param(paramName, paramValue).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&u).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getUser(%s=%s) err: %w", paramName, paramValue, err)
+	}
+	return &u, nil
+}
+
 func (c *confluence) CreatePage(ctx context.Context, name, spaceKey, content, parentPageId string) (string, error) {
 	req := PageInfo{
 		Type:    "page",

@@ -1,6 +1,6 @@
 package confluence
 
-const hashcode_pattern = `(?s).*Эта страница сгенерирована автоматически<\/ac:parameter>.*?<ac:parameter ac:name=\"atlassian-macro-output-type\">INLINE<\/ac:parameter>.*?<ac:rich-text-body>.*?<p>([0-9a-z]{32})<\/p>.*?<\/ac:rich-text-body>.*?`
+const hashcodePattern = `(?s).*Эта страница сгенерирована автоматически<\/ac:parameter>.*?<ac:parameter ac:name=\"atlassian-macro-output-type\">INLINE<\/ac:parameter>.*?<ac:rich-text-body>.*?<p>([0-9a-z]{32})<\/p>.*?<\/ac:rich-text-body>.*?`
 
 const (
 	CheckLine = "<hr />"

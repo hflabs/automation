@@ -63,3 +63,10 @@ type PageInfo struct {
 	Body    *PageBody    `json:"body,omitempty"`
 	Parents []PageInfo   `json:"ancestors,omitempty"`
 }
+
+type User struct {
+	Type        string `json:"type"`
+	Username    string `json:"username"`
+	UserKey     string `json:"userKey"`
+	DisplayName string `json:"displayName"`
+}
