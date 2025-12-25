@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -53,4 +54,12 @@ func validateStatus(resp *http.Response) error {
 		return err
 	}
 	return fmt.Errorf("status code %v.\nBody:%s", resp.StatusCode, string(b))
+}
+
+func formatAvailableStatuses(availableStatuses map[string]string) string {
+	pairs := make([]string, 0, len(availableStatuses))
+	for id, name := range availableStatuses {
+		pairs = append(pairs, fmt.Sprintf("%s:%v", id, name))
+	}
+	return strings.Join(pairs, ", ")
 }
