@@ -1,164 +1,10 @@
 package jira
 
-func GetJiraConstants() Fields {
-	return Fields{
-		Issue: Issue{
-			Status: Status{
-				Open:                        "1",
-				ToDo:                        "2",
-				InProgress:                  "3",
-				Reopened:                    "4",
-				Resolved:                    "5",
-				ToRelease:                   "11920",
-				Closed:                      "6",
-				TestingInProgress:           "1006",
-				CRInProgress:                "10008",
-				Delay:                       "10009",
-				New:                         "10011",
-				Assigned:                    "10012",
-				InProgressHRP:               "10013",
-				ResolveSup:                  "10014",
-				Confirmed:                   "10015",
-				Saved:                       "10016",
-				RequestInfo:                 "10018",
-				Escalation:                  "10019",
-				Done:                        "10020",
-				Out:                         "10022",
-				AgreedHRP:                   "10120",
-				Cancelled:                   "10121",
-				OnApproval:                  "10220",
-				CRCompleted:                 "10320",
-				Backlog:                     "10424",
-				Selected:                    "10520",
-				OfferDone:                   "10425",
-				Rated:                       "10620",
-				CodeReview:                  "10720",
-				Deployed:                    "10820",
-				SelectedForDevelopment:      "10920",
-				TestReview:                  "11020",
-				DesignReview:                "11021",
-				AllOrganizedHRP:             "11320",
-				Design:                      "11420",
-				ReadyForDevelopment:         "11421",
-				Development:                 "11422",
-				Review:                      "11423",
-				Analytics:                   "11520",
-				Requirements:                "11521",
-				ReadyForTesting:             "11522",
-				Testing:                     "11523",
-				Documentation:               "11620",
-				FirstAnswer:                 "11720",
-				NoNeedReaction:              "11820",
-				AssignedInQueue:             "11821",
-				AnsweredButNeedImprovements: "11822",
-				AwaitingCustomerResponse:    "11823",
-				AwaitingDecisionColleagues:  "11824",
-			},
-			Type: Type{
-				Bug:         "1",
-				NewFeature:  "2",
-				Task:        "3",
-				Improvement: "4",
-				Epic:        "5",
-				Learning:    "10600",
-			},
-			Priority: Priority{
-				Blocker:  "1",
-				Critical: "2",
-				Minor:    "4",
-			},
-			Resolution: Resolution{
-				Fixed:      "1",
-				WontFix:    "2",
-				NeedBugFix: "10300",
-			},
-			Fields: IssueFields{
-				StoryPoints:        "customfield_10083",
-				BusinessValue:      "customfield_10084",
-				WeightedJob:        "customfield_12580",
-				ReleaseNotes:       "customfield_13082",
-				ReleaseInstruction: "customfield_13081",
-				Components:         "components",
-				DueDate:            "duedate",
-				Participants:       "customfield_10380",
+var Issue = newIssueSug()
+var EventType = newEventTypes()
+var Changelog = newChangelogs()
 
-				LearnTime:          "customfield_14481",
-				LearnForWho:        "customfield_13881",
-				LearnWhatLike:      "customfield_14483",
-				LearnWhatUseful:    "customfield_13784",
-				LearnWhatBad:       "customfield_14484",
-				LearnWhatLearned:   "customfield_13880",
-				LearnWillRecommend: "customfield_13882",
-				LearnPeople:        "customfield_14480",
-				LearnField:         "customfield_14380",
-				LearnLink:          "customfield_13782",
-			},
-			Transitions: Transitions{
-				INNA: ProjectTransition{
-					FromBacklogToRate:        "51",
-					FromBacklogToDone:        "171",
-					FromRateToSelected:       "61",
-					FromRateToBacklog:        "161",
-					FromRateToDone:           "141",
-					FromSelectedToInProgress: "71",
-					FromSelectedToBacklog:    "131",
-					FromSelectedToDone:       "141",
-					FromInProgressToResolved: "81",
-					FromInProgressToBacklog:  "131",
-					FromInProgressToDelayed:  "111",
-					FromResolvedToDone:       "91",
-					FromResolvedToRelease:    "191",
-					FromResolvedToSelected:   "101",
-					FromResolvedToDelayed:    "111",
-					FromDelayedToInProgress:  "71",
-				},
-				CDI: ProjectTransition{
-					FromCodeReviewToResolved: "5",
-				},
-			},
-		},
-		Changelog: Changelog{
-			SingleItem: SingleItem{
-				Field: Field{
-					Status:        "status",
-					StoryPoints:   "Story Points",
-					BusinessValue: "Business Value",
-					WeightedJob:   "Weighted Job",
-					Assignee:      "assignee",
-					ReleaseNotes:  "Released Notes",
-					Components:    "components",
-					DueDate:       "Срок исполнения",
-					Participants:  "Участники",
-
-					LearnTime:          "Месяц и год обучения",
-					LearnForWho:        "Для кого еще подходит это обучение?",
-					LearnWhatLike:      "Что тебе понравилось в обучении?",
-					LearnWhatUseful:    "Что было полезного/ценного в обучении для тебя?",
-					LearnWhatBad:       "Было ли что-то, что не понравилось на обучении? Расскажи",
-					LearnWhatLearned:   "Чему научился(ась)? Что планируешь применять в работе?",
-					LearnWillRecommend: "Порекомендуешь ли обучение коллегам?",
-					LearnPeople:        "Участники обучения",
-					LearnField:         "Сфера обучения",
-					LearnLink:          "Ссылка на курс",
-				},
-			},
-		},
-		EventType: EventType{
-			Created:  "issue_created",
-			Updated:  "issue_updated",
-			Generic:  "issue_generic",
-			Assigned: "issue_assigned",
-			Closed:   "issue_closed",
-		},
-	}
-}
-
-type Fields struct {
-	Issue     Issue     // Задача
-	Changelog Changelog // Журнал изменения
-	EventType EventType // Тип события
-}
-type Issue struct {
+type IssueSug struct {
 	Status      Status      // Статус
 	Type        Type        // Тип
 	Priority    Priority    // Приоритет
@@ -166,6 +12,18 @@ type Issue struct {
 	Transitions Transitions // Возможные переходы статусов
 	Fields      IssueFields // Идентификаторы полей
 }
+
+func newIssueSug() IssueSug {
+	return IssueSug{
+		Status:      newStatuses(),
+		Type:        newTypes(),
+		Priority:    newPriorities(),
+		Resolution:  newResolutions(),
+		Fields:      newIssueFields(),
+		Transitions: newTransitions(),
+	}
+}
+
 type Status struct {
 	Open                        string // Открытый
 	ToDo                        string // К выполнению
@@ -218,12 +76,76 @@ type Status struct {
 	AwaitingDecisionColleagues  string // Ожидает решения от коллег
 }
 
-type EventType struct {
+func newStatuses() Status {
+	return Status{
+		Open:                        "1",
+		ToDo:                        "2",
+		InProgress:                  "3",
+		Reopened:                    "4",
+		Resolved:                    "5",
+		ToRelease:                   "11920",
+		Closed:                      "6",
+		TestingInProgress:           "1006",
+		CRInProgress:                "10008",
+		Delay:                       "10009",
+		New:                         "10011",
+		Assigned:                    "10012",
+		InProgressHRP:               "10013",
+		ResolveSup:                  "10014",
+		Confirmed:                   "10015",
+		Saved:                       "10016",
+		RequestInfo:                 "10018",
+		Escalation:                  "10019",
+		Done:                        "10020",
+		Out:                         "10022",
+		AgreedHRP:                   "10120",
+		Cancelled:                   "10121",
+		OnApproval:                  "10220",
+		CRCompleted:                 "10320",
+		Backlog:                     "10424",
+		Selected:                    "10520",
+		OfferDone:                   "10425",
+		Rated:                       "10620",
+		CodeReview:                  "10720",
+		Deployed:                    "10820",
+		SelectedForDevelopment:      "10920",
+		TestReview:                  "11020",
+		DesignReview:                "11021",
+		AllOrganizedHRP:             "11320",
+		Design:                      "11420",
+		ReadyForDevelopment:         "11421",
+		Development:                 "11422",
+		Review:                      "11423",
+		Analytics:                   "11520",
+		Requirements:                "11521",
+		ReadyForTesting:             "11522",
+		Testing:                     "11523",
+		Documentation:               "11620",
+		FirstAnswer:                 "11720",
+		NoNeedReaction:              "11820",
+		AssignedInQueue:             "11821",
+		AnsweredButNeedImprovements: "11822",
+		AwaitingCustomerResponse:    "11823",
+		AwaitingDecisionColleagues:  "11824",
+	}
+}
+
+type EventTypes struct {
 	Created  string // Создано
 	Updated  string // Обновлено
 	Generic  string // Создано
 	Assigned string // Назначено
 	Closed   string // Закрыто
+}
+
+func newEventTypes() EventTypes {
+	return EventTypes{
+		Created:  "issue_created",
+		Updated:  "issue_updated",
+		Generic:  "issue_generic",
+		Assigned: "issue_assigned",
+		Closed:   "issue_closed",
+	}
 }
 
 type Type struct {
@@ -235,10 +157,29 @@ type Type struct {
 	Learning    string // Обучение
 }
 
+func newTypes() Type {
+	return Type{
+		Bug:         "1",
+		NewFeature:  "2",
+		Task:        "3",
+		Improvement: "4",
+		Epic:        "5",
+		Learning:    "10600",
+	}
+}
+
 type Priority struct {
 	Blocker  string // Блокирующий
 	Critical string // Критический
 	Minor    string // Незначительный
+}
+
+func newPriorities() Priority {
+	return Priority{
+		Blocker:  "1",
+		Critical: "2",
+		Minor:    "4",
+	}
 }
 
 type Resolution struct {
@@ -247,15 +188,31 @@ type Resolution struct {
 	NeedBugFix string // Нужен багфикс
 }
 
-type Changelog struct {
+func newResolutions() Resolution {
+	return Resolution{
+		Fixed:      "1",
+		WontFix:    "2",
+		NeedBugFix: "10300",
+	}
+}
+
+type ChangelogSug struct {
 	SingleItem SingleItem // Что изменилось
 }
 
-type SingleItem struct {
-	Field Field // Поле
+func newChangelogs() ChangelogSug {
+	return ChangelogSug{SingleItem: newSingleItem()}
 }
 
-type Field struct {
+type SingleItem struct {
+	Field ChangelogField // Поле
+}
+
+func newSingleItem() SingleItem {
+	return SingleItem{Field: newChangelogFields()}
+}
+
+type ChangelogField struct {
 	Status        string // Статус
 	StoryPoints   string // Story Points
 	BusinessValue string // Business Value
@@ -278,9 +235,77 @@ type Field struct {
 	LearnLink          string // Ссылка на курс
 }
 
+func newChangelogFields() ChangelogField {
+	return ChangelogField{
+		Status:        "status",
+		StoryPoints:   "Story Points",
+		BusinessValue: "Business Value",
+		WeightedJob:   "Weighted Job",
+		Assignee:      "assignee",
+		ReleaseNotes:  "Release Notes",
+		Components:    "components",
+		DueDate:       "Срок исполнения",
+		Participants:  "Участники",
+
+		LearnTime:          "Месяц и год обучения",
+		LearnForWho:        "Для кого еще подходит это обучение?",
+		LearnWhatLike:      "Что тебе понравилось в обучении?",
+		LearnWhatUseful:    "Что было полезного/ценного в обучении для тебя?",
+		LearnWhatBad:       "Было ли что-то, что не понравилось на обучении? Расскажи",
+		LearnWhatLearned:   "Чему научился(ась)? Что планируешь применять в работе?",
+		LearnWillRecommend: "Порекомендуешь ли обучение коллегам?",
+		LearnPeople:        "Участники обучения",
+		LearnField:         "Сфера обучения",
+		LearnLink:          "Ссылка на курс",
+	}
+}
+
 type Transitions struct {
-	INNA ProjectTransition
-	CDI  ProjectTransition
+	FromBacklogToRate string // Rate - Анализ задачи на исполняемость, атомарность и нужность. Оценка для получения индекса, по которому сортируется очередь задач
+	FromBacklogToDone string // Trash - Закрытие задачи без разработки
+
+	FromRateToSelected string // Plan - Планирование задач в спринт. Будет использоваться, чтобы понимать, успели запланированное в спринт или нет.
+	FromRateToBacklog  string // Revert
+	FromRateToDone     string // Close - Закрытие задачи без разработки
+
+	FromSelectedToInProgress string // Start - Начало разработки
+	FromSelectedToBacklog    string // Revert - Возврат задачи в бэклог
+	FromSelectedToDone       string // Close - Закрытие задачи без разработки
+
+	FromInProgressToResolved string // Finish - Окончание разработки
+	FromInProgressToBacklog  string // Revert - Возврат задачи в бэклог
+	FromInProgressToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
+
+	FromResolvedToDone     string // Verify and close - Успешное тестирование
+	FromResolvedToSelected string // Reopen - Возврат задачи в разработку, т.к. есть ошибки
+	FromResolvedToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
+	FromResolvedToRelease  string // Verify and Release — Успешное тестирование
+
+	FromDelayedToInProgress string // Start - Начало разработки
+
+	FromCodeReviewToResolved string // Resolved — Резолюция выбрана и ожидает подтверждения автора. Здесь проблемы либо открываются вновь, либо закрываются.
+}
+
+func newTransitions() Transitions {
+	return Transitions{
+		FromBacklogToRate:        "51",
+		FromBacklogToDone:        "171",
+		FromRateToSelected:       "61",
+		FromRateToBacklog:        "161",
+		FromRateToDone:           "141",
+		FromSelectedToInProgress: "71",
+		FromSelectedToBacklog:    "131",
+		FromSelectedToDone:       "141",
+		FromInProgressToResolved: "81",
+		FromInProgressToBacklog:  "131",
+		FromInProgressToDelayed:  "111",
+		FromResolvedToDone:       "91",
+		FromResolvedToRelease:    "191",
+		FromResolvedToSelected:   "101",
+		FromResolvedToDelayed:    "111",
+		FromDelayedToInProgress:  "71",
+		FromCodeReviewToResolved: "5",
+	}
 }
 
 type IssueFields struct {
@@ -305,28 +330,26 @@ type IssueFields struct {
 	LearnLink          string // Ссылка на курс
 }
 
-type ProjectTransition struct {
-	FromBacklogToRate string // Rate - Анализ задачи на исполняемость, атомарность и нужность. Оценка для получения индекса, по которому сортируется очередь задач
-	FromBacklogToDone string // Trash - Закрытие задачи без разработки
+func newIssueFields() IssueFields {
+	return IssueFields{
+		StoryPoints:        "customfield_10083",
+		BusinessValue:      "customfield_10084",
+		WeightedJob:        "customfield_12580",
+		ReleaseNotes:       "customfield_13082",
+		ReleaseInstruction: "customfield_13081",
+		Components:         "components",
+		DueDate:            "duedate",
+		Participants:       "customfield_10380",
 
-	FromRateToSelected string // Plan - Планирование задач в спринт. Будет использоваться, чтобы понимать, успели запланированное в спринт или нет.
-	FromRateToBacklog  string // Revert
-	FromRateToDone     string // Close - Закрытие задачи без разработки
-
-	FromSelectedToInProgress string // Start - Начало разработки
-	FromSelectedToBacklog    string // Revert - Возврат задачи в бэклог
-	FromSelectedToDone       string // Close - Закрытие задачи без разработки
-
-	FromInProgressToResolved string // Finish - Окончание разработки
-	FromInProgressToBacklog  string // Revert - Возврат задачи в бэклог
-	FromInProgressToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
-
-	FromResolvedToDone     string // Verify and close - Успешное тестирование
-	FromResolvedToSelected string // Reopen - Возврат задачи в разработку, т.к. есть ошибки
-	FromResolvedToDelayed  string // Delay - Работа над задачей заблокирована или отложена из-за внешних факторов
-	FromResolvedToRelease  string // Verify and Release — Успешное тестирование
-
-	FromDelayedToInProgress string // Start - Начало разработки
-
-	FromCodeReviewToResolved string // Resolved — Резолюция выбрана и ожидает подтверждения автора. Здесь проблемы либо открываются вновь, либо закрываются.
+		LearnTime:          "customfield_14481",
+		LearnForWho:        "customfield_13881",
+		LearnWhatLike:      "customfield_14483",
+		LearnWhatUseful:    "customfield_13784",
+		LearnWhatBad:       "customfield_14484",
+		LearnWhatLearned:   "customfield_13880",
+		LearnWillRecommend: "customfield_13882",
+		LearnPeople:        "customfield_14480",
+		LearnField:         "customfield_14380",
+		LearnLink:          "customfield_13782",
+	}
 }
