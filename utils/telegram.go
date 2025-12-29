@@ -12,6 +12,7 @@ import (
 const (
 	FileEndpoint      = "https://api.telegram.org/file/bot%s/%s"
 	MsgEntityLinkType = "text_link"
+	PrivateChatType   = "private"
 )
 
 func DownloadFile(url, filepath string) error {
@@ -45,6 +46,20 @@ func GetTextOrCaption(update telego.Message) string {
 	return ""
 }
 
+func IsCommand(update telego.Update) bool {
+	if update.Message == nil {
+		return false
+	}
+	if strings.HasPrefix(update.Message.Text, "/") {
+		return true
+	}
+	return false
+}
+
+func IsPrivateCommand(update telego.Update) bool {
+	return IsCommand(update) && update.Message.Chat.Type == PrivateChatType
+}
+
 func IsMessage(update telego.Update) bool {
 	if update.Message == nil {
 		return false
@@ -55,6 +70,10 @@ func IsMessage(update telego.Update) bool {
 	return false
 }
 
+func IsPrivateMessage(update telego.Update) bool {
+	return IsMessage(update) && update.Message.Chat.Type == PrivateChatType
+}
+
 func IsPhoto(update telego.Update) bool {
 	if update.Message.Photo != nil {
 		return true
@@ -62,11 +81,19 @@ func IsPhoto(update telego.Update) bool {
 	return false
 }
 
+func IsPrivatePhoto(update telego.Update) bool {
+	return IsPhoto(update) && update.Message.Chat.Type == PrivateChatType
+}
+
 func IsDocument(update telego.Update) bool {
 	if update.Message.Document != nil {
 		return true
 	}
 	return false
+}
+
+func IsPrivateDocument(update telego.Update) bool {
+	return IsDocument(update) && update.Message.Chat.Type == PrivateChatType
 }
 
 func IsCallback(update telego.Update) bool {
