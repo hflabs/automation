@@ -41,24 +41,33 @@ func Test_SplitTextIntoChunks(t *testing.T) {
 		name       string
 		sourceFile string
 		wantPrefix string
-		wantParts  int
+		wantChunks int
 	}{
 		{name: "1. Длинный кусок текста с HTML тэгами посреди которых может порезаться сообщение", sourceFile: "long_text_with_html_markdown.html",
-			wantPrefix: "Борис, привет!", wantParts: 5},
+			wantPrefix: "Борис, привет!", wantChunks: 5},
 		{name: "2. Код-ревью от LLM с HTML разметкой", sourceFile: "code_review_ai_html_markdown.html",
-			wantPrefix: "## PR Reviewer Guide", wantParts: 2},
+			wantPrefix: "## PR Reviewer Guide", wantChunks: 2},
 		{name: "3. Оповещение о комментарии в МР с код-ревью от LLM с HTML разметкой", sourceFile: "notification_comment_with_code_review_ai_html_markdown.html",
-			wantPrefix: "Петр(@petr) оставил комментарий в твоём Merge Request Тестовый", wantParts: 2},
+			wantPrefix: "Петр(@petr) оставил комментарий в твоём Merge Request Тестовый", wantChunks: 2},
+		{name: "4. Багфикс дайджеста №1", sourceFile: "digest_short_1.html",
+			wantPrefix: "Екатерина, привет!", wantChunks: 1},
+		{name: "5. Багфикс дайджеста №2", sourceFile: "digest_short_2.html",
+			wantPrefix: "Максим, привет!", wantChunks: 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			file, err := os.ReadFile(fmt.Sprintf("./test_data/%s", tt.sourceFile))
 			require.NoError(t, err)
+
 			got := SmartSplitTextIntoChunks(string(file), 4096)
-			if !strings.HasPrefix(got[0], tt.wantPrefix) {
-				t.Errorf("splitTextIntoChunks() = %v, want %v", got, tt.wantPrefix)
+			require.Len(t, got, tt.wantChunks)
+			if tt.wantChunks > 0 && !strings.HasPrefix(got[0], tt.wantPrefix) {
+				t.Errorf("want prefix `%s`, got `%s`", got, tt.wantPrefix)
 			}
-			require.Equal(t, tt.wantParts, len(got))
+			for _, chunk := range got {
+				err = validateChunkHTML(chunk)
+				require.NoError(t, err)
+			}
 		})
 	}
 }
