@@ -1,21 +1,21 @@
 package jira
 
 type WebhookIssue struct {
-	Timestamp      Timestamp    `json:"timestamp,omitempty"`
-	WebhookEvent   string       `json:"webhookEvent,omitempty"`
-	IssueEventType string       `json:"issue_event_type_name,omitempty"`
-	UserEvent      JiraUser     `json:"user,omitempty"`
-	Issue          IssueJira    `json:"issue,omitempty"`
-	Comment        IssueComment `json:"comment,omitempty"`
-	Changelog      ChangeLog    `json:"changelog,omitempty"`
-	Version        Version      `json:"version,omitempty"`
+	Timestamp      Timestamp    `json:"timestamp,omitzero"`
+	WebhookEvent   string       `json:"webhookEvent,omitzero"`
+	IssueEventType string       `json:"issue_event_type_name,omitzero"`
+	UserEvent      JiraUser     `json:"user,omitzero"`
+	Issue          IssueJira    `json:"issue,omitzero"`
+	Comment        IssueComment `json:"comment,omitzero"`
+	Changelog      ChangeLog    `json:"changelog,omitzero"`
+	Version        Version      `json:"version,omitzero"`
 }
 
 type ChangeLog struct {
-	Id      string          `json:"id,omitempty"`
-	Author  JiraUser        `json:"author,omitempty"`
-	Created JiraTime        `json:"created,omitempty"`
-	Items   []ChangelogItem `json:"items,omitempty"`
+	Id      string          `json:"id,omitzero"`
+	Author  JiraUser        `json:"author,omitzero"`
+	Created JiraTime        `json:"created,omitzero"`
+	Items   []ChangelogItem `json:"items,omitzero"`
 }
 
 func (c ChangeLog) FindItemByField(field string) ChangelogItem {
@@ -28,79 +28,81 @@ func (c ChangeLog) FindItemByField(field string) ChangelogItem {
 }
 
 type WebhookComment struct {
-	Timestamp    Timestamp    `json:"timestamp,omitempty"`
-	WebhookEvent string       `json:"webhookEvent,omitempty"`
-	Comment      IssueComment `json:"comment,omitempty"`
+	Timestamp    Timestamp    `json:"timestamp,omitzero"`
+	WebhookEvent string       `json:"webhookEvent,omitzero"`
+	Comment      IssueComment `json:"comment,omitzero"`
 }
 
 type IssueJira struct {
-	Id        string       `json:"id,omitempty"`
-	Key       string       `json:"key,omitempty"`
-	Fields    FieldsIssue  `json:"fields,omitempty"`
-	Changelog IssueHistory `json:"changelog,omitempty"`
+	Id        string       `json:"id,omitzero"`
+	Key       string       `json:"key,omitzero"`
+	Fields    FieldsIssue  `json:"fields,omitzero"`
+	Changelog IssueHistory `json:"changelog,omitzero"`
 }
 
 type IssueHistory struct {
-	Total     int         `json:"total,omitempty"`
-	Histories []ChangeLog `json:"histories,omitempty"`
+	Total     int         `json:"total,omitzero"`
+	Histories []ChangeLog `json:"histories,omitzero"`
 }
 
 type ChangelogItem struct {
-	Field      string `json:"field,omitempty,omitempty"`
-	FieldType  string `json:"fieldType,omitempty"`
-	From       string `json:"from,omitempty"`
-	To         string `json:"to,omitempty"`
-	FromString string `json:"fromString,omitempty"`
-	ToString   string `json:"toString,omitempty"`
+	Field      string `json:"field,omitzero,omitzero"`
+	FieldType  string `json:"fieldType,omitzero"`
+	From       string `json:"from,omitzero"`
+	To         string `json:"to,omitzero"`
+	FromString string `json:"fromString,omitzero"`
+	ToString   string `json:"toString,omitzero"`
 }
 
 type FieldsIssue struct {
-	Summary            string       `json:"summary,omitempty"`
-	Description        string       `json:"description,omitempty"`
-	BusinessValue      float64      `json:"customfield_10084,omitempty"`
-	StoryPoints        float64      `json:"customfield_10083,omitempty"`
-	WeightedJob        float64      `json:"customfield_12580,omitempty"`
-	ReleaseNotes       string       `json:"customfield_13082,omitempty"`
-	ReleaseInstruction string       `json:"customfield_13081,omitempty"`
-	DueDate            string       `json:"duedate,omitempty"`
-	Status             IssueField   `json:"status,omitempty"`
-	IssueType          IssueField   `json:"issuetype,omitempty"`
-	Priority           IssueField   `json:"priority,omitempty"`
-	Resolution         IssueField   `json:"resolution,omitempty"`
-	Assignee           JiraUser     `json:"assignee,omitempty"`
-	Creator            JiraUser     `json:"creator,omitempty"`
-	Reporter           JiraUser     `json:"reporter,omitempty"`
-	Participants       []JiraUser   `json:"customfield_10380,omitempty"`
-	Project            IssueField   `json:"project,omitempty"`
-	Components         []IssueField `json:"components,omitempty"`
-	LearnTime          string       `json:"customfield_14481,omitempty"`
-	LearnForWho        string       `json:"customfield_13881,omitempty"`
-	LearnWhatLike      string       `json:"customfield_14483,omitempty"`
-	LearnWhatUseful    string       `json:"customfield_13784,omitempty"`
-	LearnWhatBad       string       `json:"customfield_14484,omitempty"`
-	LearnWhatLearned   string       `json:"customfield_13880,omitempty"`
-	LearnWillRecommend string       `json:"customfield_13882,omitempty"`
-	LearnPeople        []JiraUser   `json:"customfield_14480,omitempty"`
-	LearnField         IssueField   `json:"customfield_14380,omitempty"`
-	LearnLink          string       `json:"customfield_13782,omitempty"`
-	Created            JiraTime     `json:"created,omitempty"`
-	Updated            JiraTime     `json:"updated,omitempty"`
-	FreeStringValue    string       `json:"freeValue,omitempty"`
+	Summary             string       `json:"summary,omitzero"`
+	Description         string       `json:"description,omitzero"`
+	BusinessValue       float64      `json:"customfield_10084,omitzero"`
+	StoryPoints         float64      `json:"customfield_10083,omitzero"`
+	WeightedJob         float64      `json:"customfield_12580,omitzero"`
+	ReleaseNotes        string       `json:"customfield_13082,omitzero"`
+	ReleaseInstruction  string       `json:"customfield_13081,omitzero"`
+	DueDate             string       `json:"duedate,omitzero"`
+	Status              IssueField   `json:"status,omitzero"`
+	IssueType           IssueField   `json:"issuetype,omitzero"`
+	Priority            IssueField   `json:"priority,omitzero"`
+	Resolution          IssueField   `json:"resolution,omitzero"`
+	Assignee            JiraUser     `json:"assignee,omitzero"`
+	Creator             JiraUser     `json:"creator,omitzero"`
+	Reporter            JiraUser     `json:"reporter,omitzero"`
+	Participants        []JiraUser   `json:"customfield_10380,omitzero"`
+	Project             IssueField   `json:"project,omitzero"`
+	Components          []IssueField `json:"components,omitzero"`
+	LearnTime           string       `json:"customfield_14481,omitzero"`
+	LearnForWho         string       `json:"customfield_13881,omitzero"`
+	LearnWhatLike       string       `json:"customfield_14483,omitzero"`
+	LearnWhatUseful     string       `json:"customfield_13784,omitzero"`
+	LearnWhatBad        string       `json:"customfield_14484,omitzero"`
+	LearnWhatLearned    string       `json:"customfield_13880,omitzero"`
+	LearnWillRecommend  string       `json:"customfield_13882,omitzero"`
+	LearnPeople         []JiraUser   `json:"customfield_14480,omitzero"`
+	LearnField          IssueField   `json:"customfield_14380,omitzero"`
+	LearnLink           string       `json:"customfield_13782,omitzero"`
+	Created             JiraTime     `json:"created,omitzero"`
+	Updated             JiraTime     `json:"updated,omitzero"`
+	FreeStringValue     string       `json:"freeValue,omitzero"`
+	BusinessDescription string       `json:"customfield_10000,omitzero"`
+	WhoWillGetBetter    []IssueField `json:"customfield_12680,omitzero"`
 }
 
 type IssueField struct {
-	ID    string `json:"id,omitempty"`
-	Name  string `json:"name,omitempty"`
-	Key   string `json:"key,omitempty"`
-	Value string `json:"value,omitempty"`
+	ID    string `json:"id,omitzero"`
+	Name  string `json:"name,omitzero"`
+	Key   string `json:"key,omitzero"`
+	Value string `json:"value,omitzero"`
 }
 
 type JiraUser struct {
-	Name        string `json:"name,omitempty"`
-	Key         string `json:"key,omitempty"`
-	Email       string `json:"emailAddress,omitempty"`
-	DisplayName string `json:"displayName,omitempty"`
-	Active      bool   `json:"active,omitempty"`
+	Name        string `json:"name,omitzero"`
+	Key         string `json:"key,omitzero"`
+	Email       string `json:"emailAddress,omitzero"`
+	DisplayName string `json:"displayName,omitzero"`
+	Active      bool   `json:"active,omitzero"`
 }
 
 type ProjectVersion struct {
@@ -114,47 +116,59 @@ type ProjectVersion struct {
 }
 
 type IssueWatchersResponse struct {
-	Watchers []JiraUser `json:"watchers,omitempty"`
+	Watchers []JiraUser `json:"watchers,omitzero"`
 }
 
 type IssueCommentsResponse struct {
-	Total    int            `json:"total,omitempty"`
-	Comments []IssueComment `json:"comments,omitempty"`
+	Total    int            `json:"total,omitzero"`
+	Comments []IssueComment `json:"comments,omitzero"`
 }
 
 type IssueComment struct {
-	Author       JiraUser `json:"author,omitempty"`
-	Body         string   `json:"body,omitempty"`
-	UpdateAuthor JiraUser `json:"update_author,omitempty"`
-	Created      JiraTime `json:"created,omitempty"`
-	Updated      JiraTime `json:"updated,omitempty"`
+	Author       JiraUser `json:"author,omitzero"`
+	Body         string   `json:"body,omitzero"`
+	UpdateAuthor JiraUser `json:"update_author,omitzero"`
+	Created      JiraTime `json:"created,omitzero"`
+	Updated      JiraTime `json:"updated,omitzero"`
 }
 
 type Version struct {
-	Id              string `json:"id,omitempty"`
-	Name            string `json:"name,omitempty"`
-	Description     string `json:"description,omitempty"`
-	Archived        bool   `json:"archived,omitempty"`
-	Released        bool   `json:"released,omitempty"`
-	Overdue         bool   `json:"overdue,omitempty"`
-	UserReleaseDate string `json:"userReleaseDate,omitempty"`
-	ProjectId       int    `json:"projectId,omitempty"`
-	Self            string `json:"self,omitempty"`
+	Id              string `json:"id,omitzero"`
+	Name            string `json:"name,omitzero"`
+	Description     string `json:"description,omitzero"`
+	Archived        bool   `json:"archived,omitzero"`
+	Released        bool   `json:"released,omitzero"`
+	Overdue         bool   `json:"overdue,omitzero"`
+	UserReleaseDate string `json:"userReleaseDate,omitzero"`
+	ProjectId       int    `json:"projectId,omitzero"`
+	Self            string `json:"self,omitzero"`
 }
 
 type SearchResponse struct {
-	StartAt    int         `json:"startAt,omitempty"`
-	MaxResults int         `json:"maxResults,omitempty"`
-	Total      int         `json:"total,omitempty"`
-	Issues     []IssueJira `json:"issues,omitempty"`
+	StartAt    int         `json:"startAt"`
+	MaxResults int         `json:"maxResults"`
+	Total      int         `json:"total"`
+	Issues     []IssueJira `json:"issues"`
 }
 
-type UpdateIssueRequest struct {
+type UpsertIssueRequestFromMap struct {
 	Fields map[string]interface{} `json:"fields"`
 }
 
+type UpsertIssueRequest struct {
+	Fields FieldsIssue `json:"fields"`
+}
+
+// CreatedIssueResponse — ответ Jira на создание задачи (POST /issue)
+// Содержит минимальные поля, которые Jira возвращает по умолчанию.
+type CreatedIssueResponse struct {
+	ID   string `json:"id"`
+	Key  string `json:"key"`
+	Self string `json:"self"`
+}
+
 type TransitionIssueRequest struct {
-	Transition IssueField `json:"transition,omitempty"`
+	Transition IssueField `json:"transition,omitzero"`
 }
 type TransitionsResponse struct {
 	Expand      string       `json:"expand"`
