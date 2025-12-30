@@ -27,33 +27,21 @@ func IsTextOrCaption(update telego.Update) bool {
 	if update.Message == nil {
 		return false
 	}
-	if update.Message.Text != "" {
-		return true
-	}
-	if update.Message.Caption != "" {
-		return true
-	}
-	return false
+	return update.Message.Text != "" || update.Message.Caption != ""
 }
 
-func GetTextOrCaption(update telego.Message) string {
-	if update.Text != "" {
-		return update.Text
+func GetTextOrCaption(message telego.Message) string {
+	if message.Text != "" {
+		return message.Text
 	}
-	if update.Caption != "" {
-		return update.Caption
-	}
-	return ""
+	return message.Caption
 }
 
 func IsCommand(update telego.Update) bool {
 	if update.Message == nil {
 		return false
 	}
-	if strings.HasPrefix(update.Message.Text, "/") {
-		return true
-	}
-	return false
+	return strings.HasPrefix(update.Message.Text, "/")
 }
 
 func IsPrivateCommand(update telego.Update) bool {
@@ -61,13 +49,7 @@ func IsPrivateCommand(update telego.Update) bool {
 }
 
 func IsMessage(update telego.Update) bool {
-	if update.Message == nil {
-		return false
-	}
-	if IsTextOrCaption(update) {
-		return true
-	}
-	return false
+	return IsTextOrCaption(update) // IsTextOrCaption уже проверяет nil
 }
 
 func IsPrivateMessage(update telego.Update) bool {
@@ -75,21 +57,18 @@ func IsPrivateMessage(update telego.Update) bool {
 }
 
 func IsPhoto(update telego.Update) bool {
-	if update.Message.Photo != nil {
-		return true
-	}
-	return false
+	return len(update.Message.Photo) != 0
 }
 
 func IsPrivatePhoto(update telego.Update) bool {
-	return IsPhoto(update) && update.Message.Chat.Type == PrivateChatType
+	return IsPhoto(update) && update.Message != nil && update.Message.Chat.Type == PrivateChatType
 }
 
 func IsDocument(update telego.Update) bool {
-	if update.Message.Document != nil {
-		return true
+	if update.Message == nil {
+		return false
 	}
-	return false
+	return update.Message.Document != nil
 }
 
 func IsPrivateDocument(update telego.Update) bool {
