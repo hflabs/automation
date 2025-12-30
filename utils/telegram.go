@@ -57,11 +57,14 @@ func IsPrivateMessage(update telego.Update) bool {
 }
 
 func IsPhoto(update telego.Update) bool {
+	if update.Message == nil {
+		return false
+	}
 	return len(update.Message.Photo) != 0
 }
 
 func IsPrivatePhoto(update telego.Update) bool {
-	return IsPhoto(update) && update.Message != nil && update.Message.Chat.Type == PrivateChatType
+	return IsPhoto(update) && update.Message.Chat.Type == PrivateChatType
 }
 
 func IsDocument(update telego.Update) bool {
