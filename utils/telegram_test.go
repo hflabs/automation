@@ -36,6 +36,34 @@ func TestConvertTgLinks(t *testing.T) {
 	}
 }
 
+func Test_SplitTextIntoChunksWithSize(t *testing.T) {
+	tests := []struct {
+		name       string
+		input      string
+		chunkSize  int
+		wantChunks int
+	}{
+		{name: "1. Делит эмоджи в разные чанки",
+			input:      "<b>Привет 👋</b>",
+			chunkSize:  11,
+			wantChunks: 9999},
+		{name: "2. бесконечный цикл",
+			input:      "<a href=\"https://example.com/very/long/url\">Link</a>",
+			chunkSize:  10,
+			wantChunks: 9999},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SmartSplitTextIntoChunks(tt.input, tt.chunkSize)
+			require.Len(t, got, tt.wantChunks)
+			for _, chunk := range got {
+				err := validateChunkHTML(chunk)
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
 func Test_SplitTextIntoChunks(t *testing.T) {
 	tests := []struct {
 		name       string
