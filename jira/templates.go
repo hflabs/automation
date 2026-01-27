@@ -1,20 +1,20 @@
 package jira
 
-var Issue = newIssueSug()
+var Issue = newIssue()
 var EventType = newEventTypes()
 var Changelog = newChangelogs()
 
-type IssueSug struct {
-	Status      Status      // Статус
-	Type        Type        // Тип
-	Priority    Priority    // Приоритет
-	Resolution  Resolution  // Результат
-	Transitions Transitions // Возможные переходы статусов
-	Fields      IssueFields // Идентификаторы полей
+type Issues struct {
+	Status      status      // Статус
+	Type        typeIssue   // Тип
+	Priority    priority    // Приоритет
+	Resolution  resolution  // Результат
+	Transitions transitions // Возможные переходы статусов
+	Fields      fieldsIssue // Идентификаторы полей
 }
 
-func newIssueSug() IssueSug {
-	return IssueSug{
+func newIssue() Issues {
+	return Issues{
 		Status:      newStatuses(),
 		Type:        newTypes(),
 		Priority:    newPriorities(),
@@ -24,7 +24,7 @@ func newIssueSug() IssueSug {
 	}
 }
 
-type Status struct {
+type status struct {
 	Open                        string // Открытый
 	ToDo                        string // К выполнению
 	InProgress                  string // В работе
@@ -76,8 +76,8 @@ type Status struct {
 	AwaitingDecisionColleagues  string // Ожидает решения от коллег
 }
 
-func newStatuses() Status {
-	return Status{
+func newStatuses() status {
+	return status{
 		Open:                        "1",
 		ToDo:                        "2",
 		InProgress:                  "3",
@@ -148,7 +148,7 @@ func newEventTypes() EventTypes {
 	}
 }
 
-type Type struct {
+type typeIssue struct {
 	Bug         string // Ошибка
 	NewFeature  string // Новая функциональность
 	Task        string // Задача
@@ -157,8 +157,8 @@ type Type struct {
 	Learning    string // Обучение
 }
 
-func newTypes() Type {
-	return Type{
+func newTypes() typeIssue {
+	return typeIssue{
 		Bug:         "1",
 		NewFeature:  "2",
 		Task:        "3",
@@ -168,51 +168,51 @@ func newTypes() Type {
 	}
 }
 
-type Priority struct {
+type priority struct {
 	Blocker  string // Блокирующий
 	Critical string // Критический
 	Minor    string // Незначительный
 }
 
-func newPriorities() Priority {
-	return Priority{
+func newPriorities() priority {
+	return priority{
 		Blocker:  "1",
 		Critical: "2",
 		Minor:    "4",
 	}
 }
 
-type Resolution struct {
+type resolution struct {
 	Fixed      string // Исправленный
 	WontFix    string // Не будет исправлено
 	NeedBugFix string // Нужен багфикс
 }
 
-func newResolutions() Resolution {
-	return Resolution{
+func newResolutions() resolution {
+	return resolution{
 		Fixed:      "1",
 		WontFix:    "2",
 		NeedBugFix: "10300",
 	}
 }
 
-type ChangelogSug struct {
-	SingleItem SingleItem // Что изменилось
+type Changelogs struct {
+	SingleItem singleItem // Что изменилось
 }
 
-func newChangelogs() ChangelogSug {
-	return ChangelogSug{SingleItem: newSingleItem()}
+func newChangelogs() Changelogs {
+	return Changelogs{SingleItem: newSingleItem()}
 }
 
-type SingleItem struct {
-	Field ChangelogField // Поле
+type singleItem struct {
+	Field changelogField // Поле
 }
 
-func newSingleItem() SingleItem {
-	return SingleItem{Field: newChangelogFields()}
+func newSingleItem() singleItem {
+	return singleItem{Field: newChangelogFields()}
 }
 
-type ChangelogField struct {
+type changelogField struct {
 	Status        string // Статус
 	StoryPoints   string // Story Points
 	BusinessValue string // Business Value
@@ -235,8 +235,8 @@ type ChangelogField struct {
 	LearnLink          string // Ссылка на курс
 }
 
-func newChangelogFields() ChangelogField {
-	return ChangelogField{
+func newChangelogFields() changelogField {
+	return changelogField{
 		Status:        "status",
 		StoryPoints:   "Story Points",
 		BusinessValue: "Business Value",
@@ -260,7 +260,7 @@ func newChangelogFields() ChangelogField {
 	}
 }
 
-type Transitions struct {
+type transitions struct {
 	FromBacklogToRate string // Rate - Анализ задачи на исполняемость, атомарность и нужность. Оценка для получения индекса, по которому сортируется очередь задач
 	FromBacklogToDone string // Trash - Закрытие задачи без разработки
 
@@ -286,8 +286,8 @@ type Transitions struct {
 	FromCodeReviewToResolved string // Resolved — Резолюция выбрана и ожидает подтверждения автора. Здесь проблемы либо открываются вновь, либо закрываются.
 }
 
-func newTransitions() Transitions {
-	return Transitions{
+func newTransitions() transitions {
+	return transitions{
 		FromBacklogToRate:        "51",
 		FromBacklogToDone:        "171",
 		FromRateToSelected:       "61",
@@ -308,7 +308,7 @@ func newTransitions() Transitions {
 	}
 }
 
-type IssueFields struct {
+type fieldsIssue struct {
 	StoryPoints        string // customfield_10083
 	BusinessValue      string // customfield_10084
 	WeightedJob        string // customfield_12580
@@ -330,8 +330,8 @@ type IssueFields struct {
 	LearnLink          string // Ссылка на курс
 }
 
-func newIssueFields() IssueFields {
-	return IssueFields{
+func newIssueFields() fieldsIssue {
+	return fieldsIssue{
 		StoryPoints:        "customfield_10083",
 		BusinessValue:      "customfield_10084",
 		WeightedJob:        "customfield_12580",
