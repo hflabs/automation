@@ -156,8 +156,11 @@ func SmartSplitTextIntoChunks(s string, chunkSize int) []string {
 	var chunks []string
 	var currentChunk bytes.Buffer
 	var stack []tagStackItem
+	var hasContent bool // Флаг: добавлен ли в текущий чанк текст или void-теги
+
 	s = sanitizeIncomingHTML(s)
 	z := html.NewTokenizer(strings.NewReader(s))
+
 	for {
 		tt := z.Next()
 		if tt == html.ErrorToken {
@@ -165,80 +168,97 @@ func SmartSplitTextIntoChunks(s string, chunkSize int) []string {
 		}
 		token := z.Token()
 		tokenString := token.String()
-		// Обработка текстовых и обычных токенов
-		// Мы используем цикл, потому что один длинный текстовый токен может
-		// растянуться на несколько чанков.
+
 		for len(tokenString) > 0 {
-			// 1. Считаем, сколько места займут закрывающие теги, если прерваться сейчас
 			closingOverhead := countClosingOverhead(stack)
-			// 2. Считаем свободное место в текущем чанке
-			availableSpace := chunkSize - currentChunk.Len() - closingOverhead
-			// Если места совсем нет (или оно отрицательное из-за оверхеда), форсируем сброс чанка
-			// Но только если чанк не пустой (чтобы избежать бесконечного цикла, если оверхед > chunkSize)
-			if availableSpace <= 0 && currentChunk.Len() > 0 {
-				chunks = append(chunks, flushChunk(&currentChunk, stack))
-				currentChunk.WriteString(reopenTags(stack))
-				continue
-			}
-			// 3. Проверяем, влезает ли токен целиком
-			if len(tokenString) <= availableSpace {
-				currentChunk.WriteString(tokenString)
-				// Если это был тег, обновляем стек
-				updateStack(tt, token, tokenString, &stack)
-				break // Токен полностью обработан, выходим из внутреннего цикла
+
+			// Считаем оверхед на открытие тегов, если чанк будет новым
+			openingOverhead := 0
+			if currentChunk.Len() == 0 {
+				for _, t := range stack {
+					openingOverhead += len(t.Token)
+				}
 			}
 
-			// 4. Если токен не влезает
+			availableSpace := chunkSize - currentChunk.Len() - openingOverhead - closingOverhead
+
+			// 1. Если места нет и в чанке уже есть полезный контент — сбрасываем
+			if availableSpace <= 0 && hasContent {
+				chunks = append(chunks, flushChunk(&currentChunk, stack))
+				hasContent = false
+				continue
+			}
+
+			// 2. Если чанк пустой, подготавливаем его (открываем теги из стека)
+			if currentChunk.Len() == 0 && len(stack) > 0 {
+				currentChunk.WriteString(reopenTags(stack))
+				// Пересчитываем место
+				availableSpace = chunkSize - currentChunk.Len() - closingOverhead
+			}
+
+			// 3. Обработка контента
 			if tt == html.TextToken {
-				// Пытаемся отрезать кусок текста по пробелу
 				head, tail := splitTextBySpace(tokenString, availableSpace)
-				// Если head пустой, значит даже одно слово не влезает в оставшееся место.
-				// Сбрасываем текущий чанк и пробуем снова в новом (пустом) чанке.
-				if head == "" && currentChunk.Len() > 0 {
-					chunks = append(chunks, flushChunk(&currentChunk, stack))
-					currentChunk.WriteString(reopenTags(stack))
-					continue
+
+				// Если не влезло ни слова и в чанке пусто — берем хоть что-то для прогресса
+				if head == "" && !hasContent {
+					head, tail = splitByRune(tokenString, 1)
 				}
-				// Добавляем кусок, закрываем чанк
-				currentChunk.WriteString(head)
-				chunks = append(chunks, flushChunk(&currentChunk, stack))
-				// Начинаем новый чанк
-				currentChunk.WriteString(reopenTags(stack))
-				// Остаток текста обрабатываем в следующей итерации цикла
-				tokenString = tail
+
+				if head != "" {
+					currentChunk.WriteString(head)
+					hasContent = true
+					tokenString = tail
+				} else {
+					// Если head пустой и контент уже был — сбрасываем чанк
+					chunks = append(chunks, flushChunk(&currentChunk, stack))
+					hasContent = false
+				}
 			} else {
-				// Если это НЕ текст (а тег), и он не влезает -> закрываем текущий чанк
-				chunks = append(chunks, flushChunk(&currentChunk, stack))
-				currentChunk.WriteString(reopenTags(stack))
-				// Тег будет добавлен в новый чанк на следующей итерации (availableSpace будет большим)
+				// Это тег. Просто добавляем его в текущий чанк.
+				// Теги не вызывают немедленный flush, чтобы не плодить пустые <a></a>
+				currentChunk.WriteString(tokenString)
+				updateStack(tt, token, tokenString, &stack)
+				// Если это одиночный тег (br, img), это считается контентом
+				if isVoidElement(token.Data) {
+					hasContent = true
+				}
+				tokenString = "" // Тег обработан целиком
 			}
 		}
 	}
-	// Сохраняем последний кусочек, если есть
-	if currentChunk.Len() > 0 {
-		chunks = append(chunks, currentChunk.String())
+	// Финальный сброс, если в последнем чанке было хоть что-то полезное
+	if hasContent {
+		chunks = append(chunks, flushChunk(&currentChunk, stack))
 	}
 	return chunks
 }
 
 // splitTextBySpace делит текст на две части:
-// head - часть, которая влезает в limit (стараясь не резать слова)
+// head - часть, которая влезает в limit (стараясь не резать слова и символы UTF-8)
 // tail - остаток
 func splitTextBySpace(text string, limit int) (head, tail string) {
+	if limit <= 0 {
+		return "", text
+	}
 	if len(text) <= limit {
 		return text, ""
 	}
-	// Берем подстроку, которая теоретически влезает
-	candidate := text[:limit]
-	// Ищем последний пробел в этой подстроке
+	// Находим последнюю корректную границу UTF-8 символа внутри limit
+	lastValidIdx := 0
+	for i := range text {
+		if i > limit {
+			break
+		}
+		lastValidIdx = i
+	}
+
+	candidate := text[:lastValidIdx]
 	lastSpaceIndex := strings.LastIndexFunc(candidate, unicode.IsSpace)
-	// Если пробел найден и он не в самом начале (чтобы не возвращать пустой head постоянно)
 	if lastSpaceIndex > 0 {
-		// Включаем пробел в первую часть, чтобы форматирование сохранялось
 		return text[:lastSpaceIndex+1], text[lastSpaceIndex+1:]
 	}
-	// Если пробелов нет (очень длинное слово/URL) или пробел в начале — режем жестко
-	return text[:limit], text[limit:]
+	return text[:lastValidIdx], text[lastValidIdx:]
 }
 
 // flushChunk — Закрывает теги, возвращает строку чанка и очищает буфер
@@ -275,15 +295,13 @@ func countClosingOverhead(stack []tagStackItem) int {
 func updateStack(tt html.TokenType, token html.Token, tokenString string, stack *[]tagStackItem) {
 	switch tt {
 	case html.StartTagToken:
-		// Добавляем в стек, только если это не void элемент (br, img и т.д.)
 		if !isVoidElement(token.Data) {
-			*stack = append(*stack, struct{ Name, Token string }{
+			*stack = append(*stack, tagStackItem{
 				Name:  token.Data,
 				Token: tokenString,
 			})
 		}
 	case html.EndTagToken:
-		// Убираем из стека соответствующий открывающий тег
 		s := *stack
 		for i := len(s) - 1; i >= 0; i-- {
 			if s[i].Name == token.Data {
@@ -344,4 +362,16 @@ func sanitizeIncomingHTML(s string) string {
 	// Исправляем проблему с залипшим тегом ссылки
 	s = strings.ReplaceAll(s, "<<a", "&lt;<a")
 	return s
+}
+
+// Вспомогательная функция для взятия N символов (не байт!)
+func splitByRune(text string, n int) (head, tail string) {
+	count := 0
+	for i := range text {
+		if count == n {
+			return text[:i], text[i:]
+		}
+		count++
+	}
+	return text, ""
 }
