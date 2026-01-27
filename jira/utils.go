@@ -9,14 +9,16 @@ import (
 	"time"
 )
 
+const TimeFormatJira = "2006-01-02T15:04:05.000Z0700"
+
 type JiraTime struct {
 	time.Time
 }
 
-func (j *JiraTime) UnmarshalJSON(b []byte) error {
+func (j JiraTime) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	s = s[1 : len(s)-1]
-	t, err := time.Parse("2006-01-02T15:04:05.000Z0700", s)
+	t, err := time.Parse(TimeFormatJira, s)
 	if err != nil {
 		return err
 	}
@@ -24,8 +26,8 @@ func (j *JiraTime) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (j *JiraTime) MarshalJSON() ([]byte, error) {
-	return []byte(j.Format("2006-01-02T15:04:05.000Z0700")), nil
+func (j JiraTime) MarshalJSON() ([]byte, error) {
+	return []byte(j.Format(TimeFormatJira)), nil
 }
 
 type Timestamp struct {
@@ -36,7 +38,7 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.UnixMilli())
 }
 
-func (t *Timestamp) UnmarshalJSON(data []byte) error {
+func (t Timestamp) UnmarshalJSON(data []byte) error {
 	var unix int64
 	if err := json.Unmarshal(data, &unix); err != nil {
 		return err
@@ -56,10 +58,13 @@ func validateStatus(resp *http.Response) error {
 	return fmt.Errorf("status code %v.\nBody:%s", resp.StatusCode, string(b))
 }
 
-func formatAvailableStatuses(availableStatuses map[string]string) string {
-	pairs := make([]string, 0, len(availableStatuses))
-	for id, name := range availableStatuses {
-		pairs = append(pairs, fmt.Sprintf("%s:%v", id, name))
+func formatAvailableStatuses(availableStatuses []Transition) string {
+	pairs := strings.Builder{}
+	for index, status := range availableStatuses {
+		pairs.WriteString(fmt.Sprintf("%s:%v", status.ID, status.Name))
+		if index != len(availableStatuses)-1 {
+			pairs.WriteString(", ")
+		}
 	}
-	return strings.Join(pairs, ", ")
+	return pairs.String()
 }

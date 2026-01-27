@@ -159,22 +159,14 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId 
 	}
 
 	// 2. Ищем нужный переход
-	var targetTransitionID string
-	// Мапа, чтобы в ответе был не только ID, но и название статуса
-	availableStatuses := make(map[string]string, len(meta.Transitions))
 	for _, t := range meta.Transitions {
-		availableStatuses[t.To.ID] = t.To.Name
 		if t.To.ID == targetStatusId {
-			targetTransitionID = t.ID
-			break
+			// 3. Выполняем переход, если нашли
+			return j.TransitionIssue(ctx, issueKey, t.ID)
 		}
 	}
-	if targetTransitionID == "" {
-		return fmt.Errorf("cannot transition issue %s to status '%s'. Available statuses: %v",
-			issueKey, targetStatusId, formatAvailableStatuses(availableStatuses))
-	}
-	// 3. Выполняем переход
-	return j.TransitionIssue(ctx, issueKey, targetTransitionID)
+	return fmt.Errorf("cannot transition issue %s to status '%s'. Available statuses: %v",
+		issueKey, targetStatusId, formatAvailableStatuses(meta.Transitions))
 }
 
 func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error {
