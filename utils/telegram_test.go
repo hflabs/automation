@@ -158,3 +158,64 @@ func Test_SplitTextIntoChunks(t *testing.T) {
 		})
 	}
 }
+
+func Test_SanitizeForTelegram(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "1. Простые разрешенные теги",
+			input: "<b>Bold</b> <i>Italic</i> <u>Underline</u> <s>Strike</s>",
+			want:  "<b>Bold</b> <i>Italic</i> <u>Underline</u> <s>Strike</s>",
+		},
+		{
+			name:  "2. Очистка запрещенных структурных тегов (413 Error)",
+			input: "<html><body><center><h1>413 Large</h1></center><hr></body></html>",
+			want:  "413 Large", // Теги удалены
+		},
+		{
+			name:  "3. Ссылки: сохранение href и удаление опасных атрибутов",
+			input: `<a href="https://t.me/test" onclick="alert('xss')" style="color:red">Link</a>`,
+			want:  `<a href="https://t.me/test">Link</a>`,
+		},
+		{
+			name:  "4. Спойлеры: поддержка тега ",
+			input: `<tg-spoiler>Secret</tg-spoiler> <span class="bad">Public</span>`,
+			want:  `<tg-spoiler>Secret</tg-spoiler> Public`,
+		},
+		{
+			name:  "5. Форматирование кода и цитат",
+			input: "<blockquote>Quote</blockquote> <pre><code>fmt.Print()</code></pre>",
+			want:  "<blockquote>Quote</blockquote> <pre><code>fmt.Print()</code></pre>",
+		},
+		{
+			name:  "6. Кастомные эмодзи",
+			input: `<tg-emoji emoji-id="53212345">👋</tg-emoji>`,
+			want:  `<tg-emoji emoji-id="53212345">👋</tg-emoji>`,
+		},
+		{
+			name:  "7. Экранирование спецсимволов (автоматически)",
+			input: "1 < 2 & 3 > 2",
+			want:  "1 &lt; 2 &amp; 3 &gt; 2",
+		},
+		{
+			name:  "8. Вложенные запрещенные теги",
+			input: "<div><p>Параграф <b>жирный</b></p></div>",
+			want:  "Параграф <b>жирный</b>", // div и p удалены как элементы, но контент сохранен
+		},
+		{
+			name:  "9. Протоколы ссылок",
+			input: `<a href="https://t.me">Safe</a> <a href="javascript:alert(1)">Unsafe</a>`,
+			want:  `<a href="https://t.me">Safe</a> Unsafe`, // unsafe ссылка стала просто текстом (без тега <a>)
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SanitizeForTelegram(tt.input)
+			require.Equal(t, tt.want, got)
+		})
+	}
+}

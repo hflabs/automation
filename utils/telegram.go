@@ -8,6 +8,7 @@ import (
 	"unicode"
 
 	"github.com/carlmjohnson/requests"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/mymmrac/telego"
 	"golang.org/x/net/html"
 )
@@ -374,4 +375,45 @@ func splitByRune(text string, n int) (head, tail string) {
 		count++
 	}
 	return text, ""
+}
+
+func SanitizeForTelegram(input string) string {
+	// 1. Защищаем кастомные теги спойлера Telegram от вырезания парсером bluemonday.
+	// Мы временно заменяем их на уникальные текстовые маркеры.
+	replacer := strings.NewReplacer(
+		"<tg-spoiler>", "___TGS_OPEN___",
+		"</tg-spoiler>", "___TGS_CLOSE___",
+	)
+	restoreReplacer := strings.NewReplacer(
+		"___TGS_OPEN___", "<tg-spoiler>",
+		"___TGS_CLOSE___", "</tg-spoiler>",
+	)
+	protected := replacer.Replace(input)
+
+	p := bluemonday.NewPolicy()
+	// 1. Простые текстовые теги
+	p.AllowElements(
+		"b", "strong", // жирный
+		"i", "em", // курсив
+		"u", "ins", // подчеркивание
+		"s", "strike", "del", // зачеркивание
+		"code", "pre", // код
+		"blockquote", // цитаты
+		"tg-spoiler", // спойлеры (специфичный тег)
+	)
+	// 2. Ссылки (тег <a>)
+	// Разрешаем только атрибут href и только безопасные протоколы
+	p.AllowAttrs("href").OnElements("a")
+	p.AllowURLSchemes("http", "https", "tg", "mailto")
+	// 4. Кастомные эмодзи
+	p.AllowAttrs("emoji-id").OnElements("tg-emoji")
+	sanitized := p.Sanitize(protected)
+	// 5. Возвращаем кастомные теги на место
+	sanitized = restoreReplacer.Replace(sanitized)
+
+	return strings.TrimSpace(sanitized)
+}
+
+func SplitTextForTelegramHtmlMarkdown(input string, chunkSize int) []string {
+	return SmartSplitTextIntoChunks(SanitizeForTelegram(input), chunkSize)
 }
