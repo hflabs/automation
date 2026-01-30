@@ -70,3 +70,38 @@ type User struct {
 	UserKey     string `json:"userKey"`
 	DisplayName string `json:"displayName"`
 }
+
+type Restrictions struct {
+	Read struct {
+		RestrictionByOperation
+	} `json:"read"`
+	Update struct {
+		RestrictionByOperation
+	} `json:"update"`
+}
+
+type RestrictionByOperation struct {
+	Operation    string `json:"operation"`
+	Restrictions struct {
+		User struct {
+			Results []struct {
+				Type        string `json:"type"`
+				Username    string `json:"username"`
+				UserKey     string `json:"userKey"`
+				DisplayName string `json:"displayName"`
+			} `json:"results"`
+			Start int `json:"start"`
+			Limit int `json:"limit"`
+			Size  int `json:"size"`
+		} `json:"user"`
+		Group struct {
+			Results []struct {
+				Type string `json:"type"`
+				Name string `json:"name"`
+			} `json:"results"`
+			Start int `json:"start"`
+			Limit int `json:"limit"`
+			Size  int `json:"size"`
+		} `json:"group"`
+	} `json:"restrictions"`
+}

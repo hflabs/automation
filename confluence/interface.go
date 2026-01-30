@@ -27,4 +27,7 @@ type ApiConfluence interface {
 	SetRestrictionUser(ctx context.Context, id, username, action string) error
 	SetRestrictionGroup(ctx context.Context, id, groupName, action string) error
 	SetRestrictionsForHFLabsOnly(ctx context.Context, id string) error
+
+	GetRestrictionsById(ctx context.Context, id string) (Restrictions, error)
+	GetRestrictionByOperationById(ctx context.Context, id, operation string) (RestrictionByOperation, error)
 }

@@ -364,3 +364,35 @@ func (c *confluence) SetRestrictionsForHFLabsOnly(ctx context.Context, id string
 	}
 	return nil
 }
+
+func (c *confluence) GetRestrictionsById(ctx context.Context, id string) (Restrictions, error) {
+	var restrictions Restrictions
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/restriction/byOperation", c.baseUrl, id)).
+		Method(http.MethodGet).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&restrictions).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return restrictions, fmt.Errorf("GetRestrictionsById — get confluence pageId %s restrictions err: %w", id, err)
+	}
+	return restrictions, nil
+}
+
+func (c *confluence) GetRestrictionByOperationById(ctx context.Context, id, operation string) (RestrictionByOperation, error) {
+	var restrictions RestrictionByOperation
+	err := requests.
+		URL(fmt.Sprintf("%s/%s/restriction/byOperation/%s", c.baseUrl, id, operation)).
+		Method(http.MethodGet).
+		ContentType("application/json").
+		BasicAuth(c.user, c.password).
+		ToJSON(&restrictions).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return restrictions, fmt.Errorf("GetRestrictionByOperationById — get confluence pageId %s restrictions err: %w", id, err)
+	}
+	return restrictions, nil
+}
