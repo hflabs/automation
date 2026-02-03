@@ -15,7 +15,7 @@ type JiraTime struct {
 	time.Time
 }
 
-func (j JiraTime) UnmarshalJSON(b []byte) error {
+func (j *JiraTime) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	s = s[1 : len(s)-1]
 	t, err := time.Parse(TimeFormatJira, s)
@@ -38,7 +38,7 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.UnixMilli())
 }
 
-func (t Timestamp) UnmarshalJSON(data []byte) error {
+func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	var unix int64
 	if err := json.Unmarshal(data, &unix); err != nil {
 		return err
