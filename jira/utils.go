@@ -16,8 +16,12 @@ type JiraTime struct {
 }
 
 func (j *JiraTime) UnmarshalJSON(b []byte) error {
-	s := string(b)
-	s = s[1 : len(s)-1]
+	// 1. Безопасное удаление кавычек
+	s := strings.Trim(string(b), "\"")
+	// 2. Проверка на null
+	if s == "null" || s == "" {
+		return nil
+	}
 	t, err := time.Parse(TimeFormatJira, s)
 	if err != nil {
 		return err

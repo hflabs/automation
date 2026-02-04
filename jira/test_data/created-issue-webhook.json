@@ -3,37 +3,37 @@
   "webhookEvent": "jira:issue_created",
   "issue_event_type_name": "issue_created",
   "user": {
-    "self": "https://jira2.hflabs.ru/rest/api/2/user?username=petrsav2",
-    "name": "petrsav2",
+    "self": "https://jira.example.com/rest/api/2/user?username=testuser",
+    "name": "testuser",
     "key": "JIRAUSER61200",
-    "emailAddress": "petrsav@hflabs.ru",
+    "emailAddress": "testuser@example.com",
     "avatarUrls": {
-      "48x48": "https://jira2.hflabs.ru/secure/useravatar?avatarId=10122",
-      "24x24": "https://jira2.hflabs.ru/secure/useravatar?size=small&avatarId=10122",
-      "16x16": "https://jira2.hflabs.ru/secure/useravatar?size=xsmall&avatarId=10122",
-      "32x32": "https://jira2.hflabs.ru/secure/useravatar?size=medium&avatarId=10122"
+      "48x48": "https://jira.example.com/secure/useravatar?avatarId=10122",
+      "24x24": "https://jira.example.com/secure/useravatar?size=small&avatarId=10122",
+      "16x16": "https://jira.example.com/secure/useravatar?size=xsmall&avatarId=10122",
+      "32x32": "https://jira.example.com/secure/useravatar?size=medium&avatarId=10122"
     },
-    "displayName": "Пётр Савченко2",
+    "displayName": "Test User",
     "active": true,
     "timeZone": "Europe/Moscow"
   },
   "issue": {
-    "id": "397761",
-    "self": "https://jira2.hflabs.ru/rest/api/2/issue/397761",
-    "key": "ALPHAS-905",
+    "id": "100905",
+    "self": "https://jira.example.com/rest/api/2/issue/100905",
+    "key": "PROJECT-905",
     "fields": {
       "issuetype": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/issuetype/3",
+        "self": "https://jira.example.com/rest/api/2/issuetype/3",
         "id": "3",
         "description": "A task that needs to be done.",
-        "iconUrl": "https://jira2.hflabs.ru/secure/viewavatar?size=xsmall&avatarId=16318&avatarType=issuetype",
+        "iconUrl": "https://jira.example.com/secure/viewavatar?size=xsmall&avatarId=16318&avatarType=issuetype",
         "name": "Task",
         "subtask": false,
         "avatarId": 16318
       },
       "customfield_13381": [
         {
-          "self": "https://jira2.hflabs.ru/rest/api/2/version/15301",
+          "self": "https://jira.example.com/rest/api/2/version/15301",
           "id": "15301",
           "name": "Backlog",
           "archived": false,
@@ -44,27 +44,27 @@
       "customfield_11480": "0|i0g1xz:",
       "customfield_11681": null,
       "project": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/project/11310",
+        "self": "https://jira.example.com/rest/api/2/project/11310",
         "id": "11310",
-        "key": "ALPHAS",
-        "name": "Альфастрахование",
+        "key": "PROJECT",
+        "name": "Demo Project",
         "projectTypeKey": "software",
         "avatarUrls": {
-          "48x48": "https://jira2.hflabs.ru/secure/projectavatar?pid=11310&avatarId=11702",
-          "24x24": "https://jira2.hflabs.ru/secure/projectavatar?size=small&pid=11310&avatarId=11702",
-          "16x16": "https://jira2.hflabs.ru/secure/projectavatar?size=xsmall&pid=11310&avatarId=11702",
-          "32x32": "https://jira2.hflabs.ru/secure/projectavatar?size=medium&pid=11310&avatarId=11702"
+          "48x48": "https://jira.example.com/secure/projectavatar?pid=11310&avatarId=11702",
+          "24x24": "https://jira.example.com/secure/projectavatar?size=small&pid=11310&avatarId=11702",
+          "16x16": "https://jira.example.com/secure/projectavatar?size=xsmall&pid=11310&avatarId=11702",
+          "32x32": "https://jira.example.com/secure/projectavatar?size=medium&pid=11310&avatarId=11702"
         },
         "projectCategory": {
-          "self": "https://jira2.hflabs.ru/rest/api/2/projectCategory/10020",
+          "self": "https://jira.example.com/rest/api/2/projectCategory/10020",
           "id": "10020",
-          "description": "Проекты CDI",
-          "name": "CDI"
+          "description": "Integration Projects",
+          "name": "Integration"
         }
       },
       "fixVersions": [
         {
-          "self": "https://jira2.hflabs.ru/rest/api/2/version/15301",
+          "self": "https://jira.example.com/rest/api/2/version/15301",
           "id": "15301",
           "name": "Backlog",
           "archived": false,
@@ -77,7 +77,7 @@
       "workratio": -1,
       "lastViewed": null,
       "watches": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/issue/ALPHAS-905/watchers",
+        "self": "https://jira.example.com/rest/api/2/issue/PROJECT-905/watchers",
         "watchCount": 0,
         "isWatching": false
       },
@@ -85,17 +85,17 @@
       "customfield_14385": null,
       "customfield_10380": [
         {
-          "self": "https://jira2.hflabs.ru/rest/api/2/user?username=petrsav2",
-          "name": "petrsav2",
+          "self": "https://jira.example.com/rest/api/2/user?username=testuser",
+          "name": "testuser",
           "key": "JIRAUSER61200",
-          "emailAddress": "petrsav@hflabs.ru",
+          "emailAddress": "testuser@example.com",
           "avatarUrls": {
-            "48x48": "https://jira2.hflabs.ru/secure/useravatar?avatarId=10122",
-            "24x24": "https://jira2.hflabs.ru/secure/useravatar?size=small&avatarId=10122",
-            "16x16": "https://jira2.hflabs.ru/secure/useravatar?size=xsmall&avatarId=10122",
-            "32x32": "https://jira2.hflabs.ru/secure/useravatar?size=medium&avatarId=10122"
+            "48x48": "https://jira.example.com/secure/useravatar?avatarId=10122",
+            "24x24": "https://jira.example.com/secure/useravatar?size=small&avatarId=10122",
+            "16x16": "https://jira.example.com/secure/useravatar?size=xsmall&avatarId=10122",
+            "32x32": "https://jira.example.com/secure/useravatar?size=medium&avatarId=10122"
           },
-          "displayName": "Пётр Савченко2",
+          "displayName": "Test User",
           "active": true,
           "timeZone": "Europe/Moscow"
         }
@@ -104,8 +104,8 @@
       "customfield_10063": null,
       "customfield_10064": null,
       "priority": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/priority/4",
-        "iconUrl": "https://jira2.hflabs.ru/images/icons/priorities/minor.svg",
+        "self": "https://jira.example.com/rest/api/2/priority/4",
+        "iconUrl": "https://jira.example.com/images/icons/priorities/minor.svg",
         "name": "Minor",
         "id": "4"
       },
@@ -114,29 +114,29 @@
       "aggregatetimeoriginalestimate": null,
       "issuelinks": [],
       "assignee": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/user?username=vadimz",
-        "name": "vadimz",
-        "key": "vadimz",
-        "emailAddress": "vadimz@hflabs.ru",
+        "self": "https://jira.example.com/rest/api/2/user?username=developer",
+        "name": "developer",
+        "key": "developer",
+        "emailAddress": "developer@example.com",
         "avatarUrls": {
-          "48x48": "https://jira2.hflabs.ru/secure/useravatar?avatarId=10122",
-          "24x24": "https://jira2.hflabs.ru/secure/useravatar?size=small&avatarId=10122",
-          "16x16": "https://jira2.hflabs.ru/secure/useravatar?size=xsmall&avatarId=10122",
-          "32x32": "https://jira2.hflabs.ru/secure/useravatar?size=medium&avatarId=10122"
+          "48x48": "https://jira.example.com/secure/useravatar?avatarId=10122",
+          "24x24": "https://jira.example.com/secure/useravatar?size=small&avatarId=10122",
+          "16x16": "https://jira.example.com/secure/useravatar?size=xsmall&avatarId=10122",
+          "32x32": "https://jira.example.com/secure/useravatar?size=medium&avatarId=10122"
         },
-        "displayName": "Вадим Зайцев",
+        "displayName": "John Doe",
         "active": true,
         "timeZone": "Europe/Moscow"
       },
       "updated": "2024-11-06T20:15:55.684+0300",
       "status": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/status/11820",
-        "description": "Заводим баг",
-        "iconUrl": "https://jira2.hflabs.ru/images/icons/statuses/generic.png",
-        "name": "Новый баг",
+        "self": "https://jira.example.com/rest/api/2/status/11820",
+        "description": "Logging a bug",
+        "iconUrl": "https://jira.example.com/images/icons/statuses/generic.png",
+        "name": "New Bug",
         "id": "11820",
         "statusCategory": {
-          "self": "https://jira2.hflabs.ru/rest/api/2/statuscategory/2",
+          "self": "https://jira.example.com/rest/api/2/statuscategory/2",
           "id": 2,
           "key": "new",
           "colorName": "default",
@@ -145,10 +145,10 @@
       },
       "components": [
         {
-          "self": "https://jira2.hflabs.ru/rest/api/2/component/12351",
+          "self": "https://jira.example.com/rest/api/2/component/12351",
           "id": "12351",
-          "name": "JMS",
-          "description": "Очереди сообщений"
+          "name": "Backend Queue",
+          "description": "Message Queues"
         }
       ],
       "customfield_13280": null,
@@ -161,38 +161,38 @@
       "customfield_13482": null,
       "timeoriginalestimate": null,
       "customfield_11780": null,
-      "description": "testing desc",
+      "description": "Generic description for testing purposes.",
       "customfield_10010": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/user?username=jocker",
-        "name": "jocker",
-        "key": "jocker",
-        "emailAddress": "nomail@1.ru",
+        "self": "https://jira.example.com/rest/api/2/user?username=external_user",
+        "name": "external_user",
+        "key": "external_user",
+        "emailAddress": "external@example.com",
         "avatarUrls": {
-          "48x48": "https://jira2.hflabs.ru/secure/useravatar?avatarId=10122",
-          "24x24": "https://jira2.hflabs.ru/secure/useravatar?size=small&avatarId=10122",
-          "16x16": "https://jira2.hflabs.ru/secure/useravatar?size=xsmall&avatarId=10122",
-          "32x32": "https://jira2.hflabs.ru/secure/useravatar?size=medium&avatarId=10122"
+          "48x48": "https://jira.example.com/secure/useravatar?avatarId=10122",
+          "24x24": "https://jira.example.com/secure/useravatar?size=small&avatarId=10122",
+          "16x16": "https://jira.example.com/secure/useravatar?size=xsmall&avatarId=10122",
+          "32x32": "https://jira.example.com/secure/useravatar?size=medium&avatarId=10122"
         },
-        "displayName": "Jocker",
+        "displayName": "External User",
         "active": true,
         "timeZone": "Europe/Moscow"
       },
       "timetracking": {},
       "attachment": [],
       "aggregatetimeestimate": null,
-      "summary": "testing",
+      "summary": "Integration Test Task",
       "creator": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/user?username=petrsav2",
-        "name": "petrsav2",
+        "self": "https://jira.example.com/rest/api/2/user?username=testuser",
+        "name": "testuser",
         "key": "JIRAUSER61200",
-        "emailAddress": "petrsav@hflabs.ru",
+        "emailAddress": "testuser@example.com",
         "avatarUrls": {
-          "48x48": "https://jira2.hflabs.ru/secure/useravatar?avatarId=10122",
-          "24x24": "https://jira2.hflabs.ru/secure/useravatar?size=small&avatarId=10122",
-          "16x16": "https://jira2.hflabs.ru/secure/useravatar?size=xsmall&avatarId=10122",
-          "32x32": "https://jira2.hflabs.ru/secure/useravatar?size=medium&avatarId=10122"
+          "48x48": "https://jira.example.com/secure/useravatar?avatarId=10122",
+          "24x24": "https://jira.example.com/secure/useravatar?size=small&avatarId=10122",
+          "16x16": "https://jira.example.com/secure/useravatar?size=xsmall&avatarId=10122",
+          "32x32": "https://jira.example.com/secure/useravatar?size=medium&avatarId=10122"
         },
-        "displayName": "Пётр Савченко2",
+        "displayName": "Test User",
         "active": true,
         "timeZone": "Europe/Moscow"
       },
@@ -205,17 +205,17 @@
       "customfield_10085": null,
       "customfield_10481": null,
       "reporter": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/user?username=petrsav2",
-        "name": "petrsav2",
+        "self": "https://jira.example.com/rest/api/2/user?username=testuser",
+        "name": "testuser",
         "key": "JIRAUSER61200",
-        "emailAddress": "petrsav@hflabs.ru",
+        "emailAddress": "testuser@example.com",
         "avatarUrls": {
-          "48x48": "https://jira2.hflabs.ru/secure/useravatar?avatarId=10122",
-          "24x24": "https://jira2.hflabs.ru/secure/useravatar?size=small&avatarId=10122",
-          "16x16": "https://jira2.hflabs.ru/secure/useravatar?size=xsmall&avatarId=10122",
-          "32x32": "https://jira2.hflabs.ru/secure/useravatar?size=medium&avatarId=10122"
+          "48x48": "https://jira.example.com/secure/useravatar?avatarId=10122",
+          "24x24": "https://jira.example.com/secure/useravatar?size=small&avatarId=10122",
+          "16x16": "https://jira.example.com/secure/useravatar?size=xsmall&avatarId=10122",
+          "32x32": "https://jira.example.com/secure/useravatar?size=medium&avatarId=10122"
         },
-        "displayName": "Пётр Савченко2",
+        "displayName": "Test User",
         "active": true,
         "timeZone": "Europe/Moscow"
       },
@@ -243,7 +243,7 @@
         "startAt": 0
       },
       "votes": {
-        "self": "https://jira2.hflabs.ru/rest/api/2/issue/ALPHAS-905/votes",
+        "self": "https://jira.example.com/rest/api/2/issue/PROJECT-905/votes",
         "votes": 0,
         "hasVoted": false
       },
