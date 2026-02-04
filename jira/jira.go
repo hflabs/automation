@@ -5,8 +5,8 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/carlmjohnson/requests"
 )
@@ -15,28 +15,14 @@ type jira struct {
 	BaseUrl  string
 	Username string
 	Password string
-
-	fieldIdMap map[string]string // Кэш для маппинга "Имя поля" -> "ID поля"
-	mu         sync.RWMutex
 }
 
-// NewJira теперь возвращает ошибку, так как мы инициализируем карту полей при старте
-func NewJira(ctx context.Context, baseUrl, user, password string) (ApiJira, error) {
-	j := &jira{
-		BaseUrl:    strings.TrimRight(baseUrl, "/"),
-		Username:   user,
-		Password:   password,
-		fieldIdMap: make(map[string]string),
-	}
-	// Инициализируем карту полей при создании клиента
-	err := j.RefreshFields(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to RefreshFieldMap: %w", err)
-	}
-	return j, nil
+func NewJira(baseUrl, user, password string) ApiJira {
+	return &jira{BaseUrl: strings.TrimRight(baseUrl, "/"), Username: user, Password: password}
 }
 
-func (j *jira) RefreshFields(ctx context.Context) error {
+// GetFields — возвращает полный список полей в Jira
+func (j *jira) GetFields(ctx context.Context) ([]IssueField, error) {
 	var fields []IssueField
 	err := requests.
 		URL(fmt.Sprintf("%s/field", j.BaseUrl)).
@@ -45,25 +31,9 @@ func (j *jira) RefreshFields(ctx context.Context) error {
 		AddValidator(validateStatus).
 		Fetch(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	fieldMap := make(map[string]string, len(fields))
-	for _, f := range fields {
-		fieldMap[f.Name] = f.ID // Сохраняем mapping вида: "Story Points" -> "customfield_10083"
-	}
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	j.fieldIdMap = fieldMap
-	return nil
-}
-
-// GetFieldID возвращает ID поля по его имени (из кэша)
-func (j *jira) GetFieldID(name string) (string, bool) {
-	j.mu.RLock()
-	defer j.mu.RUnlock()
-	id, ok := j.fieldIdMap[name]
-	return id, ok
+	return fields, nil
 }
 
 func (j *jira) GetIssueComments(ctx context.Context, issueKey string) ([]IssueComment, error) {
@@ -150,16 +120,6 @@ func (j *jira) GetIssueChangelog(ctx context.Context, issueId string) ([]ChangeL
 	return resp.Changelog.Histories, nil
 }
 
-func (j *jira) UpdateIssue(ctx context.Context, issueKey string, req UpdateIssueRequest) error {
-	return requests.
-		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
-		Put().
-		BasicAuth(j.Username, j.Password).
-		BodyJSON(req).
-		AddValidator(validateStatus).
-		Fetch(ctx)
-}
-
 func (j *jira) UpdateIssueAssignee(ctx context.Context, issueKey, assigneeName string) error {
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s/assignee", j.BaseUrl, issueKey)).
@@ -183,9 +143,9 @@ func (j *jira) TransitionIssue(ctx context.Context, issueKey, transitionID strin
 
 // TransitionToStatus - высокоуровневый метод.
 // 1. Получает доступные переходы.
-// 2. Ищет переход в статус targetStatusName (например "Done" или "In Progress").
+// 2. Ищет переход в статус targetStatusId
 // 3. Если найден - выполняет. Если нет - возвращает ошибку со списком доступных.
-func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusName string) error {
+func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId string) error {
 	// 1. Получаем возможные переходы для этой задачи
 	var meta TransitionsResponse
 	err := requests.
@@ -199,22 +159,14 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusNam
 	}
 
 	// 2. Ищем нужный переход
-	var targetTransitionID string
-	var availableStatuses []string
 	for _, t := range meta.Transitions {
-		availableStatuses = append(availableStatuses, t.To.Name)
-		// Сравниваем case-insensitive, так надежнее
-		if strings.EqualFold(t.To.Name, targetStatusName) {
-			targetTransitionID = t.ID
-			break
+		if t.To.ID == targetStatusId {
+			// 3. Выполняем переход, если нашли
+			return j.TransitionIssue(ctx, issueKey, t.ID)
 		}
 	}
-	if targetTransitionID == "" {
-		return fmt.Errorf("cannot transition issue %s to status '%s'. Available statuses: %v",
-			issueKey, targetStatusName, strings.Join(availableStatuses, ", "))
-	}
-	// 3. Выполняем переход
-	return j.TransitionIssue(ctx, issueKey, targetTransitionID)
+	return fmt.Errorf("cannot transition issue %s to status '%s'. Available statuses: %v",
+		issueKey, targetStatusId, formatAvailableStatuses(meta.Transitions))
 }
 
 func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error {
@@ -227,19 +179,125 @@ func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error
 		Fetch(ctx)
 }
 
-func (j *jira) QueryTasks(ctx context.Context, query string, pageSize int) ([]IssueJira, error) {
-	var tasks SearchResponse
+// SearchTasks — постраничный поиск задач по JQL запросу, pageSize по умолчанию 50
+func (j *jira) SearchTasks(ctx context.Context, query string, pageSize, offset int) (SearchResponse, error) {
+	var resp SearchResponse
 	if query == "" {
-		return nil, fmt.Errorf("query is empty")
+		return SearchResponse{}, fmt.Errorf("query is empty")
 	}
 	err := requests.
-		URL(fmt.Sprintf("%s/search?jql=%s&maxResults=%d", j.BaseUrl, url.QueryEscape(query), cmp.Or(pageSize, 50))).
+		URL(fmt.Sprintf("%s/search", j.BaseUrl)).
+		Param("jql", query).
+		Param("maxResults", strconv.Itoa(cmp.Or(pageSize, 50))).
+		Param("startAt", strconv.Itoa(offset)).
 		BasicAuth(j.Username, j.Password).
-		ToJSON(&tasks).
+		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
 	if err != nil {
-		return nil, err
+		return SearchResponse{}, err
 	}
-	return tasks.Issues, nil
+	return resp, nil
+}
+
+// SearchAllTasks — поиск всех задач по JQL запросу
+func (j *jira) SearchAllTasks(ctx context.Context, query string) ([]IssueJira, error) {
+	if query == "" {
+		return nil, fmt.Errorf("query is empty")
+	}
+	const pageSize = 1000
+	offset := 0
+	var all []IssueJira
+	for {
+		resp, err := j.SearchTasks(ctx, query, pageSize, offset)
+		if err != nil {
+			return nil, err
+		}
+		all = append(all, resp.Issues...)
+		offset += len(resp.Issues)
+		if len(resp.Issues) == 0 || offset >= resp.Total {
+			break
+		}
+	}
+	return all, nil
+}
+
+func (j *jira) UpdateIssueFromMap(ctx context.Context, issueKey string, req map[string]any) error {
+	if strings.TrimSpace(issueKey) == "" {
+		return fmt.Errorf("issueKey is empty")
+	}
+	if req == nil || len(req) == 0 {
+		return fmt.Errorf("request fields are empty")
+	}
+	return requests.
+		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
+		Put().
+		BasicAuth(j.Username, j.Password).
+		BodyJSON(UpsertIssueRequestFromMap{Fields: req}).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+}
+
+// UpdateIssue — Обновить задачу по её ключу
+func (j *jira) UpdateIssue(ctx context.Context, issueKey string, req FieldsIssue) error {
+	if strings.TrimSpace(issueKey) == "" {
+		return fmt.Errorf("issueKey is empty")
+	}
+	// Для обновления Jira допускает частичный набор полей, поэтому дополнительных проверок не делаем
+	return requests.
+		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
+		Put().
+		BasicAuth(j.Username, j.Password).
+		BodyJSON(UpsertIssueRequest{Fields: req}).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+}
+
+func (j *jira) CreateIssueFromMap(ctx context.Context, req map[string]any) (CreatedIssueResponse, error) {
+	if req == nil || len(req) == 0 {
+		return CreatedIssueResponse{}, fmt.Errorf("request fields are empty")
+	}
+	var created CreatedIssueResponse
+	err := requests.
+		URL(fmt.Sprintf("%s/issue", j.BaseUrl)).
+		Post().
+		BasicAuth(j.Username, j.Password).
+		BodyJSON(UpsertIssueRequestFromMap{Fields: req}).
+		ToJSON(&created).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return CreatedIssueResponse{}, err
+	}
+	return created, nil
+}
+
+// CreateIssue — создать задачу, поля Summary, Project и IssueType обязательны для любых проектов
+func (j *jira) CreateIssue(ctx context.Context, req FieldsIssue) (CreatedIssueResponse, error) {
+	// Базовая валидация обязательных полей для создания задачи в Jira
+	if strings.TrimSpace(req.Summary) == "" {
+		return CreatedIssueResponse{}, fmt.Errorf("summary is empty")
+	}
+	// Тут в целом по проекту и типу задачи можно узнать какие поля ещё нужны и их проверять, но как будто нет смысла,
+	// жира в любом случае их вернет в ошибке
+	if req.Project.ID == "" && strings.TrimSpace(req.Project.Key) == "" {
+		return CreatedIssueResponse{}, fmt.Errorf("project is empty (need id or key)")
+	}
+	if req.IssueType.ID == "" && strings.TrimSpace(req.IssueType.Name) == "" {
+		return CreatedIssueResponse{}, fmt.Errorf("issuetype is empty (need id or name)")
+	}
+
+	var created CreatedIssueResponse
+	err := requests.
+		URL(fmt.Sprintf("%s/issue", j.BaseUrl)).
+		Post().
+		BasicAuth(j.Username, j.Password).
+		BodyJSON(UpsertIssueRequest{Fields: req}).
+		ToJSON(&created).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return CreatedIssueResponse{}, err
+	}
+	return created, nil
 }
