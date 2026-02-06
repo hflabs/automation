@@ -116,7 +116,7 @@ func Test_SplitTextIntoChunksWithSize(t *testing.T) {
 			got := SmartSplitTextIntoChunks(tt.input, tt.chunkSize)
 			require.Equal(t, tt.wantChunks, got)
 			for _, chunk := range got {
-				err := validateChunkHTML(chunk)
+				err := ValidateChunkHTML(chunk)
 				require.NoError(t, err)
 			}
 		})
@@ -152,7 +152,7 @@ func Test_SplitTextIntoChunks(t *testing.T) {
 				t.Errorf("want prefix `%s`, got `%s`", got, tt.wantPrefix)
 			}
 			for _, chunk := range got {
-				err = validateChunkHTML(chunk)
+				err = ValidateChunkHTML(chunk)
 				require.NoError(t, err)
 			}
 		})

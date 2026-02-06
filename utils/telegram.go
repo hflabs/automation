@@ -295,7 +295,7 @@ func updateStack(tt html.TokenType, token html.Token, tokenString string, stack 
 	}
 }
 
-func validateChunkHTML(chunk string) error {
+func ValidateChunkHTML(chunk string) error {
 	z := html.NewTokenizer(strings.NewReader(chunk))
 	var stack []string
 
