@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"unicode"
 
@@ -378,6 +379,10 @@ func splitByRune(text string, n int) (head, tail string) {
 }
 
 func SanitizeForTelegram(input string) string {
+	// 0. Предотвращаем слипание текста:
+	// Заменяем <br> на пробелы, и после закрывающих блочных тегов добавляем пробел.
+	// Это превратит "</p><p>" в "</p> <p>", и после удаления тегов текст не слипнется.
+	input = reBr.ReplaceAllString(input, " ")
 	// 1. Защищаем кастомные теги спойлера Telegram от вырезания парсером bluemonday.
 	// Мы временно заменяем их на уникальные текстовые маркеры.
 	replacer := strings.NewReplacer(
@@ -408,12 +413,36 @@ func SanitizeForTelegram(input string) string {
 	// 4. Кастомные эмодзи
 	p.AllowAttrs("emoji-id").OnElements("tg-emoji")
 	sanitized := p.Sanitize(protected)
+
 	// 5. Возвращаем кастомные теги на место
 	sanitized = restoreReplacer.Replace(sanitized)
+	// 6. Возвращаем кавычки и апострофы обратно.
+	// Bluemonday экранирует их для безопасности атрибутов, но в тексте сообщений ТГ они не мешают.
+	sanitized = strings.ReplaceAll(sanitized, "&#34;", "\"")
+	sanitized = strings.ReplaceAll(sanitized, "&quot;", "\"")
+	sanitized = strings.ReplaceAll(sanitized, "&#39;", "'")
 
-	return strings.TrimSpace(sanitized)
+	return normalizeNewLines(sanitized)
 }
 
 func SplitTextForTelegramHtmlMarkdown(input string, chunkSize int) []string {
 	return SmartSplitTextIntoChunks(SanitizeForTelegram(input), chunkSize)
+}
+
+var (
+	reTrailingSpaces      = regexp.MustCompile(`(?m)[ \t]+$`)
+	reMoreThanTwoNewlines = regexp.MustCompile(`\n{3,}`)
+	reBr                  = regexp.MustCompile(`(?i)<br\s*/?>`)
+)
+
+func normalizeNewLines(s string) string {
+	// 1. Унифицируем переносы: Windows (\r\n) -> Unix (\n)
+	result := strings.ReplaceAll(s, "\r\n", "\n")
+	// 2. Убираем пробелы и табы в концах строк (чтобы "\n  \n" стало "\n\n")
+	// Используем флаг (?m), чтобы $ срабатывал на конец каждой строки
+	result = reTrailingSpaces.ReplaceAllString(result, "")
+	// 3. Схлопываем 3 и более \n в ровно 2 \n
+	result = reMoreThanTwoNewlines.ReplaceAllString(result, "\n\n")
+	// 4. Убираем лишнее по краям всего текста
+	return strings.TrimSpace(result)
 }

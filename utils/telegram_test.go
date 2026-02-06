@@ -210,11 +210,107 @@ func Test_SanitizeForTelegram(t *testing.T) {
 			input: `<a href="https://t.me">Safe</a> <a href="javascript:alert(1)">Unsafe</a>`,
 			want:  `<a href="https://t.me">Safe</a> Unsafe`, // unsafe ссылка стала просто текстом (без тега <a>)
 		},
+		{
+			name: "10. Есть заголовок HTML вмест с телом",
+			input: `Не удалось вкинуть файлик sql party: ErrValidator: status code 413.
+Body:<html>
+<head><title>413 Request Entity Too Large</title></head>
+<body>
+<center><h1>413 Request Entity Too Large</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>`,
+			want: "Не удалось вкинуть файлик sql party: ErrValidator: status code 413." +
+				"\nBody:" +
+				"\n" +
+				"\n413 Request Entity Too Large" +
+				"\nnginx",
+		},
+		{
+			name:  "11. Пробелы между тегами и переносами строк: должны сохраняться, но не создавать лишних переносов",
+			input: "<p>Мне хочется пробелов везде</p><br/><p>везде</p> ",
+			want:  "Мне хочется пробелов везде везде",
+		},
+
+		{
+			name: "12. Нет HTML форматирования, но есть JSON, должен остаться без изменений",
+			input: `Не удалось вкинуть файлик sql party: ErrValidator: status code 413.
+Body:{
+	"errorMessages": [],
+	"errors": {
+		"summary": "field summary can not be longer than 255 characters",
+		"priority": "The priority field is required",
+	}
+}`,
+			want: `Не удалось вкинуть файлик sql party: ErrValidator: status code 413.
+Body:{
+	"errorMessages": [],
+	"errors": {
+		"summary": "field summary can not be longer than 255 characters",
+		"priority": "The priority field is required",
+	}
+}`},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := SanitizeForTelegram(tt.input)
+			require.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_normalizeNewLines(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "1. Обычные Unix переносы (3 в 2)",
+			input: "Line 1\n\n\nLine 2",
+			want:  "Line 1\n\nLine 2",
+		},
+		{
+			name:  "2. Windows переносы (3 в 2)",
+			input: "Line 1\r\n\r\n\r\nLine 2",
+			want:  "Line 1\n\nLine 2",
+		},
+		{
+			name:  "3. Смешанные переносы и пробелы между ними",
+			input: "Line 1 \r\n  \n \t\r\nLine 2",
+			want:  "Line 1\n\nLine 2",
+		},
+		{
+			name:  "4. Много пустых строк (экстремальный случай)",
+			input: "Start\n\n\n\n\n\n\n\nEnd",
+			want:  "Start\n\nEnd",
+		},
+		{
+			name:  "5. Пробелы в конце строки не затрагивают переносы",
+			input: "Text with spaces    \nNext line",
+			want:  "Text with spaces\nNext line",
+		},
+		{
+			name:  "6. Текст без лишних переносов (не должен измениться)",
+			input: "Line 1\n\nLine 2",
+			want:  "Line 1\n\nLine 2",
+		},
+		{
+			name:  "7. Переносы в самом начале и конце (должны удалиться TrimSpace)",
+			input: "\n\n\nHeader\n\nFooter\n\n\n",
+			want:  "Header\n\nFooter",
+		},
+		{
+			name:  "8. Только пробельные символы",
+			input: "  \n  \r\n  \t  ",
+			want:  "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := normalizeNewLines(tt.input)
 			require.Equal(t, tt.want, got)
 		})
 	}
