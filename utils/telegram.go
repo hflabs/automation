@@ -160,7 +160,6 @@ func SmartSplitTextIntoChunks(s string, chunkSize int) []string {
 	var stack []tagStackItem
 	var hasContent bool // Флаг: добавлен ли в текущий чанк текст или void-теги
 
-	s = sanitizeIncomingHTML(s)
 	z := html.NewTokenizer(strings.NewReader(s))
 
 	for {
@@ -358,12 +357,6 @@ func isVoidElement(tagName string) bool {
 		return true
 	}
 	return false
-}
-
-func sanitizeIncomingHTML(s string) string {
-	// Исправляем проблему с залипшим тегом ссылки
-	s = strings.ReplaceAll(s, "<<a", "&lt;<a")
-	return s
 }
 
 // Вспомогательная функция для взятия N символов (не байт!)
