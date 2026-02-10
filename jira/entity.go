@@ -89,6 +89,8 @@ type FieldsIssue struct {
 	BusinessDescription string       `json:"customfield_10000,omitzero"`
 	WhoWillGetBetter    []IssueField `json:"customfield_12680,omitzero"`
 	SourceRequest       IssueField   `json:"customfield_14083,omitzero"`
+	Customer            IssueField   `json:"customfield_14082,omitzero"`
+	ProductsSup         []IssueField `json:"customfield_14081,omitzero"`
 }
 
 type IssueField struct {
