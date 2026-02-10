@@ -88,6 +88,7 @@ type FieldsIssue struct {
 	FreeStringValue     string       `json:"freeValue,omitzero"`
 	BusinessDescription string       `json:"customfield_10000,omitzero"`
 	WhoWillGetBetter    []IssueField `json:"customfield_12680,omitzero"`
+	SourceRequest       IssueField   `json:"customfield_14083,omitzero"`
 }
 
 type IssueField struct {
