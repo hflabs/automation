@@ -250,6 +250,32 @@ Body:{
 		"priority": "The priority field is required",
 	}
 }`},
+		{
+			name: "13. Есть заголовок HTML вместе с телом, но они экранированы. Поэтому ничего не делаем",
+			input: `Не удалось вкинуть файлик sql party: ErrValidator: status code 413.
+Body:&lt;html&gt;
+&lt;head&gt;&lt;title&gt;413 Request Entity Too Large&lt;/title&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;413 Request Entity Too Large&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+			want: `Не удалось вкинуть файлик sql party: ErrValidator: status code 413.
+Body:&lt;html&gt;
+&lt;head&gt;&lt;title&gt;413 Request Entity Too Large&lt;/title&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;413 Request Entity Too Large&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+		},
+		{
+			name: "14. Markdown форматирование в тексте должно сохраняться",
+			input: `*Тестовое сообщение*, Это *жирный*, а это _курсив_, __Подчеркнутый__ и ~зачеркнутый~, ||Скрытый спойлер||
+* Список возможностей:*, • Поддержка [ссылок](https://google.com)`,
+			want: `*Тестовое сообщение*, Это *жирный*, а это _курсив_, __Подчеркнутый__ и ~зачеркнутый~, ||Скрытый спойлер||
+* Список возможностей:*, • Поддержка [ссылок](https://google.com)`,
+		},
 	}
 
 	for _, tt := range tests {
