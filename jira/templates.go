@@ -284,6 +284,8 @@ type transitions struct {
 	FromDelayedToInProgress string // Start - Начало разработки
 
 	FromCodeReviewToResolved string // Resolved — Резолюция выбрана и ожидает подтверждения автора. Здесь проблемы либо открываются вновь, либо закрываются.
+
+	FromClosedToReopen string // Reopen - Открыть запрос заново
 }
 
 func newTransitions() transitions {
@@ -305,6 +307,7 @@ func newTransitions() transitions {
 		FromResolvedToDelayed:    "111",
 		FromDelayedToInProgress:  "71",
 		FromCodeReviewToResolved: "5",
+		FromClosedToReopen:       "3",
 	}
 }
 
