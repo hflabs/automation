@@ -73,7 +73,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 		}
 		writerFile := log.ConsoleWriter{
 			Out:           out,
-			TimeFormat:    "02.01.2006 15:04:05",
+			TimeFormat:    HumanTimeFormat,
 			NoColor:       true,
 			FormatMessage: formatter,
 		}
@@ -221,6 +221,12 @@ func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
 }
 
 func (l *Logger) Close() error {
+	if l.lifecycleFile != nil {
+		err := l.lifecycleFile.Close()
+		if err != nil {
+			return err
+		}
+	}
 	return l.logFile.Close()
 }
 
