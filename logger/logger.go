@@ -107,7 +107,7 @@ func NewSimple(level string) *Logger {
 	var output log.LevelWriter
 	writer := log.ConsoleWriter{
 		Out:        os.Stdout,
-		TimeFormat: "02.01.2006 15:04:05",
+		TimeFormat: HumanTimeFormat,
 		NoColor:    false,
 	}
 	output = log.MultiLevelWriter(writer)
