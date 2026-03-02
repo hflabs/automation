@@ -14,14 +14,18 @@ func (l *Logger) Lifecycle(message string, args ...interface{}) {
 	if l.lifecycleLog != nil {
 		// Используем Info(), так как это просто запись. Уровень скрыт в FormatLevel
 		l.lifecycleLog.Info().Msgf(message, args...)
+	} else {
+		l.logger.Info().Msgf(message, args...)
 	}
 }
 
+// GetLifecycleFilename — возвращает сгенерированное название файла журнала жизни приложения.
+// Например, чтобы приложение могло найти этот файл и отдать в API
 func (l *Logger) GetLifecycleFilename() string {
-	if l.lifecycleFile != nil {
-		return l.lifecycleFile.Name()
+	if l.lifecycleFile == nil {
+		return ""
 	}
-	return ""
+	return l.lifecycleFile.Name()
 }
 
 // getLifecycleFilename генерирует имя файла вида name-lifecycle.ext из переданного filename

@@ -24,6 +24,7 @@ type Interface interface {
 	SetLogLevel(level string)
 	GetLogLevel() string
 	GetLifecycleFilename() string
+	EnableLifecycle(baseFilename string) error
 	Close() error
 }
 
@@ -90,18 +91,13 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 		msg += ", with formatter"
 	}
 	logger.Debug().Msg(msg)
-	lifecycleLogger, lifecycleFile, lErr := SetLifecycleLogFile(filename)
-	if lErr != nil {
-		logger.Error().Msgf("Failed to create lifecycle log: %v\n", lErr)
-	}
+
 	return &Logger{
-		logger:        &logger,
-		lifecycleLog:  lifecycleLogger,
-		logFile:       file,
-		lifecycleFile: lifecycleFile,
-		formatter:     formatter,
-		rotating:      rotating,
-		isSimple:      false,
+		logger:    &logger,
+		logFile:   file,
+		formatter: formatter,
+		rotating:  rotating,
+		isSimple:  false,
 	}
 }
 
@@ -122,23 +118,29 @@ func NewSimple(level string) *Logger {
 	}
 }
 
+func (l *Logger) EnableLifecycle(baseFilename string) error {
+	lifecycleLogger, lifecycleFile, err := SetLifecycleLogFile(baseFilename)
+	if err != nil {
+		l.Error("Failed to create lifecycle log: %v", err)
+		return err
+	}
+	l.lifecycleLog = lifecycleLogger
+	l.lifecycleFile = lifecycleFile
+	return nil
+}
+
 func (l *Logger) SetLogLevel(level string) {
 	var newLogger *Logger
 	if l.isSimple {
 		newLogger = NewSimple(level)
 	} else {
 		newLogger = New(level, l.logFile.Name(), l.formatter, l.rotating)
-		l.lifecycleLog = newLogger.lifecycleLog
-		l.lifecycleFile = newLogger.lifecycleFile
 	}
 	l.logger = newLogger.logger
 }
 
 func (l *Logger) GetLogLevel() string {
 	return l.logger.GetLevel().String()
-}
-func (l *Logger) Rotate() {
-
 }
 
 // Trace - Обработка результата типа TRACE
