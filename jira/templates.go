@@ -319,6 +319,7 @@ type fieldsIssue struct {
 	ReleaseInstruction string // customfield_13081
 	Components         string // components
 	DueDate            string // duedate
+	SLAExpire          string // customfield_16580
 	Participants       string // customfield_10380
 
 	LearnTime          string // Месяц и год обучения
@@ -342,6 +343,7 @@ func newIssueFields() fieldsIssue {
 		ReleaseInstruction: "customfield_13081",
 		Components:         "components",
 		DueDate:            "duedate",
+		SLAExpire:          "customfield_16580",
 		Participants:       "customfield_10380",
 
 		LearnTime:          "customfield_14481",

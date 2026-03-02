@@ -63,6 +63,7 @@ type FieldsIssue struct {
 	ReleaseNotes        string       `json:"customfield_13082,omitzero"`
 	ReleaseInstruction  string       `json:"customfield_13081,omitzero"`
 	DueDate             string       `json:"duedate,omitzero"`
+	SlaExpire           JiraTime     `json:"customfield_16580,omitzero"`
 	Status              IssueField   `json:"status,omitzero"`
 	IssueType           IssueField   `json:"issuetype,omitzero"`
 	Priority            IssueField   `json:"priority,omitzero"`
