@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/carlmjohnson/requests"
@@ -78,14 +77,21 @@ func (j *jira) GetProjectVersions(ctx context.Context, projectKey string) ([]Pro
 	return resp, nil
 }
 
-func (j *jira) GetIssueById(ctx context.Context, issueId string) (IssueJira, error) {
+func (j *jira) GetIssueById(ctx context.Context, issueId string, fields ...string) (IssueJira, error) {
+	if issueId == "" {
+		return IssueJira{}, fmt.Errorf("issueId is empty")
+	}
 	var resp IssueJira
-	err := requests.
+	req := requests.
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueId)).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&resp).
-		AddValidator(validateStatus).
-		Fetch(ctx)
+		AddValidator(validateStatus)
+	// Если поля указаны, добавляем их в URL через запятую
+	if len(fields) > 0 {
+		req.Param("fields", strings.Join(fields, ","))
+	}
+	err := req.Fetch(ctx)
 	if err != nil {
 		return IssueJira{}, err
 	}
@@ -180,16 +186,20 @@ func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error
 }
 
 // SearchTasks — постраничный поиск задач по JQL запросу, pageSize по умолчанию 50
-func (j *jira) SearchTasks(ctx context.Context, query string, pageSize, offset int) (SearchResponse, error) {
+func (j *jira) SearchTasks(ctx context.Context, query string, pageSize, offset int, fields ...string) (SearchResponse, error) {
+	req := SearchRequest{
+		Jql:        query,
+		StartAt:    offset,
+		MaxResults: cmp.Or(pageSize, 50),
+		Fields:     fields,
+	}
 	var resp SearchResponse
 	if query == "" {
 		return SearchResponse{}, fmt.Errorf("query is empty")
 	}
 	err := requests.
 		URL(fmt.Sprintf("%s/search", j.BaseUrl)).
-		Param("jql", query).
-		Param("maxResults", strconv.Itoa(cmp.Or(pageSize, 50))).
-		Param("startAt", strconv.Itoa(offset)).
+		BodyJSON(&req).
 		BasicAuth(j.Username, j.Password).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
@@ -201,7 +211,7 @@ func (j *jira) SearchTasks(ctx context.Context, query string, pageSize, offset i
 }
 
 // SearchAllTasks — поиск всех задач по JQL запросу
-func (j *jira) SearchAllTasks(ctx context.Context, query string) ([]IssueJira, error) {
+func (j *jira) SearchAllTasks(ctx context.Context, query string, fields ...string) ([]IssueJira, error) {
 	if query == "" {
 		return nil, fmt.Errorf("query is empty")
 	}
@@ -209,7 +219,7 @@ func (j *jira) SearchAllTasks(ctx context.Context, query string) ([]IssueJira, e
 	offset := 0
 	var all []IssueJira
 	for {
-		resp, err := j.SearchTasks(ctx, query, pageSize, offset)
+		resp, err := j.SearchTasks(ctx, query, pageSize, offset, fields...)
 		if err != nil {
 			return nil, err
 		}
@@ -249,6 +259,20 @@ func (j *jira) UpdateIssue(ctx context.Context, issueKey string, req FieldsIssue
 		Put().
 		BasicAuth(j.Username, j.Password).
 		BodyJSON(UpsertIssueRequest{Fields: req}).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+}
+
+func (j *jira) AddLabel(ctx context.Context, issueKey string, label string) error {
+	if strings.TrimSpace(issueKey) == "" {
+		return fmt.Errorf("issueKey is empty")
+	}
+	req := UpdateIssueRequest{Update: UpdateIssue{Labels: []UpdateField{{Add: label}}}}
+	return requests.
+		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
+		Put().
+		BasicAuth(j.Username, j.Password).
+		BodyJSON(req).
 		AddValidator(validateStatus).
 		Fetch(ctx)
 }
@@ -300,4 +324,18 @@ func (j *jira) CreateIssue(ctx context.Context, req FieldsIssue) (CreatedIssueRe
 		return CreatedIssueResponse{}, err
 	}
 	return created, nil
+}
+
+func (j *jira) GetIssueTypeMeta(ctx context.Context, projectKey, issueTypeId string) (*IssueTypeMeta, error) {
+	resp := &IssueTypeMeta{}
+	err := requests.
+		URL(fmt.Sprintf("%s/issue/createmeta/%s/issuetypes/%s", j.BaseUrl, projectKey, issueTypeId)).
+		BasicAuth(j.Username, j.Password).
+		ToJSON(resp).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
 }

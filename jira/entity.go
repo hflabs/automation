@@ -95,10 +95,11 @@ type FieldsIssue struct {
 }
 
 type IssueField struct {
-	ID    string `json:"id,omitzero"`
-	Name  string `json:"name,omitzero"`
-	Key   string `json:"key,omitzero"`
-	Value string `json:"value,omitzero"`
+	ID       string `json:"id,omitzero"`
+	Name     string `json:"name,omitzero"`
+	Key      string `json:"key,omitzero"`
+	Value    string `json:"value,omitzero"`
+	Disabled bool   `json:"disabled,omitzero"`
 }
 
 type JiraUser struct {
@@ -148,6 +149,13 @@ type Version struct {
 	Self            string `json:"self,omitzero"`
 }
 
+type SearchRequest struct {
+	Jql        string   `json:"jql"`
+	StartAt    int      `json:"startAt,omitzero"`
+	MaxResults int      `json:"maxResults,omitzero"`
+	Fields     []string `json:"fields,omitzero"`
+}
+
 type SearchResponse struct {
 	StartAt    int         `json:"startAt"`
 	MaxResults int         `json:"maxResults"`
@@ -161,6 +169,20 @@ type UpsertIssueRequestFromMap struct {
 
 type UpsertIssueRequest struct {
 	Fields FieldsIssue `json:"fields"`
+}
+
+type UpdateIssueRequest struct {
+	Update UpdateIssue `json:"update"`
+}
+
+type UpdateIssue struct {
+	Labels []UpdateField `json:"labels,omitzero"`
+}
+
+type UpdateField struct {
+	Add    string `json:"add,omitzero"`
+	Remove string `json:"remove,omitzero"`
+	Set    string `json:"set,omitzero"`
 }
 
 // CreatedIssueResponse — ответ Jira на создание задачи (POST /issue)
@@ -183,4 +205,19 @@ type Transition struct {
 	ID   string     `json:"id"`
 	Name string     `json:"name"` // Название перехода (например "Start Progress")
 	To   IssueField `json:"to"`   // Целевой статус
+}
+
+type IssueTypeMeta struct {
+	MaxResults int         `json:"maxResults"`
+	StartAt    int         `json:"startAt"`
+	Total      int         `json:"total"`
+	Values     []MetaField `json:"values"`
+}
+
+type MetaField struct {
+	FieldID         string       `json:"fieldId"`
+	Name            string       `json:"name"`
+	Required        bool         `json:"required"`
+	HasDefaultValue bool         `json:"hasDefaultValue"`
+	AllowedValues   []IssueField `json:"allowedValues,omitempty"`
 }
