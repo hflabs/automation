@@ -2,12 +2,15 @@ package logger
 
 import (
 	"fmt"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
-	log "github.com/rs/zerolog"
 	"io"
 	"os"
 	"strings"
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	log "github.com/rs/zerolog"
 )
+
+const HumanTimeFormat = "02.01.2006 15:04:05"
 
 // Interface -.
 type Interface interface {
@@ -17,18 +20,23 @@ type Interface interface {
 	Warn(message string, args ...interface{})
 	Error(message interface{}, args ...interface{})
 	Fatal(message interface{}, args ...interface{})
+	Lifecycle(message string, args ...interface{})
 	SetLogLevel(level string)
 	GetLogLevel() string
+	GetLifecycleFilename() string
+	EnableLifecycle(baseFilename string) error
 	Close() error
 }
 
 // Logger - структура логера
 type Logger struct {
-	logger    *log.Logger
-	logFile   *os.File
-	formatter log.Formatter
-	rotating  *RotateConfig
-	isSimple  bool
+	logger        *log.Logger
+	lifecycleLog  *log.Logger // Отдельный логгер для lifecycle событий
+	logFile       *os.File
+	lifecycleFile *os.File // Файл для lifecycle
+	formatter     log.Formatter
+	rotating      *RotateConfig
+	isSimple      bool
 }
 
 var _ Interface = (*Logger)(nil)
@@ -40,7 +48,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o666)
 	writer := log.ConsoleWriter{
 		Out:        os.Stdout,
-		TimeFormat: "02.01.2006 15:04:05",
+		TimeFormat: HumanTimeFormat,
 		NoColor:    false,
 	}
 	if err != nil {
@@ -65,7 +73,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 		}
 		writerFile := log.ConsoleWriter{
 			Out:           out,
-			TimeFormat:    "02.01.2006 15:04:05",
+			TimeFormat:    HumanTimeFormat,
 			NoColor:       true,
 			FormatMessage: formatter,
 		}
@@ -82,7 +90,8 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 	if formatter != nil {
 		msg += ", with formatter"
 	}
-	logger.Debug().Msgf(msg)
+	logger.Debug().Msg(msg)
+
 	return &Logger{
 		logger:    &logger,
 		logFile:   file,
@@ -98,7 +107,7 @@ func NewSimple(level string) *Logger {
 	var output log.LevelWriter
 	writer := log.ConsoleWriter{
 		Out:        os.Stdout,
-		TimeFormat: "02.01.2006 15:04:05",
+		TimeFormat: HumanTimeFormat,
 		NoColor:    false,
 	}
 	output = log.MultiLevelWriter(writer)
@@ -107,6 +116,17 @@ func NewSimple(level string) *Logger {
 		logger:   &logger,
 		isSimple: true,
 	}
+}
+
+func (l *Logger) EnableLifecycle(baseFilename string) error {
+	lifecycleLogger, lifecycleFile, err := SetLifecycleLogFile(baseFilename)
+	if err != nil {
+		l.Error("Failed to create lifecycle log: %v", err)
+		return err
+	}
+	l.lifecycleLog = lifecycleLogger
+	l.lifecycleFile = lifecycleFile
+	return nil
 }
 
 func (l *Logger) SetLogLevel(level string) {
@@ -121,9 +141,6 @@ func (l *Logger) SetLogLevel(level string) {
 
 func (l *Logger) GetLogLevel() string {
 	return l.logger.GetLevel().String()
-}
-func (l *Logger) Rotate() {
-
 }
 
 // Trace - Обработка результата типа TRACE
@@ -204,6 +221,12 @@ func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
 }
 
 func (l *Logger) Close() error {
+	if l.lifecycleFile != nil {
+		err := l.lifecycleFile.Close()
+		if err != nil {
+			return err
+		}
+	}
 	return l.logFile.Close()
 }
 
