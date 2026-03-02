@@ -31,7 +31,8 @@ func (j *JiraTime) UnmarshalJSON(b []byte) error {
 }
 
 func (j JiraTime) MarshalJSON() ([]byte, error) {
-	return []byte(j.Format(TimeFormatJira)), nil
+	stamp := j.Time.Format(TimeFormatJira)
+	return []byte(`"` + stamp + `"`), nil
 }
 
 type Timestamp struct {
