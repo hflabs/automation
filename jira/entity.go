@@ -1,5 +1,7 @@
 package jira
 
+import "strings"
+
 type WebhookIssue struct {
 	Timestamp      Timestamp    `json:"timestamp,omitzero"`
 	WebhookEvent   string       `json:"webhookEvent,omitzero"`
@@ -92,6 +94,16 @@ type FieldsIssue struct {
 	SourceRequest       IssueField   `json:"customfield_14083,omitzero"`
 	Customer            IssueField   `json:"customfield_14082,omitzero"`
 	ProductsSup         []IssueField `json:"customfield_14081,omitzero"`
+	Labels              []string     `json:"labels,omitempty"`
+}
+
+func (i *FieldsIssue) HasLabel(label string) bool {
+	for _, l := range i.Labels {
+		if l == label {
+			return true
+		}
+	}
+	return false
 }
 
 type IssueField struct {
@@ -220,4 +232,34 @@ type MetaField struct {
 	Required        bool         `json:"required"`
 	HasDefaultValue bool         `json:"hasDefaultValue"`
 	AllowedValues   []IssueField `json:"allowedValues,omitempty"`
+}
+
+func (i *IssueTypeMeta) GetCustomerIdByName(client, customerFieldId string) string {
+	client = strings.ToLower(client)
+	for _, field := range i.Values {
+		if field.FieldID != customerFieldId {
+			continue
+		}
+		for _, val := range field.AllowedValues {
+			if strings.ToLower(val.Value) == client {
+				return val.ID
+			}
+		}
+		return ""
+	}
+	return ""
+}
+
+func (i *IssueTypeMeta) GetCustomerOptions(customerFieldId string) []string {
+	var options []string
+	for _, field := range i.Values {
+		if field.FieldID != customerFieldId {
+			continue
+		}
+		for _, val := range field.AllowedValues {
+			options = append(options, strings.ToLower(val.Value))
+		}
+		return options
+	}
+	return options
 }
