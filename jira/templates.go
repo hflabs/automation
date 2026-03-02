@@ -328,6 +328,7 @@ type fieldsIssue struct {
 	Assignee           string // assignee
 	Summary            string // summary
 	Description        string // description
+	Priority           string // priority
 
 	LearnTime          string // Месяц и год обучения
 	LearnForWho        string // Для кого еще подходит это обучение?
@@ -359,6 +360,7 @@ func newIssueFields() fieldsIssue {
 		Assignee:           "assignee",
 		Summary:            "summary",
 		Description:        "description",
+		Priority:           "priority",
 
 		LearnTime:          "customfield_14481",
 		LearnForWho:        "customfield_13881",
