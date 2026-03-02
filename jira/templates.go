@@ -321,6 +321,13 @@ type fieldsIssue struct {
 	DueDate            string // duedate
 	SLAExpire          string // customfield_16580
 	Participants       string // customfield_10380
+	Customer           string // customfield_14082
+	Status             string // status
+	Created            string // created
+	Labels             string // labels
+	Assignee           string // assignee
+	Summary            string // summary
+	Description        string // description
 
 	LearnTime          string // Месяц и год обучения
 	LearnForWho        string // Для кого еще подходит это обучение?
@@ -345,6 +352,13 @@ func newIssueFields() fieldsIssue {
 		DueDate:            "duedate",
 		SLAExpire:          "customfield_16580",
 		Participants:       "customfield_10380",
+		Customer:           "customfield_14082",
+		Status:             "status",
+		Created:            "created",
+		Labels:             "labels",
+		Assignee:           "assignee",
+		Summary:            "summary",
+		Description:        "description",
 
 		LearnTime:          "customfield_14481",
 		LearnForWho:        "customfield_13881",
