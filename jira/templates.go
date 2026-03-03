@@ -5,12 +5,13 @@ var EventType = newEventTypes()
 var Changelog = newChangelogs()
 
 type Issues struct {
-	Status      status      // Статус
-	Type        typeIssue   // Тип
-	Priority    priority    // Приоритет
-	Resolution  resolution  // Результат
-	Transitions transitions // Возможные переходы статусов
-	Fields      fieldsIssue // Идентификаторы полей
+	Status        status        // Статус
+	Type          typeIssue     // Тип
+	Priority      priority      // Приоритет
+	Resolution    resolution    // Результат
+	SourceRequest sourceRequest // Источники обращений
+	Transitions   transitions   // Возможные переходы статусов
+	Fields        fieldsIssue   // Идентификаторы полей
 }
 
 func newIssue() Issues {
@@ -21,6 +22,30 @@ func newIssue() Issues {
 		Resolution:  newResolutions(),
 		Fields:      newIssueFields(),
 		Transitions: newTransitions(),
+	}
+}
+
+type sourceRequest struct {
+	Messenger  string // Мессенджер
+	Mail       string // Почта
+	Jira       string // Jira
+	Call       string // Звонок
+	Monitoring string // Мониторинг
+	Colleague  string // Коллега
+	Inner      string // Внутреннее
+	Unknown    string // Неизвестен
+}
+
+func newSourceRequests() sourceRequest {
+	return sourceRequest{
+		Messenger:  "12674",
+		Mail:       "12675",
+		Jira:       "12676",
+		Call:       "12677",
+		Monitoring: "12678",
+		Colleague:  "12679",
+		Inner:      "12680",
+		Unknown:    "12673",
 	}
 }
 
@@ -131,54 +156,62 @@ func newStatuses() status {
 }
 
 type EventTypes struct {
-	Created  string // Создано
-	Updated  string // Обновлено
-	Generic  string // Создано
-	Assigned string // Назначено
-	Closed   string // Закрыто
+	Created   string // Создано
+	Updated   string // Обновлено
+	Generic   string // Создано
+	Assigned  string // Назначено
+	Closed    string // Закрыто
+	Commented string // Написан комментарий
 }
 
 func newEventTypes() EventTypes {
 	return EventTypes{
-		Created:  "issue_created",
-		Updated:  "issue_updated",
-		Generic:  "issue_generic",
-		Assigned: "issue_assigned",
-		Closed:   "issue_closed",
+		Created:   "issue_created",
+		Updated:   "issue_updated",
+		Generic:   "issue_generic",
+		Assigned:  "issue_assigned",
+		Closed:    "issue_closed",
+		Commented: "issue_commented",
 	}
 }
 
 type typeIssue struct {
-	Bug         string // Ошибка
-	NewFeature  string // Новая функциональность
-	Task        string // Задача
-	Improvement string // Улучшение
-	Epic        string // Эпик
-	Learning    string // Обучение
+	Bug            string // Ошибка
+	NewFeature     string // Новая функциональность
+	Task           string // Задача
+	Improvement    string // Улучшение
+	Epic           string // Эпик
+	Learning       string // Обучение
+	SupportRequest string // Запрос в поддержку
 }
 
 func newTypes() typeIssue {
 	return typeIssue{
-		Bug:         "1",
-		NewFeature:  "2",
-		Task:        "3",
-		Improvement: "4",
-		Epic:        "5",
-		Learning:    "10600",
+		Bug:            "1",
+		NewFeature:     "2",
+		Task:           "3",
+		Improvement:    "4",
+		Epic:           "5",
+		Learning:       "10600",
+		SupportRequest: "10",
 	}
 }
 
 type priority struct {
 	Blocker  string // Блокирующий
 	Critical string // Критический
+	Major    string // Серьезный
 	Minor    string // Незначительный
+	Trivial  string // Тривиальный
 }
 
 func newPriorities() priority {
 	return priority{
 		Blocker:  "1",
 		Critical: "2",
+		Major:    "3",
 		Minor:    "4",
+		Trivial:  "5",
 	}
 }
 
