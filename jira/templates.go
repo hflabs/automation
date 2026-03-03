@@ -16,12 +16,13 @@ type Issues struct {
 
 func newIssue() Issues {
 	return Issues{
-		Status:      newStatuses(),
-		Type:        newTypes(),
-		Priority:    newPriorities(),
-		Resolution:  newResolutions(),
-		Fields:      newIssueFields(),
-		Transitions: newTransitions(),
+		Status:        newStatuses(),
+		Type:          newTypes(),
+		Priority:      newPriorities(),
+		Resolution:    newResolutions(),
+		SourceRequest: newSourceRequests(),
+		Fields:        newIssueFields(),
+		Transitions:   newTransitions(),
 	}
 }
 
