@@ -168,6 +168,7 @@ const (
 	EmailTypeField  = "type"
 	EmailValueField = "email"
 	EmailTypeWork   = "WORK"
+	EmailTypeHome   = "HOME"
 
 	PhoneTypeField        = "type"
 	PhoneCountryCodeField = "countryCode"
