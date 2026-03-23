@@ -177,6 +177,7 @@ const (
 	PhoneTypeMobile       = "MOBILE"
 
 	AddressTypeField = "type"
+	AddressTypeWork  = "WORK"
 
 	AttributeTypePhone   = "PHONE"
 	AttributeTypeEmail   = "EMAIL"
