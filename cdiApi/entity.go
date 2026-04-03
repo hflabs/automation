@@ -179,9 +179,10 @@ const (
 	AddressTypeField = "type"
 	AddressTypeWork  = "WORK"
 
-	AttributeTypePhone   = "PHONE"
-	AttributeTypeEmail   = "EMAIL"
-	AttributeTypeAddress = "ADDRESS"
+	AttributeTypePhone    = "PHONE"
+	AttributeTypeEmail    = "EMAIL"
+	AttributeTypeAddress  = "ADDRESS"
+	AttributePrimaryField = "primary"
 
 	LastChangeField = "lastChangeTimestamp"
 
