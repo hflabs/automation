@@ -1,13 +1,17 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
-	log "github.com/rs/zerolog"
 	"io"
 	"os"
 	"strings"
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	log "github.com/rs/zerolog"
 )
+
+const HumanTimeFormat = "02.01.2006 15:04:05"
 
 // Interface -.
 type Interface interface {
@@ -17,59 +21,61 @@ type Interface interface {
 	Warn(message string, args ...interface{})
 	Error(message interface{}, args ...interface{})
 	Fatal(message interface{}, args ...interface{})
+	Lifecycle(message string, args ...interface{})
 	SetLogLevel(level string)
 	GetLogLevel() string
+	GetLifecycleFilename() string
+	EnableLifecycle(baseFilename string) error
 	Close() error
 }
 
 // Logger - структура логера
 type Logger struct {
-	logger    *log.Logger
-	logFile   *os.File
-	formatter log.Formatter
-	rotating  *RotateConfig
-	isSimple  bool
+	logger        *log.Logger
+	lifecycleLog  *log.Logger    // Отдельный логгер для lifecycle событий
+	logFile       io.WriteCloser // Используем интерфейс, чтобы закрывать не только файл, но и ротатор тоже
+	logFilename   string
+	lifecycleFile *os.File // Файл для lifecycle
+	formatter     log.Formatter
+	rotating      *RotateConfig
+	isSimple      bool
 }
 
 var _ Interface = (*Logger)(nil)
 
 // New - Создает новый экземпляр логгера с выводом в консоль и файл с заданным форматированием и настройками ро
-func New(level, filename string, formatter log.Formatter, rotating *RotateConfig) *Logger {
+func New(level, filename string, formatter log.Formatter, rotating *RotateConfig) Interface {
 	lev := parseLogLevel(level)
 	var output log.LevelWriter
+	var closer io.WriteCloser
+
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o666)
-	writer := log.ConsoleWriter{
-		Out:        os.Stdout,
-		TimeFormat: "02.01.2006 15:04:05",
-		NoColor:    false,
-	}
+	console := newConsoleWriter()
 	if err != nil {
-		output = log.MultiLevelWriter(writer)
+		output = log.MultiLevelWriter(console)
 		filename = ""
 	} else {
-		var out io.Writer
-		if rotating.DatePattern != "" {
-			out, err = rotatelogs.New(
+		if rotating != nil && rotating.DatePattern != "" {
+			rl, rlErr := rotatelogs.New(
 				fmt.Sprintf("%s.%s", filename, rotating.DatePattern),
 				rotatelogs.WithLinkName(filename),
 				rotatelogs.WithRotationTime(rotating.RotationTime),
 				rotatelogs.WithRotationCount(rotating.RotationCount),
 				rotatelogs.WithLocation(rotating.TimeLocation),
 			)
-			if err != nil {
-				out = file
-				rotating = nil
+			if rlErr != nil {
+				output = log.MultiLevelWriter(newFormattedWriter(file, formatter), console)
+				closer = file
+			} else {
+				// Ротация работает, поэтому больше не нужен дескриптор 'file', так как rl сам открывает и закрывает файлы.
+				file.Close()
+				output = log.MultiLevelWriter(newFormattedWriter(rl, formatter), console)
+				closer = rl // Теперь Close() закроет именно ротатор
 			}
 		} else {
-			out = file
+			output = log.MultiLevelWriter(newFormattedWriter(file, formatter), console)
+			closer = file
 		}
-		writerFile := log.ConsoleWriter{
-			Out:           out,
-			TimeFormat:    "02.01.2006 15:04:05",
-			NoColor:       true,
-			FormatMessage: formatter,
-		}
-		output = log.MultiLevelWriter(writerFile, writer)
 	}
 
 	logger := log.New(output).Level(lev).With().Timestamp().Logger()
@@ -82,13 +88,15 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 	if formatter != nil {
 		msg += ", with formatter"
 	}
-	logger.Debug().Msgf(msg)
+	logger.Trace().Msg(msg)
+
 	return &Logger{
-		logger:    &logger,
-		logFile:   file,
-		formatter: formatter,
-		rotating:  rotating,
-		isSimple:  false,
+		logger:      &logger,
+		logFile:     closer,
+		logFilename: filename,
+		formatter:   formatter,
+		rotating:    rotating,
+		isSimple:    false,
 	}
 }
 
@@ -96,11 +104,7 @@ func New(level, filename string, formatter log.Formatter, rotating *RotateConfig
 func NewSimple(level string) *Logger {
 	lev := parseLogLevel(level)
 	var output log.LevelWriter
-	writer := log.ConsoleWriter{
-		Out:        os.Stdout,
-		TimeFormat: "02.01.2006 15:04:05",
-		NoColor:    false,
-	}
+	writer := newConsoleWriter()
 	output = log.MultiLevelWriter(writer)
 	logger := log.New(output).Level(lev).With().Timestamp().Logger()
 	return &Logger{
@@ -109,21 +113,36 @@ func NewSimple(level string) *Logger {
 	}
 }
 
-func (l *Logger) SetLogLevel(level string) {
-	var newLogger *Logger
-	if l.isSimple {
-		newLogger = NewSimple(level)
-	} else {
-		newLogger = New(level, l.logFile.Name(), l.formatter, l.rotating)
+func (l *Logger) EnableLifecycle(baseFilename string) error {
+	lifecycleLogger, lifecycleFile, err := SetLifecycleLogFile(baseFilename)
+	if err != nil {
+		l.Error("Failed to create lifecycle log: %v", err)
+		return err
 	}
-	l.logger = newLogger.logger
+	l.lifecycleLog = lifecycleLogger
+	l.lifecycleFile = lifecycleFile
+	return nil
+}
+
+func (l *Logger) SetLogLevel(level string) {
+	lev := parseLogLevel(level)
+
+	var output log.LevelWriter
+	writerConsole := newConsoleWriter()
+	if l.isSimple {
+		output = log.MultiLevelWriter(writerConsole)
+	} else {
+		// Для обычного логгера переиспользуем существующий l.logFile, таким образом избегаем накопления открытых дескрипторов в системе
+		output = log.MultiLevelWriter(newFormattedWriter(l.logFile, l.formatter), writerConsole)
+	}
+	newLogger := log.New(output).Level(lev).With().Timestamp().Logger()
+	l.logger = &newLogger
+
+	l.logger.Trace().Msgf("Log level changed to %s on the fly", lev.String())
 }
 
 func (l *Logger) GetLogLevel() string {
 	return l.logger.GetLevel().String()
-}
-func (l *Logger) Rotate() {
-
 }
 
 // Trace - Обработка результата типа TRACE
@@ -204,7 +223,20 @@ func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
 }
 
 func (l *Logger) Close() error {
-	return l.logFile.Close()
+	var errCommon, errLifecycle error
+	if l.lifecycleFile != nil {
+		// Проверяем, не является ли файл стандартным потоком перед закрытием
+		if l.lifecycleFile != os.Stdout && l.lifecycleFile != os.Stderr {
+			errLifecycle = l.lifecycleFile.Close()
+		}
+		l.lifecycleFile = nil // Защита от повторного закрытия
+	}
+	if l.logFile != nil {
+		// Закрываем либо файл, либо ротатор
+		errCommon = l.logFile.Close()
+		l.logFile = nil
+	}
+	return errors.Join(errLifecycle, errCommon)
 }
 
 func parseLogLevel(level string) log.Level {
@@ -230,4 +262,17 @@ func parseLogLevel(level string) log.Level {
 			"error, warn, info, debug или trace. Используем умолчательное значение info")
 	}
 	return lev
+}
+
+func newConsoleWriter() log.ConsoleWriter {
+	return log.ConsoleWriter{Out: os.Stdout, TimeFormat: HumanTimeFormat, NoColor: false}
+}
+
+func newFormattedWriter(out io.WriteCloser, formatter log.Formatter) log.ConsoleWriter {
+	return log.ConsoleWriter{
+		Out:           out,
+		TimeFormat:    HumanTimeFormat,
+		NoColor:       true,
+		FormatMessage: formatter,
+	}
 }
