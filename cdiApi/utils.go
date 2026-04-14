@@ -36,6 +36,10 @@ func GetRelationHid(relation Relation) (int32, string) {
 	return hid, partyType
 }
 
+func BuildPartyLink(baseUrl, partyType string, hid int32) string {
+	return fmt.Sprintf("%s/ui/parties/%s/%d", baseUrl, partyType, hid)
+}
+
 func validateStatus(resp *http.Response) error {
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		return nil
