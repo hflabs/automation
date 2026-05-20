@@ -74,7 +74,7 @@ type FieldsIssue struct {
 	Creator             JiraUser     `json:"creator,omitzero"`
 	Reporter            JiraUser     `json:"reporter,omitzero"`
 	Participants        []JiraUser   `json:"customfield_10380,omitzero"`
-	Project             IssueField   `json:"project,omitzero"`
+	Project             JiraProject  `json:"project,omitzero"`
 	Components          []IssueField `json:"components,omitzero"`
 	LearnTime           string       `json:"customfield_14481,omitzero"`
 	LearnForWho         string       `json:"customfield_13881,omitzero"`
@@ -122,6 +122,10 @@ type JiraUser struct {
 	Active      bool   `json:"active,omitzero"`
 }
 
+type JiraProject struct {
+	IssueField
+	ProjectCategory IssueField `json:"projectCategory,omitzero"`
+}
 type ProjectVersion struct {
 	ID              string `json:"id"`
 	Name            string `json:"name"`
