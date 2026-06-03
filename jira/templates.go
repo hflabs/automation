@@ -184,6 +184,7 @@ type typeIssue struct {
 	Epic           string // Эпик
 	Learning       string // Обучение
 	SupportRequest string // Запрос в поддержку
+	SubTask        string // Подзадача
 }
 
 func newTypes() typeIssue {
@@ -195,6 +196,7 @@ func newTypes() typeIssue {
 		Epic:           "5",
 		Learning:       "10600",
 		SupportRequest: "10",
+		SubTask:        "10201",
 	}
 }
 

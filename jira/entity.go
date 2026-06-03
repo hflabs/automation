@@ -95,6 +95,7 @@ type FieldsIssue struct {
 	Customer            IssueField   `json:"customfield_14082,omitzero"`
 	ProductsSup         []IssueField `json:"customfield_14081,omitzero"`
 	Labels              []string     `json:"labels,omitempty"`
+	Parent              IssueField   `json:"parent,omitzero"`
 }
 
 func (i *FieldsIssue) HasLabel(label string) bool {
