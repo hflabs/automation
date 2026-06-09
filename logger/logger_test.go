@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestLogger_SetLogLevel(t *testing.T) {
@@ -135,5 +136,51 @@ func TestLogger_NoFileLeaksOnSetLogLevel(t *testing.T) {
 	}
 	if l.(*Logger).logFile != initialFilePtr {
 		t.Errorf("SetLogLevel изменил дескриптор файла! Это приведет к утечке, если старый файл не был закрыт.")
+	}
+}
+
+func TestLogger_SymlinkFix(t *testing.T) {
+	tmpDir := t.TempDir()
+	logPath := filepath.Join(tmpDir, "test_app.log")
+
+	cfg := &RotateConfig{
+		DatePattern:   "%Y%m%d%H%M%S",
+		RotationTime:  1 * time.Second,
+		RotationCount: 3,
+		TimeLocation:  time.Local,
+	}
+	l := New("info", logPath, nil, cfg)
+
+	filebeatMock, mockErr := os.Open(logPath)
+	if mockErr == nil {
+		defer filebeatMock.Close()
+	}
+	l.Info("Line 1: initial write")
+	time.Sleep(1500 * time.Millisecond)
+
+	l.SetLogLevel("debug")
+	l.Debug("Line 2: after rotation and log level change")
+
+	if err := l.Close(); err != nil {
+		t.Fatalf("Failed to close logger: %v", err)
+	}
+
+	fileInfo, err := os.Lstat(logPath)
+	if err != nil {
+		t.Fatalf("Expected '%s' to exist: %v", logPath, err)
+	}
+
+	// В старом коде os.OpenFile создавал обычный файл, из-за чего rotatelogs не мог сделать симлинк корректно
+	if fileInfo.Mode()&os.ModeSymlink == 0 {
+		t.Errorf("Expected '%s' to be a symlink", logPath)
+	}
+	content, err := os.ReadFile(logPath)
+	if err != nil {
+		t.Fatalf("Failed to read from symlink '%s': %v", logPath, err)
+	}
+
+	contentStr := string(content)
+	if !strings.Contains(contentStr, "Line 2: after rotation") {
+		t.Errorf("Expected to find 'Line 2' in the current log, got:\n%s", contentStr)
 	}
 }
