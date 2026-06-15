@@ -2,6 +2,7 @@ package jira
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -30,29 +31,31 @@ func makeIssues(total int) []IssueJira {
 func (s *SearchSuite) SetupSuite() {
 	s.mux = http.NewServeMux()
 	s.mux.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
+		if r.Method != http.MethodPost {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		q := r.URL.Query()
-		startAt, _ := strconv.Atoi(q.Get("startAt"))
-		maxResults, _ := strconv.Atoi(q.Get("maxResults"))
+		var req SearchRequest
+		rawReq, err := io.ReadAll(r.Body)
+		s.NoError(err, "read request")
+		err = json.Unmarshal(rawReq, &req)
+		s.NoError(err, "unmarshal request")
 
 		issues := makeIssues(s.total)
-		start := startAt
+		start := req.StartAt
 		if start > len(issues) {
 			start = len(issues)
 		}
-		end := startAt + maxResults
+		end := req.StartAt + req.MaxResults
 		if end > len(issues) {
 			end = len(issues)
 		}
 		page := issues[start:end]
 
-		resp := SearchResponse{StartAt: startAt, MaxResults: len(page), Total: s.total, Issues: page}
+		resp := SearchResponse{StartAt: req.StartAt, MaxResults: len(page), Total: s.total, Issues: page}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		err := json.NewEncoder(w).Encode(resp)
+		err = json.NewEncoder(w).Encode(resp)
 		s.NoError(err, "encode response")
 	})
 
