@@ -365,6 +365,9 @@ type fieldsIssue struct {
 	Summary            string // summary
 	Description        string // description
 	Priority           string // priority
+	Project            string // project
+	Type               string // type
+	SupportEmailTopic  string // customfield_16881
 
 	LearnTime          string // Месяц и год обучения
 	LearnForWho        string // Для кого еще подходит это обучение?
@@ -397,6 +400,9 @@ func newIssueFields() fieldsIssue {
 		Summary:            "summary",
 		Description:        "description",
 		Priority:           "priority",
+		Project:            "project",
+		Type:               "type",
+		SupportEmailTopic:  "customfield_16881",
 
 		LearnTime:          "customfield_14481",
 		LearnForWho:        "customfield_13881",
