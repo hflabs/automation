@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const TimeFormatJira = "2006-01-02T15:04:05.000Z0700"
+const TimeFormatJira = "2006-01-02T15:04:05.000-0700"
 
 type JiraTime struct {
 	time.Time
