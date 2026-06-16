@@ -3,8 +3,10 @@ package logger
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestLogger_SetLogLevel(t *testing.T) {
@@ -135,5 +137,171 @@ func TestLogger_NoFileLeaksOnSetLogLevel(t *testing.T) {
 	}
 	if l.(*Logger).logFile != initialFilePtr {
 		t.Errorf("SetLogLevel изменил дескриптор файла! Это приведет к утечке, если старый файл не был закрыт.")
+	}
+}
+
+func TestLogger_SymlinkFix(t *testing.T) {
+	tmpDir := t.TempDir()
+	logPath := filepath.Join(tmpDir, "test_app.log")
+
+	cfg := &RotateConfig{
+		DatePattern:   "%Y%m%d%H%M%S",
+		RotationTime:  1 * time.Second,
+		RotationCount: 3,
+		TimeLocation:  time.Local,
+	}
+	l := New("info", logPath, nil, cfg)
+
+	filebeatMock, mockErr := os.Open(logPath)
+	if mockErr == nil {
+		defer filebeatMock.Close()
+	}
+	l.Info("Line 1: initial write")
+	time.Sleep(1500 * time.Millisecond)
+
+	l.SetLogLevel("debug")
+	l.Debug("Line 2: after rotation and log level change")
+
+	if err := l.Close(); err != nil {
+		t.Fatalf("Failed to close logger: %v", err)
+	}
+
+	fileInfo, err := os.Lstat(logPath)
+	if err != nil {
+		t.Fatalf("Expected '%s' to exist: %v", logPath, err)
+	}
+
+	// В старом коде os.OpenFile создавал обычный файл, из-за чего rotatelogs не мог сделать симлинк корректно
+	if fileInfo.Mode()&os.ModeSymlink == 0 {
+		t.Errorf("Expected '%s' to be a symlink", logPath)
+	}
+	content, err := os.ReadFile(logPath)
+	if err != nil {
+		t.Fatalf("Failed to read from symlink '%s': %v", logPath, err)
+	}
+
+	contentStr := string(content)
+	if !strings.Contains(contentStr, "Line 2: after rotation") {
+		t.Errorf("Expected to find 'Line 2' in the current log, got:\n%s", contentStr)
+	}
+}
+
+func TestLogger_SymlinkFix_ExistingFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	logPath := filepath.Join(tmpDir, "test_app.log")
+
+	// На Windows переименование/удаление открытого файла невозможно на уровне ОС (Access is denied).
+	// Этот тест всегда будет падать на Windows
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping test on Windows: OS does not allow replacing an open file with a symlink")
+	}
+
+	// Эмулируем старый лог-файл (обычный файл, не симлинк), оставшийся от старой версии
+	err := os.WriteFile(logPath, []byte("old log line\n"), 0644)
+	if err != nil {
+		t.Fatalf("Failed to create old log file: %v", err)
+	}
+
+	cfg := &RotateConfig{
+		DatePattern:   "%Y%m%d%H%M%S",
+		RotationTime:  1 * time.Second,
+		RotationCount: 3,
+		TimeLocation:  time.Local,
+	}
+
+	// Если мы обновились со старой версии, то старый процесс мог быть остановлен,
+	// но filebeat все еще держит файл открытым на чтение.
+	// Открываем файл до инициализации логгера, чтобы эмулировать это поведение.
+	filebeatMock, mockErr := os.Open(logPath)
+	if mockErr == nil {
+		defer filebeatMock.Close()
+	}
+
+	l := New("info", logPath, nil, cfg)
+
+	l.Info("Line 1: initial write")
+	time.Sleep(1500 * time.Millisecond)
+
+	l.SetLogLevel("debug")
+	l.Debug("Line 2: after rotation and log level change")
+
+	if err := l.Close(); err != nil {
+		t.Fatalf("Failed to close logger: %v", err)
+	}
+
+	fileInfo, err := os.Lstat(logPath)
+	if err != nil {
+		t.Fatalf("Expected '%s' to exist: %v", logPath, err)
+	}
+
+	if fileInfo.Mode()&os.ModeSymlink == 0 {
+		t.Errorf("Expected '%s' to be a symlink", logPath)
+	}
+	content, err := os.ReadFile(logPath)
+	if err != nil {
+		t.Fatalf("Failed to read from symlink '%s': %v", logPath, err)
+	}
+
+	contentStr := string(content)
+	if !strings.Contains(contentStr, "Line 2: after rotation") {
+		t.Errorf("Expected to find 'Line 2' in the current log, got:\n%s", contentStr)
+	}
+}
+
+func TestLogger_SymlinkFix_ExistingSymlink(t *testing.T) {
+	tmpDir := t.TempDir()
+	logPath := filepath.Join(tmpDir, "test_app.log")
+
+	// Эмулируем корректное поведение предыдущей версии:
+	// 1. Был старый лог-файл
+	// 2. test_app.log был правильным симлинком на него
+	oldTarget := logPath + ".20260101000000"
+	if err := os.WriteFile(oldTarget, []byte("very old log line\n"), 0644); err != nil {
+		t.Fatalf("Failed to create old target file: %v", err)
+	}
+	if err := os.Symlink(oldTarget, logPath); err != nil {
+		t.Skipf("Skipping test, unable to create symlink (needs Admin on Windows): %v", err)
+	}
+
+	cfg := &RotateConfig{
+		DatePattern:   "%Y%m%d%H%M%S",
+		RotationTime:  1 * time.Second,
+		RotationCount: 3,
+		TimeLocation:  time.Local,
+	}
+
+	filebeatMock, mockErr := os.Open(logPath)
+	if mockErr == nil {
+		defer filebeatMock.Close()
+	}
+
+	l := New("info", logPath, nil, cfg)
+
+	l.Info("Line 1: initial write")
+	time.Sleep(1500 * time.Millisecond)
+
+	l.SetLogLevel("debug")
+	l.Debug("Line 2: after rotation and log level change")
+
+	if err := l.Close(); err != nil {
+		t.Fatalf("Failed to close logger: %v", err)
+	}
+
+	fileInfo, err := os.Lstat(logPath)
+	if err != nil {
+		t.Fatalf("Expected '%s' to exist: %v", logPath, err)
+	}
+
+	if fileInfo.Mode()&os.ModeSymlink == 0 {
+		t.Errorf("Expected '%s' to be a symlink", logPath)
+	}
+	content, err := os.ReadFile(logPath)
+	if err != nil {
+		t.Fatalf("Failed to read from symlink '%s': %v", logPath, err)
+	}
+
+	contentStr := string(content)
+	if !strings.Contains(contentStr, "Line 2: after rotation") {
+		t.Errorf("Expected to find 'Line 2' in the current log, got:\n%s", contentStr)
 	}
 }
