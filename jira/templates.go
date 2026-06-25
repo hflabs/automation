@@ -92,6 +92,7 @@ type status struct {
 	Analytics                   string // Аналитика
 	Requirements                string // Ревью требований
 	ReadyForTesting             string // Готово к тестированию
+	ReadyForTestingEK           string // Готова к тестированию (ЕК)
 	Testing                     string // Тестирование
 	Documentation               string // Документация
 	FirstAnswer                 string // Дан первичный ответ
@@ -145,6 +146,7 @@ func newStatuses() status {
 		Analytics:                   "11520",
 		Requirements:                "11521",
 		ReadyForTesting:             "11522",
+		ReadyForTestingEK:           "12527",
 		Testing:                     "11523",
 		Documentation:               "11620",
 		FirstAnswer:                 "11720",
