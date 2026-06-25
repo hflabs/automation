@@ -57,46 +57,47 @@ type ChangelogItem struct {
 }
 
 type FieldsIssue struct {
-	Summary             string       `json:"summary,omitzero"`
-	Description         string       `json:"description,omitzero"`
-	BusinessValue       float64      `json:"customfield_10084,omitzero"`
-	StoryPoints         float64      `json:"customfield_10083,omitzero"`
-	WeightedJob         float64      `json:"customfield_12580,omitzero"`
-	ReleaseNotes        string       `json:"customfield_13082,omitzero"`
-	ReleaseInstruction  string       `json:"customfield_13081,omitzero"`
-	DueDate             string       `json:"duedate,omitzero"`
-	SlaExpire           JiraTime     `json:"customfield_16580,omitzero"`
-	Status              IssueField   `json:"status,omitzero"`
-	IssueType           IssueField   `json:"issuetype,omitzero"`
-	Priority            IssueField   `json:"priority,omitzero"`
-	Resolution          IssueField   `json:"resolution,omitzero"`
-	Assignee            JiraUser     `json:"assignee,omitzero"`
-	Creator             JiraUser     `json:"creator,omitzero"`
-	Reporter            JiraUser     `json:"reporter,omitzero"`
-	Participants        []JiraUser   `json:"customfield_10380,omitzero"`
-	Project             JiraProject  `json:"project,omitzero"`
-	Components          []IssueField `json:"components,omitzero"`
-	LearnTime           string       `json:"customfield_14481,omitzero"`
-	LearnForWho         string       `json:"customfield_13881,omitzero"`
-	LearnWhatLike       string       `json:"customfield_14483,omitzero"`
-	LearnWhatUseful     string       `json:"customfield_13784,omitzero"`
-	LearnWhatBad        string       `json:"customfield_14484,omitzero"`
-	LearnWhatLearned    string       `json:"customfield_13880,omitzero"`
-	LearnWillRecommend  string       `json:"customfield_13882,omitzero"`
-	LearnPeople         []JiraUser   `json:"customfield_14480,omitzero"`
-	LearnField          IssueField   `json:"customfield_14380,omitzero"`
-	LearnLink           string       `json:"customfield_13782,omitzero"`
-	Created             JiraTime     `json:"created,omitzero"`
-	Updated             JiraTime     `json:"updated,omitzero"`
-	FreeStringValue     string       `json:"freeValue,omitzero"`
-	BusinessDescription string       `json:"customfield_10000,omitzero"`
-	WhoWillGetBetter    []IssueField `json:"customfield_12680,omitzero"`
-	SourceRequest       IssueField   `json:"customfield_14083,omitzero"`
-	Customer            IssueField   `json:"customfield_14082,omitzero"`
-	ProductSup          IssueField   `json:"customfield_16880,omitzero"`
-	Labels              []string     `json:"labels,omitempty"`
-	Parent              IssueField   `json:"parent,omitzero"`
-	SupportEmailTopic   string       `json:"customfield_16881,omitzero"`
+	Summary             string          `json:"summary,omitzero"`
+	Description         string          `json:"description,omitzero"`
+	BusinessValue       float64         `json:"customfield_10084,omitzero"`
+	StoryPoints         float64         `json:"customfield_10083,omitzero"`
+	WeightedJob         float64         `json:"customfield_12580,omitzero"`
+	ReleaseNotes        string          `json:"customfield_13082,omitzero"`
+	ReleaseInstruction  string          `json:"customfield_13081,omitzero"`
+	DueDate             string          `json:"duedate,omitzero"`
+	SlaExpire           JiraTime        `json:"customfield_16580,omitzero"`
+	Status              IssueField      `json:"status,omitzero"`
+	IssueType           IssueField      `json:"issuetype,omitzero"`
+	Priority            IssueField      `json:"priority,omitzero"`
+	Resolution          IssueField      `json:"resolution,omitzero"`
+	Assignee            JiraUser        `json:"assignee,omitzero"`
+	Creator             JiraUser        `json:"creator,omitzero"`
+	Reporter            JiraUser        `json:"reporter,omitzero"`
+	Participants        []JiraUser      `json:"customfield_10380,omitzero"`
+	Project             JiraProject     `json:"project,omitzero"`
+	Components          []IssueField    `json:"components,omitzero"`
+	LearnTime           string          `json:"customfield_14481,omitzero"`
+	LearnForWho         string          `json:"customfield_13881,omitzero"`
+	LearnWhatLike       string          `json:"customfield_14483,omitzero"`
+	LearnWhatUseful     string          `json:"customfield_13784,omitzero"`
+	LearnWhatBad        string          `json:"customfield_14484,omitzero"`
+	LearnWhatLearned    string          `json:"customfield_13880,omitzero"`
+	LearnWillRecommend  string          `json:"customfield_13882,omitzero"`
+	LearnPeople         []JiraUser      `json:"customfield_14480,omitzero"`
+	LearnField          IssueField      `json:"customfield_14380,omitzero"`
+	LearnLink           string          `json:"customfield_13782,omitzero"`
+	Created             JiraTime        `json:"created,omitzero"`
+	Updated             JiraTime        `json:"updated,omitzero"`
+	FreeStringValue     string          `json:"freeValue,omitzero"`
+	BusinessDescription string          `json:"customfield_10000,omitzero"`
+	WhoWillGetBetter    []IssueField    `json:"customfield_12680,omitzero"`
+	SourceRequest       IssueField      `json:"customfield_14083,omitzero"`
+	Customer            IssueField      `json:"customfield_14082,omitzero"`
+	ProductSup          IssueField      `json:"customfield_16880,omitzero"`
+	Labels              []string        `json:"labels,omitempty"`
+	Parent              IssueField      `json:"parent,omitzero"`
+	SupportEmailTopic   string          `json:"customfield_16881,omitzero"`
+	AffectedModules     []IssueCheckBox `json:"customfield_16681,omitzero"`
 }
 
 func (i *FieldsIssue) HasLabel(label string) bool {
@@ -114,6 +115,13 @@ type IssueField struct {
 	Key      string `json:"key,omitzero"`
 	Value    string `json:"value,omitzero"`
 	Disabled bool   `json:"disabled,omitzero"`
+}
+
+type IssueCheckBox struct {
+	ID      int    `json:"id,omitzero"`
+	Name    string `json:"name,omitzero"`
+	Checked bool   `json:"checked,omitzero"`
+	Rank    int    `json:"rank,omitzero"`
 }
 
 type JiraUser struct {
