@@ -118,10 +118,11 @@ type IssueField struct {
 }
 
 type IssueCheckBox struct {
-	ID      int    `json:"id,omitzero"`
-	Name    string `json:"name,omitzero"`
-	Checked bool   `json:"checked,omitzero"`
-	Rank    int    `json:"rank,omitzero"`
+	ID       int    `json:"id,omitzero"`
+	Name     string `json:"name,omitzero"`
+	Checked  bool   `json:"checked,omitzero"`
+	Rank     int    `json:"rank,omitzero"`
+	IsHeader bool   `json:"isHeader,omitzero"`
 }
 
 type JiraUser struct {
