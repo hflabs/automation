@@ -1,11 +1,15 @@
 package confluence
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -395,4 +399,136 @@ func (c *confluence) GetRestrictionByOperationById(ctx context.Context, id, oper
 		return restrictions, fmt.Errorf("GetRestrictionByOperationById — get confluence pageId %s restrictions err: %w", id, err)
 	}
 	return restrictions, nil
+}
+
+func (c *confluence) GetAttachments(ctx context.Context, pageID string) ([]Attachment, error) {
+	const limit = 100
+
+	var attachments []Attachment
+	for start := 0; ; {
+		var resp AttachmentResponse
+		err := requests.
+			URL(fmt.Sprintf("%s/%s/child/attachment", c.baseUrl, pageID)).
+			Method(http.MethodGet).
+			Param("start", strconv.Itoa(start)).
+			Param("limit", strconv.Itoa(limit)).
+			BasicAuth(c.user, c.password).
+			ToJSON(&resp).
+			AddValidator(validateStatus).
+			Fetch(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("GetAttachments pageId %s: %w", pageID, err)
+		}
+		attachments = append(attachments, resp.Results...)
+
+		pageSize := resp.Size
+		if pageSize == 0 {
+			break
+		}
+
+		pageLimit := resp.Limit
+		if pageLimit <= 0 {
+			pageLimit = limit
+		}
+		if pageSize < pageLimit {
+			break
+		}
+		start += pageSize
+	}
+	return attachments, nil
+}
+
+func (c *confluence) DownloadAttachment(ctx context.Context, attachment Attachment) ([]byte, error) {
+	downloadURL, err := c.attachmentDownloadURL(attachment)
+	if err != nil {
+		return nil, fmt.Errorf("DownloadAttachment attachmentId %s title %s: %w", attachment.ID, attachment.Title, err)
+	}
+
+	var buf bytes.Buffer
+	err = requests.
+		URL(downloadURL).
+		Method(http.MethodGet).
+		BasicAuth(c.user, c.password).
+		ToBytesBuffer(&buf).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("DownloadAttachment attachmentId %s title %s: %w", attachment.ID, attachment.Title, err)
+	}
+	return buf.Bytes(), nil
+}
+
+func (c *confluence) CopyAttachments(ctx context.Context, sourcePageID, targetPageID string) error {
+	sourceAttachments, err := c.GetAttachments(ctx, sourcePageID)
+	if err != nil {
+		return fmt.Errorf("CopyAttachments sourcePageId %s targetPageId %s: %w", sourcePageID, targetPageID, err)
+	}
+	targetAttachments, err := c.GetAttachments(ctx, targetPageID)
+	if err != nil {
+		return fmt.Errorf("CopyAttachments sourcePageId %s targetPageId %s: %w", sourcePageID, targetPageID, err)
+	}
+
+	targetByTitle := make(map[string]Attachment, len(targetAttachments))
+	for _, attachment := range targetAttachments {
+		targetByTitle[attachment.Title] = attachment
+	}
+
+	for _, attachment := range sourceAttachments {
+		data, err := c.DownloadAttachment(ctx, attachment)
+		if err != nil {
+			return fmt.Errorf("CopyAttachments download sourcePageId %s attachmentId %s title %s: %w", sourcePageID, attachment.ID, attachment.Title, err)
+		}
+
+		if targetAttachment, ok := targetByTitle[attachment.Title]; ok {
+			err = c.UpdateAttachment(ctx, targetPageID, targetAttachment.ID, attachment.Title, data)
+		} else {
+			err = c.CreateAttachment(ctx, targetPageID, attachment.Title, data)
+		}
+		if err != nil {
+			return fmt.Errorf("CopyAttachments upload targetPageId %s title %s: %w", targetPageID, attachment.Title, err)
+		}
+	}
+	return nil
+}
+
+func (c *confluence) attachmentDownloadURL(attachment Attachment) (string, error) {
+	if attachment.Links.Download == "" {
+		return "", fmt.Errorf("download link is empty")
+	}
+
+	baseURL, err := url.Parse(c.baseUrl)
+	if err != nil {
+		return "", err
+	}
+	downloadURL, err := url.Parse(attachment.Links.Download)
+	if err != nil {
+		return "", err
+	}
+	return baseURL.ResolveReference(downloadURL).String(), nil
+}
+
+func (c *confluence) CreateAttachment(ctx context.Context, pageID, title string, data []byte) error {
+	return c.uploadAttachment(ctx, fmt.Sprintf("%s/%s/child/attachment", c.baseUrl, pageID), title, data)
+}
+
+func (c *confluence) UpdateAttachment(ctx context.Context, pageID, attachmentID, title string, data []byte) error {
+	return c.uploadAttachment(ctx, fmt.Sprintf("%s/%s/child/attachment/%s/data", c.baseUrl, pageID, attachmentID), title, data)
+}
+
+func (c *confluence) uploadAttachment(ctx context.Context, uploadURL, title string, data []byte) error {
+	return requests.
+		URL(uploadURL).
+		Method(http.MethodPost).
+		Header("X-Atlassian-Token", "no-check").
+		Config(requests.BodyMultipart("", func(multi *multipart.Writer) error {
+			file, err := multi.CreateFormFile("file", title)
+			if err != nil {
+				return err
+			}
+			_, err = io.Copy(file, bytes.NewReader(data))
+			return err
+		})).
+		BasicAuth(c.user, c.password).
+		AddValidator(validateStatus).
+		Fetch(ctx)
 }

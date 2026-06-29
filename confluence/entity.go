@@ -105,3 +105,18 @@ type RestrictionByOperation struct {
 		} `json:"group"`
 	} `json:"restrictions"`
 }
+
+type AttachmentResponse struct {
+	Results []Attachment `json:"results"`
+	Start   int          `json:"start,omitempty"`
+	Limit   int          `json:"limit,omitempty"`
+	Size    int          `json:"size,omitempty"`
+}
+
+type Attachment struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	Links struct {
+		Download string `json:"download"`
+	} `json:"_links"`
+}

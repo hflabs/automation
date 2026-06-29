@@ -30,4 +30,10 @@ type ApiConfluence interface {
 
 	GetRestrictionsById(ctx context.Context, id string) (Restrictions, error)
 	GetRestrictionByOperationById(ctx context.Context, id, operation string) (RestrictionByOperation, error)
+
+	GetAttachments(ctx context.Context, pageID string) ([]Attachment, error)
+	DownloadAttachment(ctx context.Context, attachment Attachment) ([]byte, error)
+	CreateAttachment(ctx context.Context, pageID, title string, data []byte) error
+	UpdateAttachment(ctx context.Context, pageID, attachmentID, title string, data []byte) error
+	CopyAttachments(ctx context.Context, sourcePageID, targetPageID string) error
 }
