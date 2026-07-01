@@ -28,7 +28,7 @@ func (s *SearchSuite) TestSearchAllTasks() {
 			// Настраиваем количество задач на этом кейсе
 			s.total = tc.total
 
-			j := &jira{BaseUrl: s.srv.URL, Username: "user", Password: "pass"}
+			j := &jira{BaseUrl: s.srv.URL, Token: "token"}
 			got, err := j.SearchAllTasks(ctx, tc.jql)
 			if tc.wantErr {
 				s.Require().Error(err)

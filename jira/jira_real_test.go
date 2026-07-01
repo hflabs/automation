@@ -11,16 +11,14 @@ import (
 // Временные интеграционные тесты против реальной Jira.
 // Запускаются ТОЛЬКО если заданы переменные окружения:
 //  - JIRA_BASE_URL   — базовый URL, как ожидает клиент сейчас, например: https://host/rest/api/2
-//  - JIRA_USER       — имя пользователя (basic auth)
-//  - JIRA_PASS       — пароль (basic auth)
+//  - JIRA_TOKEN       — персональный токе пользователя
 //  - JIRA_PROJECT_KEY или JIRA_PROJECT_ID — идентификация проекта
 //  - JIRA_ISSUETYPE_NAME или JIRA_ISSUETYPE_ID — тип задачи
 // Если переменные не заданы, тесты будут пропущены.
 
 type realCfg struct {
 	baseURL string
-	user    string
-	pass    string
+	token   string
 	projKey string
 	projID  string
 	itName  string
@@ -28,10 +26,9 @@ type realCfg struct {
 }
 
 // Если локально влом прописывать переменные в ENV на винде
-func setEnvTest(url, user, pass, projKey, itName string) {
+func setEnvTest(url, token, projKey, itName string) {
 	os.Setenv("JIRA_BASE_URL", url)
-	os.Setenv("JIRA_USER", user)
-	os.Setenv("JIRA_PASS", pass)
+	os.Setenv("JIRA_TOKEN", token)
 	os.Setenv("JIRA_PROJECT_KEY", projKey)
 	os.Setenv("JIRA_ISSUETYPE_NAME", itName)
 }
@@ -40,16 +37,15 @@ func loadRealCfg(t *testing.T) (realCfg, bool) {
 	t.Helper()
 	cfg := realCfg{
 		baseURL: os.Getenv("JIRA_BASE_URL"),
-		user:    os.Getenv("JIRA_USER"),
-		pass:    os.Getenv("JIRA_PASS"),
+		token:   os.Getenv("JIRA_TOKEN"),
 		projKey: os.Getenv("JIRA_PROJECT_KEY"),
 		projID:  os.Getenv("JIRA_PROJECT_ID"),
 		itName:  os.Getenv("JIRA_ISSUETYPE_NAME"),
 		itID:    os.Getenv("JIRA_ISSUETYPE_ID"),
 	}
 
-	if cfg.baseURL == "" || cfg.user == "" || cfg.pass == "" {
-		t.Skip("Пропуск: задайте JIRA_BASE_URL, JIRA_USER, JIRA_PASS для запуска интеграционных тестов")
+	if cfg.baseURL == "" || cfg.token == "" {
+		t.Skip("Пропуск: задайте JIRA_BASE_URL, JIRA_TOKEN для запуска интеграционных тестов")
 		return realCfg{}, false
 	}
 	// Нужен проект и тип задачи — допускаем указание по key/id и name/id соответственно
@@ -75,7 +71,7 @@ func TestReal_CreateIssueFromMap_And_UpdateFromMap(t *testing.T) {
 		return
 	}
 
-	j := NewJira(cfg.baseURL, cfg.user, cfg.pass)
+	j := NewJira(cfg.baseURL, cfg.token)
 	ctx := context.Background()
 
 	// Формируем тело создания через map
@@ -133,20 +129,24 @@ func TestReal_CreateIssue_And_Update(t *testing.T) {
 		return
 	}
 
-	j := NewJira(cfg.baseURL, cfg.user, cfg.pass)
+	j := NewJira(cfg.baseURL, cfg.token)
 	ctx := context.Background()
-
+	now := time.Now().Local().Add(-time.Hour)
 	req := FieldsIssue{
-		Summary:             uniqueSummary("Создание через структуру"),
-		Description:         "created via struct",
-		Components:          []IssueField{{Name: "Мониторинг"}},
-		WhoWillGetBetter:    []IssueField{{Value: "Другое (напишу в задаче)"}},
-		BusinessDescription: "тест",
+		Summary:     uniqueSummary("Создание через структуру"),
+		Description: "created via struct",
+		//Components:          []IssueField{{Name: "Мониторинг"}},
+		//WhoWillGetBetter:    []IssueField{{Value: "Другое (напишу в задаче)"}},
+		//BusinessDescription: "тест",
+		SlaExpire:     JiraTime{Time: now},
+		SourceRequest: IssueField{ID: "12675"},
+		Customer:      IssueField{ID: "12669"},
+		ProductSup:    IssueField{ID: "15545"},
 	}
 	if cfg.projID != "" {
-		req.Project = IssueField{ID: cfg.projID}
+		req.Project = JiraProject{IssueField: IssueField{ID: cfg.projID}}
 	} else {
-		req.Project = IssueField{Key: cfg.projKey}
+		req.Project = JiraProject{IssueField: IssueField{Key: cfg.projKey}}
 	}
 	if cfg.itID != "" {
 		req.IssueType = IssueField{ID: cfg.itID}

@@ -11,13 +11,12 @@ import (
 )
 
 type jira struct {
-	BaseUrl  string
-	Username string
-	Password string
+	BaseUrl string
+	Token   string
 }
 
-func NewJira(baseUrl, user, password string) ApiJira {
-	return &jira{BaseUrl: strings.TrimRight(baseUrl, "/"), Username: user, Password: password}
+func NewJira(baseUrl, token string) ApiJira {
+	return &jira{BaseUrl: strings.TrimRight(baseUrl, "/"), Token: token}
 }
 
 // GetFields — возвращает полный список полей в Jira
@@ -25,7 +24,7 @@ func (j *jira) GetFields(ctx context.Context) ([]IssueField, error) {
 	var fields []IssueField
 	err := requests.
 		URL(fmt.Sprintf("%s/field", j.BaseUrl)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&fields).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -39,7 +38,7 @@ func (j *jira) GetIssueComments(ctx context.Context, issueKey string) ([]IssueCo
 	var resp IssueCommentsResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/issue/%s/comment", j.BaseUrl, issueKey)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -53,7 +52,7 @@ func (j *jira) GetIssueWatchers(ctx context.Context, issueKey string) ([]JiraUse
 	var resp IssueWatchersResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/issue/%s/watchers", j.BaseUrl, issueKey)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -67,7 +66,7 @@ func (j *jira) GetProjectVersions(ctx context.Context, projectKey string) ([]Pro
 	var resp []ProjectVersion
 	err := requests.
 		URL(fmt.Sprintf("%s/project/%s/versions", j.BaseUrl, projectKey)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -84,7 +83,7 @@ func (j *jira) GetIssueById(ctx context.Context, issueId string, fields ...strin
 	var resp IssueJira
 	req := requests.
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueId)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus)
 	// Если поля указаны, добавляем их в URL через запятую
@@ -102,7 +101,7 @@ func (j *jira) GetUserByKey(ctx context.Context, userKey string) (JiraUser, erro
 	var resp JiraUser
 	err := requests.
 		URL(fmt.Sprintf("%s/user?key=%s", j.BaseUrl, url.QueryEscape(userKey))).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -116,7 +115,7 @@ func (j *jira) GetIssueChangelog(ctx context.Context, issueId string) ([]ChangeL
 	var resp IssueJira
 	err := requests.
 		URL(fmt.Sprintf("%s/issue/%s?expand=changelog", j.BaseUrl, issueId)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -130,7 +129,7 @@ func (j *jira) UpdateIssueAssignee(ctx context.Context, issueKey, assigneeName s
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s/assignee", j.BaseUrl, issueKey)).
 		Put().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(JiraUser{Name: assigneeName}).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -141,7 +140,7 @@ func (j *jira) TransitionIssue(ctx context.Context, issueKey, transitionID strin
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s/transitions", j.BaseUrl, issueKey)).
 		Post().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(TransitionIssueRequest{Transition: IssueField{ID: transitionID}}).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -156,7 +155,7 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId 
 	var meta TransitionsResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/issue/%s/transitions", j.BaseUrl, issueKey)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&meta).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -179,7 +178,7 @@ func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s/comment", j.BaseUrl, issueKey)).
 		Post().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(IssueComment{Body: comment}).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -200,7 +199,7 @@ func (j *jira) SearchTasks(ctx context.Context, query string, pageSize, offset i
 	err := requests.
 		URL(fmt.Sprintf("%s/search", j.BaseUrl)).
 		BodyJSON(&req).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(&resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -242,7 +241,7 @@ func (j *jira) UpdateIssueFromMap(ctx context.Context, issueKey string, req map[
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
 		Put().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(UpsertIssueRequestFromMap{Fields: req}).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -257,7 +256,7 @@ func (j *jira) UpdateIssue(ctx context.Context, issueKey string, req FieldsIssue
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
 		Put().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(UpsertIssueRequest{Fields: req}).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -271,7 +270,7 @@ func (j *jira) AddLabel(ctx context.Context, issueKey string, label string) erro
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s", j.BaseUrl, issueKey)).
 		Put().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(req).
 		AddValidator(validateStatus).
 		Fetch(ctx)
@@ -285,7 +284,7 @@ func (j *jira) CreateIssueFromMap(ctx context.Context, req map[string]any) (Crea
 	err := requests.
 		URL(fmt.Sprintf("%s/issue", j.BaseUrl)).
 		Post().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(UpsertIssueRequestFromMap{Fields: req}).
 		ToJSON(&created).
 		AddValidator(validateStatus).
@@ -315,7 +314,7 @@ func (j *jira) CreateIssue(ctx context.Context, req FieldsIssue) (CreatedIssueRe
 	err := requests.
 		URL(fmt.Sprintf("%s/issue", j.BaseUrl)).
 		Post().
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		BodyJSON(UpsertIssueRequest{Fields: req}).
 		ToJSON(&created).
 		AddValidator(validateStatus).
@@ -330,7 +329,7 @@ func (j *jira) GetIssueTypeMeta(ctx context.Context, projectKey, issueTypeId str
 	resp := &IssueTypeMeta{}
 	err := requests.
 		URL(fmt.Sprintf("%s/issue/createmeta/%s/issuetypes/%s", j.BaseUrl, projectKey, issueTypeId)).
-		BasicAuth(j.Username, j.Password).
+		Bearer(j.Token).
 		ToJSON(resp).
 		AddValidator(validateStatus).
 		Fetch(ctx)
