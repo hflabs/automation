@@ -15,6 +15,9 @@ type ApiJira interface {
 	GetFields(ctx context.Context) ([]IssueField, error)
 	GetIssueTypeMeta(ctx context.Context, projectKey, issueTypeId string) (*IssueTypeMeta, error)
 
+	GetJiraProjects(ctx context.Context) ([]JiraProject, error)
+	GetJiraProjectComponents(ctx context.Context, projectKey string) ([]JiraComponent, error)
+
 	CreateIssueFromMap(ctx context.Context, req map[string]any) (CreatedIssueResponse, error)
 	CreateIssue(ctx context.Context, req FieldsIssue) (CreatedIssueResponse, error)
 

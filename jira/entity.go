@@ -73,9 +73,11 @@ type FieldsIssue struct {
 	Assignee            JiraUser        `json:"assignee,omitzero"`
 	Creator             JiraUser        `json:"creator,omitzero"`
 	Reporter            JiraUser        `json:"reporter,omitzero"`
+	Closer              JiraUser        `json:"customfield_10010,omitzero"`
+	Developer           JiraUser        `json:"customfield_13280,omitzero"` //Разработчик. EAS
 	Participants        []JiraUser      `json:"customfield_10380,omitzero"`
 	Project             JiraProject     `json:"project,omitzero"`
-	Components          []IssueField    `json:"components,omitzero"`
+	Components          []JiraComponent `json:"components,omitzero"`
 	LearnTime           string          `json:"customfield_14481,omitzero"`
 	LearnForWho         string          `json:"customfield_13881,omitzero"`
 	LearnWhatLike       string          `json:"customfield_14483,omitzero"`
@@ -90,7 +92,8 @@ type FieldsIssue struct {
 	Updated             JiraTime        `json:"updated,omitzero"`
 	FreeStringValue     string          `json:"freeValue,omitzero"`
 	BusinessDescription string          `json:"customfield_10000,omitzero"`
-	WhoWillGetBetter    []IssueField    `json:"customfield_12680,omitzero"`
+	WhoGetsBetterMulti  []IssueField    `json:"customfield_12680,omitzero"` //Кому станет лучше. INNA
+	WhoGetsBetterSingle IssueField      `json:"customfield_11980,omitzero"` //Кому станет лучше. CDI
 	SourceRequest       IssueField      `json:"customfield_14083,omitzero"`
 	Customer            IssueField      `json:"customfield_14082,omitzero"`
 	ProductSup          IssueField      `json:"customfield_16880,omitzero"`
@@ -98,6 +101,10 @@ type FieldsIssue struct {
 	Parent              IssueField      `json:"parent,omitzero"`
 	SupportEmailTopic   string          `json:"customfield_16881,omitzero"`
 	AffectedModules     []IssueCheckBox `json:"customfield_16681,omitzero"`
+	ReleaseToMerge      []IssueField    `json:"customfield_13381,omitzero"` // Release to merge (git).CDI
+	FixVersions         []IssueField    `json:"fixVersions,omitzero"`
+	ResupplyReason      IssueField      `json:"customfield_14181,omitzero"`
+	ResupplyVersion     string          `json:"customfield_14183,omitzero"`
 }
 
 func (i *FieldsIssue) HasLabel(label string) bool {
@@ -115,6 +122,7 @@ type IssueField struct {
 	Key      string `json:"key,omitzero"`
 	Value    string `json:"value,omitzero"`
 	Disabled bool   `json:"disabled,omitzero"`
+	Self     string `json:"self,omitzero"`
 }
 
 type IssueCheckBox struct {
@@ -136,6 +144,14 @@ type JiraUser struct {
 type JiraProject struct {
 	IssueField
 	ProjectCategory IssueField `json:"projectCategory,omitzero"`
+	Archived        bool       `json:"archived,omitzero"`
+}
+
+type JiraComponent struct {
+	IssueField
+	Assignee  JiraUser `json:"assignee,omitzero"`
+	Project   string   `json:"project,omitzero"`
+	ProjectId int      `json:"projectId,omitzero"`
 }
 type ProjectVersion struct {
 	ID              string `json:"id"`
@@ -247,6 +263,7 @@ type MetaField struct {
 	Required        bool         `json:"required"`
 	HasDefaultValue bool         `json:"hasDefaultValue"`
 	AllowedValues   []IssueField `json:"allowedValues,omitempty"`
+	DefaultValue    IssueField   `json:"defaultValue,omitempty"`
 }
 
 func (i *IssueTypeMeta) GetCustomerIdByName(client, customerFieldId string) string {

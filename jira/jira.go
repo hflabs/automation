@@ -338,3 +338,31 @@ func (j *jira) GetIssueTypeMeta(ctx context.Context, projectKey, issueTypeId str
 	}
 	return resp, nil
 }
+
+func (j *jira) GetJiraProjects(ctx context.Context) ([]JiraProject, error) {
+	var projects []JiraProject
+	err := requests.
+		URL(fmt.Sprintf("%s/project", j.BaseUrl)).
+		Bearer(j.Token).
+		ToJSON(&projects).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return projects, nil
+}
+
+func (j *jira) GetJiraProjectComponents(ctx context.Context, projectKey string) ([]JiraComponent, error) {
+	var components []JiraComponent
+	err := requests.
+		URL(fmt.Sprintf("%s/project/%s/components", j.BaseUrl, projectKey)).
+		Bearer(j.Token).
+		ToJSON(&components).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return components, nil
+}
