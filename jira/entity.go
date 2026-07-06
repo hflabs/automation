@@ -173,6 +173,7 @@ type IssueCommentsResponse struct {
 }
 
 type IssueComment struct {
+	Id           string   `json:"id,omitzero"`
 	Author       JiraUser `json:"author,omitzero"`
 	Body         string   `json:"body,omitzero"`
 	UpdateAuthor JiraUser `json:"update_author,omitzero"`
