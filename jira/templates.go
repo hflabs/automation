@@ -260,6 +260,7 @@ type changelogField struct {
 	Components    string // Компоненты
 	DueDate       string // Срок исполнения
 	Participants  string // Участники
+	Product       string // Продукт/Модуль
 
 	LearnTime          string // Месяц и год обучения
 	LearnForWho        string // Для кого еще подходит это обучение?
@@ -284,6 +285,7 @@ func newChangelogFields() changelogField {
 		Components:    "components",
 		DueDate:       "Срок исполнения",
 		Participants:  "Участники",
+		Product:       "Продукт/Модуль",
 
 		LearnTime:          "Месяц и год обучения",
 		LearnForWho:        "Для кого еще подходит это обучение?",
