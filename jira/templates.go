@@ -383,6 +383,9 @@ type fieldsIssue struct {
 	LearnPeople        string // Участники обучения
 	LearnField         string // Сфера обучения
 	LearnLink          string // Ссылка на курс
+
+	Parent   string // parent
+	SubTasks string // subtasks
 }
 
 func newIssueFields() fieldsIssue {
@@ -420,5 +423,8 @@ func newIssueFields() fieldsIssue {
 		LearnPeople:        "customfield_14480",
 		LearnField:         "customfield_14380",
 		LearnLink:          "customfield_13782",
+
+		Parent:   "parent",
+		SubTasks: "subtasks",
 	}
 }

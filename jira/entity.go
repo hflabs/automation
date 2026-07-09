@@ -98,7 +98,8 @@ type FieldsIssue struct {
 	Customer            IssueField      `json:"customfield_14082,omitzero"`
 	ProductSup          IssueField      `json:"customfield_16880,omitzero"`
 	Labels              []string        `json:"labels,omitempty"`
-	Parent              IssueField      `json:"parent,omitzero"`
+	Parent              *IssueJira      `json:"parent,omitzero"`
+	SubTasks            []IssueJira     `json:"subtasks,omitzero"`
 	SupportEmailTopic   string          `json:"customfield_16881,omitzero"`
 	AffectedModules     []IssueCheckBox `json:"customfield_16681,omitzero"`
 	ReleaseToMerge      []IssueField    `json:"customfield_13381,omitzero"` // Release to merge (git).CDI
