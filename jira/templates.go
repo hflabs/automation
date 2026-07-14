@@ -366,14 +366,16 @@ type fieldsIssue struct {
 	Created            string // created
 	Labels             string // labels
 	Assignee           string // assignee
-	Summary            string // summary
-	Description        string // description
-	Priority           string // priority
-	Project            string // project
-	Type               string // type
-	SupportEmailTopic  string // customfield_16881
-	ProductSup         string // customfield_16880
-	AffectedModules    string // customfield_16681
+	Reporter           string // reporter
+
+	Summary           string // summary
+	Description       string // description
+	Priority          string // priority
+	Project           string // project
+	Type              string // type
+	SupportEmailTopic string // customfield_16881
+	ProductSup        string // customfield_16880
+	AffectedModules   string // customfield_16681
 
 	LearnTime          string // Месяц и год обучения
 	LearnForWho        string // Для кого еще подходит это обучение?
@@ -406,6 +408,7 @@ func newIssueFields() fieldsIssue {
 		Created:            "created",
 		Labels:             "labels",
 		Assignee:           "assignee",
+		Reporter:           "reporter",
 		Summary:            "summary",
 		Description:        "description",
 		Priority:           "priority",
