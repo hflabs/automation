@@ -146,12 +146,65 @@ func (j *jira) TransitionIssue(ctx context.Context, issueKey, transitionID strin
 		Fetch(ctx)
 }
 
-// TransitionToStatus - высокоуровневый метод.
-// 1. Получает доступные переходы.
-// 2. Ищет переход в статус targetStatusId
-// 3. Если найден - выполняет. Если нет - возвращает ошибку со списком доступных.
+// TransitionToStatus is a high-level transition method by target status ID.
+// It can move through known intermediate statuses when Jira does not expose a
+// direct transition from the issue's current status.
 func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId string) error {
-	// 1. Получаем возможные переходы для этой задачи
+	if strings.TrimSpace(issueKey) == "" {
+		return fmt.Errorf("issueKey is empty")
+	}
+	if strings.TrimSpace(targetStatusId) == "" {
+		return fmt.Errorf("targetStatusId is empty")
+	}
+
+	issue, err := j.GetIssueById(ctx, issueKey, Issue.Fields.Status)
+	if err != nil {
+		return fmt.Errorf("failed to get issue status: %w", err)
+	}
+	currentStatusId := issue.Fields.Status.ID
+	if currentStatusId == targetStatusId {
+		return nil
+	}
+
+	const maxTransitionToStatusSteps = 20
+	for step := 0; step < maxTransitionToStatusSteps; step++ {
+		transitions, err := j.getIssueTransitions(ctx, issueKey)
+		if err != nil {
+			return fmt.Errorf("failed to get transitions: %w", err)
+		}
+		if len(transitions) == 0 {
+			return fmt.Errorf("cannot transition issue %s from status '%s' to status '%s': no available transitions",
+				issueKey, currentStatusId, targetStatusId)
+		}
+
+		if transition, ok := findTransitionToStatus(transitions, targetStatusId); ok {
+			return j.TransitionIssue(ctx, issueKey, transition.ID)
+		}
+
+		route := findStatusRoute(currentStatusId, targetStatusId, transitions)
+		if len(route) < 2 {
+			return fmt.Errorf("cannot transition issue %s from status '%s' to status '%s'. Available statuses: %v",
+				issueKey, currentStatusId, targetStatusId, formatAvailableStatuses(transitions))
+		}
+
+		nextStatusId := route[1]
+		transition, ok := findTransitionToStatus(transitions, nextStatusId)
+		if !ok {
+			return fmt.Errorf("cannot transition issue %s from status '%s' to next route status '%s'. Available statuses: %v",
+				issueKey, currentStatusId, nextStatusId, formatAvailableStatuses(transitions))
+		}
+		if err := j.TransitionIssue(ctx, issueKey, transition.ID); err != nil {
+			return fmt.Errorf("failed to transition issue %s from status '%s' to status '%s': %w",
+				issueKey, currentStatusId, nextStatusId, err)
+		}
+		currentStatusId = nextStatusId
+	}
+
+	return fmt.Errorf("cannot transition issue %s to status '%s': exceeded %d transition steps",
+		issueKey, targetStatusId, maxTransitionToStatusSteps)
+}
+
+func (j *jira) getIssueTransitions(ctx context.Context, issueKey string) ([]Transition, error) {
 	var meta TransitionsResponse
 	err := requests.
 		URL(fmt.Sprintf("%s/issue/%s/transitions", j.BaseUrl, issueKey)).
@@ -160,18 +213,9 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId 
 		AddValidator(validateStatus).
 		Fetch(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to get transitions: %w", err)
+		return nil, err
 	}
-
-	// 2. Ищем нужный переход
-	for _, t := range meta.Transitions {
-		if t.To.ID == targetStatusId {
-			// 3. Выполняем переход, если нашли
-			return j.TransitionIssue(ctx, issueKey, t.ID)
-		}
-	}
-	return fmt.Errorf("cannot transition issue %s to status '%s'. Available statuses: %v",
-		issueKey, targetStatusId, formatAvailableStatuses(meta.Transitions))
+	return meta.Transitions, nil
 }
 
 func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error {
