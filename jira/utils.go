@@ -123,18 +123,25 @@ func findStatusRoute(currentStatusId, targetStatusId string, currentTransitions 
 }
 
 func knownTransitionStatusGraph() map[string][]string {
-	status := Issue.Status
+	stat := Issue.Status
 	return map[string][]string{
-		status.New:        {status.Assigned, status.NoNeedReaction},
-		status.Assigned:   {status.InProgressHRP},
-		status.Backlog:    {status.Rated, status.Done},
-		status.Rated:      {status.Selected, status.Backlog, status.Done},
-		status.Selected:   {status.InProgress, status.Backlog, status.Done},
-		status.InProgress: {status.Resolved, status.Backlog, status.Delay},
-		status.Resolved:   {status.Done, status.ToRelease, status.Selected, status.Delay},
-		status.Delay:      {status.InProgress},
-		status.CodeReview: {status.Resolved},
-		status.Closed:     {status.Reopened},
+		stat.New:             {stat.Assigned, stat.NoNeedReaction, stat.AssignedInQueue},
+		stat.Assigned:        {stat.InProgressHRP},
+		stat.AssignedInQueue: {stat.InProgress, stat.NoNeedReaction},
+		stat.NoNeedReaction:  {stat.New, stat.AssignedInQueue},
+		stat.Backlog:         {stat.Rated, stat.Done},
+		stat.Rated:           {stat.Selected, stat.Backlog, stat.Done},
+		stat.Selected:        {stat.InProgress, stat.Backlog, stat.Done},
+		stat.InProgress: {stat.Resolved, stat.Backlog, stat.Delay, stat.AnsweredButNeedImprovements, stat.FirstAnswer,
+			stat.AwaitingCustomerResponse, stat.AwaitingDecisionColleagues, stat.AssignedInQueue, stat.Closed},
+		stat.AnsweredButNeedImprovements: {stat.InProgress},
+		stat.FirstAnswer:                 {stat.InProgress},
+		stat.AwaitingCustomerResponse:    {stat.InProgress},
+		stat.AwaitingDecisionColleagues:  {stat.InProgress},
+		stat.Resolved:                    {stat.Done, stat.ToRelease, stat.Selected, stat.Delay},
+		stat.Delay:                       {stat.InProgress},
+		stat.CodeReview:                  {stat.Resolved},
+		stat.Closed:                      {stat.Reopened, stat.AssignedInQueue},
 	}
 }
 

@@ -168,30 +168,30 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId 
 
 	const maxTransitionToStatusSteps = 20
 	for step := 0; step < maxTransitionToStatusSteps; step++ {
-		transitions, err := j.getIssueTransitions(ctx, issueKey)
+		trans, err := j.getIssueTransitions(ctx, issueKey)
 		if err != nil {
 			return fmt.Errorf("failed to get transitions: %w", err)
 		}
-		if len(transitions) == 0 {
+		if len(trans) == 0 {
 			return fmt.Errorf("cannot transition issue %s from status '%s' to status '%s': no available transitions",
 				issueKey, currentStatusId, targetStatusId)
 		}
 
-		if transition, ok := findTransitionToStatus(transitions, targetStatusId); ok {
+		if transition, ok := findTransitionToStatus(trans, targetStatusId); ok {
 			return j.TransitionIssue(ctx, issueKey, transition.ID)
 		}
 
-		route := findStatusRoute(currentStatusId, targetStatusId, transitions)
+		route := findStatusRoute(currentStatusId, targetStatusId, trans)
 		if len(route) < 2 {
 			return fmt.Errorf("cannot transition issue %s from status '%s' to status '%s'. Available statuses: %v",
-				issueKey, currentStatusId, targetStatusId, formatAvailableStatuses(transitions))
+				issueKey, currentStatusId, targetStatusId, formatAvailableStatuses(trans))
 		}
 
 		nextStatusId := route[1]
-		transition, ok := findTransitionToStatus(transitions, nextStatusId)
+		transition, ok := findTransitionToStatus(trans, nextStatusId)
 		if !ok {
 			return fmt.Errorf("cannot transition issue %s from status '%s' to next route status '%s'. Available statuses: %v",
-				issueKey, currentStatusId, nextStatusId, formatAvailableStatuses(transitions))
+				issueKey, currentStatusId, nextStatusId, formatAvailableStatuses(trans))
 		}
 		if err := j.TransitionIssue(ctx, issueKey, transition.ID); err != nil {
 			return fmt.Errorf("failed to transition issue %s from status '%s' to status '%s': %w",
