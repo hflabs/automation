@@ -2,6 +2,7 @@ package jira
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -60,7 +61,37 @@ func validateStatus(resp *http.Response) error {
 	if err != nil {
 		return err
 	}
-	return fmt.Errorf("status code %v.\nBody:%s", resp.StatusCode, string(b))
+	return jiraStatusError{StatusCode: resp.StatusCode, Body: string(b)}
+}
+
+type jiraStatusError struct {
+	StatusCode int
+	Body       string
+}
+
+func (e jiraStatusError) Error() string {
+	return fmt.Sprintf("status code %v.\nBody:%s", e.StatusCode, e.Body)
+}
+
+func isCommentRequiredTransitionError(err error) bool {
+	var statusErr jiraStatusError
+	if !errors.As(err, &statusErr) {
+		return false
+	}
+	if statusErr.StatusCode != http.StatusBadRequest {
+		return false
+	}
+
+	var resp struct {
+		Errors map[string]string `json:"errors"`
+	}
+	if json.Unmarshal([]byte(statusErr.Body), &resp) == nil {
+		if _, ok := resp.Errors["comment"]; ok {
+			return true
+		}
+	}
+
+	return strings.Contains(statusErr.Body, `"comment"`)
 }
 
 func formatAvailableStatuses(availableStatuses []Transition) string {
@@ -143,6 +174,10 @@ func knownTransitionStatusGraph() map[string][]string {
 		stat.CodeReview:                  {stat.Resolved},
 		stat.Closed:                      {stat.Reopened, stat.AssignedInQueue},
 	}
+}
+
+func transitionComment() string {
+	return "Переход выполнен автоматически"
 }
 
 func appendUniqueString(values []string, value string) []string {

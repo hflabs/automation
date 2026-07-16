@@ -19,6 +19,7 @@ func TestTransitionToStatus(t *testing.T) {
 		targetStatusId      string
 		transitionsByStatus map[string][]Transition
 		statusByTransition  map[string]string
+		requireCommentByID  map[string]string
 		wantTransitions     []string
 		wantStatusId        string
 		wantErrContains     string
@@ -44,6 +45,24 @@ func TestTransitionToStatus(t *testing.T) {
 			wantStatusId:    Issue.Status.InProgressHRP,
 		},
 		{
+			name:            "retries with comment when Jira requires it",
+			initialStatusId: Issue.Status.New,
+			targetStatusId:  Issue.Status.NoNeedReaction,
+			transitionsByStatus: map[string][]Transition{
+				Issue.Status.New: {
+					{ID: "noReaction", Name: "No reaction", To: IssueField{ID: Issue.Status.NoNeedReaction}},
+				},
+			},
+			statusByTransition: map[string]string{
+				"noReaction": Issue.Status.NoNeedReaction,
+			},
+			requireCommentByID: map[string]string{
+				"noReaction": transitionComment(),
+			},
+			wantTransitions: []string{"noReaction"},
+			wantStatusId:    Issue.Status.NoNeedReaction,
+		},
+		{
 			name:            "returns error when route is unknown",
 			initialStatusId: Issue.Status.New,
 			targetStatusId:  Issue.Status.InProgressHRP,
@@ -63,7 +82,14 @@ func TestTransitionToStatus(t *testing.T) {
 			currentStatusId := tc.initialStatusId
 			var appliedTransitions []string
 
-			srv := newTransitionTestServer(t, &currentStatusId, &appliedTransitions, tc.transitionsByStatus, tc.statusByTransition)
+			srv := newTransitionTestServer(
+				t,
+				&currentStatusId,
+				&appliedTransitions,
+				tc.transitionsByStatus,
+				tc.statusByTransition,
+				tc.requireCommentByID,
+			)
 			t.Cleanup(srv.Close)
 
 			j := &jira{BaseUrl: srv.URL, Token: "token"}
@@ -86,6 +112,7 @@ func newTransitionTestServer(
 	appliedTransitions *[]string,
 	transitionsByStatus map[string][]Transition,
 	statusByTransition map[string]string,
+	requireCommentByID map[string]string,
 ) *httptest.Server {
 	t.Helper()
 
@@ -114,6 +141,20 @@ func newTransitionTestServer(
 			err := json.NewDecoder(r.Body).Decode(&req)
 			require.NoError(t, err)
 
+			requiredComment := requireCommentByID[req.Transition.ID]
+			if requiredComment != "" && transitionRequestComment(req) == "" {
+				w.WriteHeader(http.StatusBadRequest)
+				err := json.NewEncoder(w).Encode(map[string]any{
+					"errorMessages": []string{},
+					"errors": map[string]string{
+						"comment": "Нельзя просто так взять и закрыть задачу без комментария!",
+					},
+				})
+				require.NoError(t, err)
+				return
+			}
+			require.Equal(t, requiredComment, transitionRequestComment(req))
+
 			nextStatusId, ok := statusByTransition[req.Transition.ID]
 			require.True(t, ok, "unexpected transition %q", req.Transition.ID)
 
@@ -126,4 +167,11 @@ func newTransitionTestServer(
 	})
 
 	return httptest.NewServer(mux)
+}
+
+func transitionRequestComment(req TransitionIssueRequest) string {
+	if len(req.Update.Comment) == 0 {
+		return ""
+	}
+	return req.Update.Comment[0].Add.Body
 }

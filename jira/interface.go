@@ -29,8 +29,10 @@ type ApiJira interface {
 
 	CommentIssue(ctx context.Context, issueKey, comment string) error
 
-	// TransitionIssue - низкоуровневый метод (по ID перехода)
+	// TransitionIssue is a low-level transition method by transition ID.
 	TransitionIssue(ctx context.Context, issueKey, transitionID string) error
-	// TransitionToStatus - высокоуровневый метод (по ID статуса назначения)
+	// TransitionIssueWithComment is a low-level transition method that adds a comment in the same Jira request.
+	TransitionIssueWithComment(ctx context.Context, issueKey, transitionID, comment string) error
+	// TransitionToStatus is a high-level transition method by target status ID.
 	TransitionToStatus(ctx context.Context, issueKey, targetStatusId string) error
 }

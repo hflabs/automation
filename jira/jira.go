@@ -137,11 +137,19 @@ func (j *jira) UpdateIssueAssignee(ctx context.Context, issueKey, assigneeName s
 
 // TransitionIssue - низкоуровневый метод, принимает ID перехода
 func (j *jira) TransitionIssue(ctx context.Context, issueKey, transitionID string) error {
+	return j.TransitionIssueWithComment(ctx, issueKey, transitionID, "")
+}
+
+func (j *jira) TransitionIssueWithComment(ctx context.Context, issueKey, transitionID, comment string) error {
+	req := TransitionIssueRequest{Transition: IssueField{ID: transitionID}}
+	if strings.TrimSpace(comment) != "" {
+		req.Update.Comment = []CommentUpdate{{Add: IssueComment{Body: comment}}}
+	}
 	return requests.
 		URL(fmt.Sprintf("%s/issue/%s/transitions", j.BaseUrl, issueKey)).
 		Post().
 		Bearer(j.Token).
-		BodyJSON(TransitionIssueRequest{Transition: IssueField{ID: transitionID}}).
+		BodyJSON(req).
 		AddValidator(validateStatus).
 		Fetch(ctx)
 }
@@ -178,7 +186,7 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId 
 		}
 
 		if transition, ok := findTransitionToStatus(trans, targetStatusId); ok {
-			return j.TransitionIssue(ctx, issueKey, transition.ID)
+			return j.transitionIssueToStatus(ctx, issueKey, transition)
 		}
 
 		route := findStatusRoute(currentStatusId, targetStatusId, trans)
@@ -193,7 +201,7 @@ func (j *jira) TransitionToStatus(ctx context.Context, issueKey, targetStatusId 
 			return fmt.Errorf("cannot transition issue %s from status '%s' to next route status '%s'. Available statuses: %v",
 				issueKey, currentStatusId, nextStatusId, formatAvailableStatuses(trans))
 		}
-		if err := j.TransitionIssue(ctx, issueKey, transition.ID); err != nil {
+		if err := j.transitionIssueToStatus(ctx, issueKey, transition); err != nil {
 			return fmt.Errorf("failed to transition issue %s from status '%s' to status '%s': %w",
 				issueKey, currentStatusId, nextStatusId, err)
 		}
@@ -216,6 +224,17 @@ func (j *jira) getIssueTransitions(ctx context.Context, issueKey string) ([]Tran
 		return nil, err
 	}
 	return meta.Transitions, nil
+}
+
+func (j *jira) transitionIssueToStatus(ctx context.Context, issueKey string, transition Transition) error {
+	err := j.TransitionIssue(ctx, issueKey, transition.ID)
+	if err == nil {
+		return nil
+	}
+	if !isCommentRequiredTransitionError(err) {
+		return err
+	}
+	return j.TransitionIssueWithComment(ctx, issueKey, transition.ID, transitionComment())
 }
 
 func (j *jira) CommentIssue(ctx context.Context, issueKey, comment string) error {

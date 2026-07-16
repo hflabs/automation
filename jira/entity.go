@@ -221,13 +221,18 @@ type UpdateIssueRequest struct {
 }
 
 type UpdateIssue struct {
-	Labels []UpdateField `json:"labels,omitzero"`
+	Labels  []UpdateField   `json:"labels,omitzero"`
+	Comment []CommentUpdate `json:"comment,omitzero"`
 }
 
 type UpdateField struct {
 	Add    string `json:"add,omitzero"`
 	Remove string `json:"remove,omitzero"`
 	Set    string `json:"set,omitzero"`
+}
+
+type CommentUpdate struct {
+	Add IssueComment `json:"add,omitzero"`
 }
 
 // CreatedIssueResponse — ответ Jira на создание задачи (POST /issue)
@@ -239,7 +244,8 @@ type CreatedIssueResponse struct {
 }
 
 type TransitionIssueRequest struct {
-	Transition IssueField `json:"transition,omitzero"`
+	Transition IssueField  `json:"transition,omitzero"`
+	Update     UpdateIssue `json:"update,omitzero"`
 }
 type TransitionsResponse struct {
 	Expand      string       `json:"expand"`
