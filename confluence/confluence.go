@@ -39,6 +39,28 @@ func (c *confluence) GetPagesByName(ctx context.Context, name, spaceKey string) 
 	return resp.Results, nil
 }
 
+func (c *confluence) GetChildPageByName(ctx context.Context, parentPageId, name string) (PageInfo, bool, error) {
+	if parentPageId == "" {
+		return PageInfo{}, false, fmt.Errorf("parentPageId cannot be empty")
+	}
+	if name == "" {
+		return PageInfo{}, false, fmt.Errorf("name cannot be empty")
+	}
+
+	children, err := c.GetChildrenById(ctx, parentPageId, 500)
+	if err != nil {
+		return PageInfo{}, false, fmt.Errorf("GetChildPageByName — get children for pageId %s err: %w", parentPageId, err)
+	}
+
+	for _, child := range children {
+		if child.Title == name {
+			return child, true, nil
+		}
+	}
+
+	return PageInfo{}, false, nil
+}
+
 func (c *confluence) GetPagesByIncludedName(ctx context.Context, name, spaceKey string) ([]PageInfo, error) {
 	cqlQuery := fmt.Sprintf("space=\"%s\" AND type=\"page\" AND title~\"%s\"", spaceKey, name)
 	var resp searchPagesResponse

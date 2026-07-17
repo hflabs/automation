@@ -7,6 +7,7 @@ type ApiConfluence interface {
 	GetVersionById(ctx context.Context, id string) (VersionResponse, error)
 	GetPagesByName(ctx context.Context, name, spaceKey string) ([]PageInfo, error)
 	GetPagesByIncludedName(ctx context.Context, name, spaceKey string) ([]PageInfo, error)
+	GetChildPageByName(ctx context.Context, parentPageId, name string) (PageInfo, bool, error)
 
 	GetUserByUsername(ctx context.Context, username string) (*User, error)
 	GetUserByKey(ctx context.Context, key string) (*User, error)
