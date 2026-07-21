@@ -264,16 +264,23 @@ type changelogField struct {
 	Participants  string // Участники
 	Product       string // Продукт/Модуль
 
-	LearnTime          string // Месяц и год обучения
-	LearnForWho        string // Для кого еще подходит это обучение?
-	LearnWhatLike      string // Что тебе понравилось в обучении?
-	LearnWhatUseful    string // Что было полезного/ценного в обучении для тебя?
-	LearnWhatBad       string // Было ли что-то, что не понравилось на обучении? Расскажи
-	LearnWhatLearned   string // Чему научился(ась)? Что планируешь применять в работе?
-	LearnWillRecommend string // Порекомендуешь ли обучение коллегам?
-	LearnPeople        string // Участники обучения
-	LearnField         string // Сфера обучения
-	LearnLink          string // Ссылка на курс
+	LearnTime               string // Месяц и год обучения
+	LearnForWho             string // Для кого еще подходит это обучение?
+	LearnWhatLike           string // Что тебе понравилось в обучении?
+	LearnWhatUseful         string // Что было полезного/ценного в обучении для тебя?
+	LearnWhatBad            string // Было ли что-то, что не понравилось на обучении? Расскажи
+	LearnWhatLearned        string // Чему научился(ась)? Что планируешь применять в работе?
+	LearnWillRecommend      string // Порекомендуешь ли обучение коллегам?
+	LearnPeople             string // Участники обучения
+	LearnField              string // Сфера обучения
+	LearnLink               string // Ссылка на курс
+	LearnPlace              string // Место
+	LearnParticipantsHfLabs string // Участники от HFLabs
+	LearnSpeakersHfLabs     string // Спикеры от HFLabs
+	LearnWhatAbout          string // О чем рассказывали
+	LearnNeedToGo           string // Стоит ли идти в следующем году (или можно просто посмотреть видео выступлений)?
+	LearnUsefulContacts     string // Полезные контакты или конструктивные диалоги
+	LearnMaterialsLink      string // Ссылка на материалы мероприятия
 }
 
 func newChangelogFields() changelogField {
@@ -289,16 +296,23 @@ func newChangelogFields() changelogField {
 		Participants:  "Участники",
 		Product:       "Продукт/Модуль",
 
-		LearnTime:          "Месяц и год обучения",
-		LearnForWho:        "Для кого еще подходит это обучение?",
-		LearnWhatLike:      "Что тебе понравилось в обучении?",
-		LearnWhatUseful:    "Что было полезного/ценного в обучении для тебя?",
-		LearnWhatBad:       "Было ли что-то, что не понравилось на обучении? Расскажи",
-		LearnWhatLearned:   "Чему научился(ась)? Что планируешь применять в работе?",
-		LearnWillRecommend: "Порекомендуешь ли обучение коллегам?",
-		LearnPeople:        "Участники обучения",
-		LearnField:         "Сфера обучения",
-		LearnLink:          "Ссылка на курс",
+		LearnTime:               "Месяц и год обучения",
+		LearnForWho:             "Для кого еще подходит это обучение?",
+		LearnWhatLike:           "Что тебе понравилось в обучении?",
+		LearnWhatUseful:         "Что было полезного/ценного в обучении для тебя?",
+		LearnWhatBad:            "Было ли что-то, что не понравилось на обучении? Расскажи",
+		LearnWhatLearned:        "Чему научился(ась)? Что планируешь применять в работе?",
+		LearnWillRecommend:      "Порекомендуешь ли обучение коллегам?",
+		LearnPeople:             "Участники обучения",
+		LearnField:              "Сфера обучения",
+		LearnLink:               "Ссылка на курс",
+		LearnPlace:              "Место",
+		LearnParticipantsHfLabs: "Участники от HFLabs",
+		LearnSpeakersHfLabs:     "Спикеры от HFLabs",
+		LearnWhatAbout:          "О чем рассказывали",
+		LearnNeedToGo:           "Стоит ли идти в следующем году (или можно просто посмотреть видео выступлений)?",
+		LearnUsefulContacts:     "Полезные контакты или конструктивные диалоги",
+		LearnMaterialsLink:      "Ссылка на материалы мероприятия",
 	}
 }
 
@@ -379,16 +393,23 @@ type fieldsIssue struct {
 	ProductSup        string // customfield_16880
 	AffectedModules   string // customfield_16681
 
-	LearnTime          string // Месяц и год обучения
-	LearnForWho        string // Для кого еще подходит это обучение?
-	LearnWhatLike      string // Что тебе понравилось в обучении?
-	LearnWhatUseful    string // Что было полезного/ценного в обучении для тебя?
-	LearnWhatBad       string // Было ли что-то, что не понравилось на обучении? Расскажи
-	LearnWhatLearned   string // Чему научился(ась)? Что планируешь применять в работе?
-	LearnWillRecommend string // Порекомендуешь ли обучение коллегам?
-	LearnPeople        string // Участники обучения
-	LearnField         string // Сфера обучения
-	LearnLink          string // Ссылка на курс
+	LearnTime               string // Месяц и год обучения
+	LearnForWho             string // Для кого еще подходит это обучение?
+	LearnWhatLike           string // Что тебе понравилось в обучении?
+	LearnWhatUseful         string // Что было полезного/ценного в обучении для тебя?
+	LearnWhatBad            string // Было ли что-то, что не понравилось на обучении? Расскажи
+	LearnWhatLearned        string // Чему научился(ась)? Что планируешь применять в работе?
+	LearnWillRecommend      string // Порекомендуешь ли обучение коллегам?
+	LearnPeople             string // Участники обучения
+	LearnField              string // Сфера обучения
+	LearnLink               string // Ссылка на курс
+	LearnPlace              string // Место
+	LearnParticipantsHfLabs string // Участники от HFLabs
+	LearnSpeakersHfLabs     string // Спикеры от HFLabs
+	LearnWhatAbout          string // О чем рассказывали
+	LearnNeedToGo           string // Стоит ли идти в следующем году (или можно просто посмотреть видео выступлений)?
+	LearnUsefulContacts     string // Полезные контакты или конструктивные диалоги
+	LearnMaterialsLink      string // Ссылка на материалы мероприятия
 
 	Parent   string // parent
 	SubTasks string // subtasks
@@ -420,16 +441,23 @@ func newIssueFields() fieldsIssue {
 		ProductSup:         "customfield_16880",
 		AffectedModules:    "customfield_16681",
 
-		LearnTime:          "customfield_14481",
-		LearnForWho:        "customfield_13881",
-		LearnWhatLike:      "customfield_14483",
-		LearnWhatUseful:    "customfield_13784",
-		LearnWhatBad:       "customfield_14484",
-		LearnWhatLearned:   "customfield_13880",
-		LearnWillRecommend: "customfield_13882",
-		LearnPeople:        "customfield_14480",
-		LearnField:         "customfield_14380",
-		LearnLink:          "customfield_13782",
+		LearnTime:               "customfield_14481",
+		LearnForWho:             "customfield_13881",
+		LearnWhatLike:           "customfield_14483",
+		LearnWhatUseful:         "customfield_13784",
+		LearnWhatBad:            "customfield_14484",
+		LearnWhatLearned:        "customfield_13880",
+		LearnWillRecommend:      "customfield_13882",
+		LearnPeople:             "customfield_14480",
+		LearnField:              "customfield_14380",
+		LearnLink:               "customfield_13782",
+		LearnPlace:              "customfield_16980",
+		LearnParticipantsHfLabs: "customfield_16981",
+		LearnSpeakersHfLabs:     "customfield_16982",
+		LearnWhatAbout:          "customfield_16983",
+		LearnNeedToGo:           "customfield_16984",
+		LearnUsefulContacts:     "customfield_16985",
+		LearnMaterialsLink:      "customfield_16986",
 
 		Parent:   "parent",
 		SubTasks: "subtasks",
