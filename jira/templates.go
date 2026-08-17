@@ -188,6 +188,7 @@ type typeIssue struct {
 	BusinessGrowth string // Развитие бизнеса
 	SupportRequest string // Запрос в поддержку
 	SubTask        string // Подзадача
+	Instruction    string // Инструкция
 }
 
 func newTypes() typeIssue {
@@ -201,6 +202,7 @@ func newTypes() typeIssue {
 		BusinessGrowth: "10800",
 		SupportRequest: "10",
 		SubTask:        "10201",
+		Instruction:    "11000",
 	}
 }
 
