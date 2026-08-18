@@ -134,11 +134,13 @@ type IssueField struct {
 }
 
 type IssueCheckBox struct {
+	Value          string              `json:"value,omitzero"`
 	Name           string              `json:"todo,omitzero"`
-	Checked        bool                `json:"done,omitzero"`
-	LinkedIssueKey string              `json:"linkedIssueKey,omitzero"`
-	Required       bool                `json:"mandatory,omitzero"`
+	Checked        bool                `json:"done"`
+	LinkedIssueKey string              `json:"linkedIssueKey"`
+	Required       bool                `json:"mandatory"`
 	Status         IssueCheckBoxStatus `json:"status,omitzero"`
+	Type           string              `json:"type,omitzero"`
 }
 
 type IssueCheckBoxStatus struct {
