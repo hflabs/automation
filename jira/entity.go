@@ -108,7 +108,7 @@ type FieldsIssue struct {
 	Parent                  *IssueJira      `json:"parent,omitzero"`
 	SubTasks                []IssueJira     `json:"subtasks,omitzero"`
 	SupportEmailTopic       string          `json:"customfield_16881,omitzero"`
-	AffectedModules         []IssueCheckBox `json:"customfield_16681,omitzero"`
+	AffectedModules         []IssueCheckBox `json:"customfield_17086,omitzero"`
 	ReleaseToMerge          []IssueField    `json:"customfield_13381,omitzero"` // Release to merge (git).CDI
 	FixVersions             []IssueField    `json:"fixVersions,omitzero"`
 	ResupplyReason          IssueField      `json:"customfield_14181,omitzero"`
@@ -134,11 +134,17 @@ type IssueField struct {
 }
 
 type IssueCheckBox struct {
-	ID       int    `json:"id,omitzero"`
-	Name     string `json:"name,omitzero"`
-	Checked  bool   `json:"checked,omitzero"`
-	Rank     int    `json:"rank,omitzero"`
-	IsHeader bool   `json:"isHeader,omitzero"`
+	Name           string              `json:"todo,omitzero"`
+	Checked        bool                `json:"done,omitzero"`
+	LinkedIssueKey string              `json:"linkedIssueKey,omitzero"`
+	Required       bool                `json:"mandatory,omitzero"`
+	Status         IssueCheckBoxStatus `json:"status,omitzero"`
+}
+
+type IssueCheckBoxStatus struct {
+	Id   int    `json:"id,omitzero"`
+	Name string `json:"name,omitzero"`
+	Type string `json:"type,omitzero"`
 }
 
 type JiraUser struct {
