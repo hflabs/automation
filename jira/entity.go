@@ -108,7 +108,7 @@ type FieldsIssue struct {
 	Parent                  *IssueJira      `json:"parent,omitzero"`
 	SubTasks                []IssueJira     `json:"subtasks,omitzero"`
 	SupportEmailTopic       string          `json:"customfield_16881,omitzero"`
-	AffectedModules         []IssueCheckBox `json:"customfield_17086,omitzero"`
+	AffectedModules         []IssueCheckBox `json:"customfield_17180,omitzero"`
 	ReleaseToMerge          []IssueField    `json:"customfield_13381,omitzero"` // Release to merge (git).CDI
 	FixVersions             []IssueField    `json:"fixVersions,omitzero"`
 	ResupplyReason          IssueField      `json:"customfield_14181,omitzero"`
