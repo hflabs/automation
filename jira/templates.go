@@ -87,6 +87,7 @@ type status struct {
 	AllOrganizedHRP             string // Всё организовано
 	Design                      string // Дизайн
 	ReadyForDevelopment         string // Готово к разработке
+	ReadyForDevelopmentEK       string // Готова к разработке (ЕК)
 	Development                 string // Разработка
 	Review                      string // Ревью
 	Analytics                   string // Аналитика
@@ -141,6 +142,7 @@ func newStatuses() status {
 		AllOrganizedHRP:             "11320",
 		Design:                      "11420",
 		ReadyForDevelopment:         "11421",
+		ReadyForDevelopmentEK:       "12522",
 		Development:                 "11422",
 		Review:                      "11423",
 		Analytics:                   "11520",
