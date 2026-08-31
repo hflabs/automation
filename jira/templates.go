@@ -191,6 +191,8 @@ type typeIssue struct {
 	SupportRequest string // Запрос в поддержку
 	SubTask        string // Подзадача
 	Instruction    string // Инструкция
+	Regression     string // Регрессия
+	ReleaseNotes   string // ReleaseNotes
 }
 
 func newTypes() typeIssue {
@@ -205,6 +207,8 @@ func newTypes() typeIssue {
 		SupportRequest: "10",
 		SubTask:        "10201",
 		Instruction:    "11000",
+		Regression:     "11003",
+		ReleaseNotes:   "11001",
 	}
 }
 
