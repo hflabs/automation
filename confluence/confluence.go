@@ -92,6 +92,9 @@ func (c *confluence) GetContentById(ctx context.Context, id string) (string, err
 	if err != nil {
 		return "", fmt.Errorf("GetContentById — get confluence pageId %s err: %w", id, err)
 	}
+	if resp.Body == nil {
+		return "", fmt.Errorf("GetContentById — get confluence pageId %s body is empty", id)
+	}
 	return resp.Body.Storage.Value, err
 }
 
