@@ -36,5 +36,5 @@ type ApiJira interface {
 	// TransitionToStatus is a high-level transition method by target status ID.
 	TransitionToStatus(ctx context.Context, issueKey, targetStatusId string) error
 
-	GetQuickFilters(ctx context.Context, boardId int) ([]QuickFilter, error)
+	GetKanbanBoard(ctx context.Context, boardId int) (KanbanBoard, error)
 }

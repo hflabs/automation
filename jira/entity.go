@@ -319,10 +319,17 @@ func (i *IssueTypeMeta) GetCustomerOptions(customerFieldId string) []string {
 	return options
 }
 
-type RapidView struct {
+type KanbanBoard struct {
 	ID                int               `json:"id,omitempty"`
 	Name              string            `json:"name,omitempty"`
+	FilterConfig      FilterConfig      `json:"filterConfig,omitempty"`
 	QuickFilterConfig QuickFilterConfig `json:"quickFilterConfig,omitempty"`
+}
+
+type FilterConfig struct {
+	ID    int    `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Query string `json:"query,omitempty"`
 }
 
 type QuickFilterConfig struct {
