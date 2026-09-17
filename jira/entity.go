@@ -318,3 +318,20 @@ func (i *IssueTypeMeta) GetCustomerOptions(customerFieldId string) []string {
 	}
 	return options
 }
+
+type RapidView struct {
+	ID                int               `json:"id,omitempty"`
+	Name              string            `json:"name,omitempty"`
+	QuickFilterConfig QuickFilterConfig `json:"quickFilterConfig,omitempty"`
+}
+
+type QuickFilterConfig struct {
+	RapidViewID  int           `json:"rapidViewId,omitempty"`
+	QuickFilters []QuickFilter `json:"quickFilters,omitempty"`
+}
+
+type QuickFilter struct {
+	ID    int    `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Query string `json:"query,omitempty"`
+}

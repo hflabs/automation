@@ -429,3 +429,19 @@ func (j *jira) GetJiraProjectComponents(ctx context.Context, projectKey string) 
 	}
 	return components, nil
 }
+
+func (j *jira) GetQuickFilters(ctx context.Context, boardId int) ([]QuickFilter, error) {
+	var resp RapidView
+	baseUrl, _ := url.Parse(j.BaseUrl)
+	boardUrl := fmt.Sprintf("%s://%s/rest/greenhopper/1.0/rapidviewconfig/editmodel?rapidViewId=%d", baseUrl.Scheme, baseUrl.Hostname(), boardId)
+	err := requests.
+		URL(boardUrl).
+		Bearer(j.Token).
+		ToJSON(&resp).
+		AddValidator(validateStatus).
+		Fetch(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return resp.QuickFilterConfig.QuickFilters, nil
+}
