@@ -113,6 +113,7 @@ type FieldsIssue struct {
 	FixVersions             []IssueField    `json:"fixVersions,omitzero"`
 	ResupplyReason          IssueField      `json:"customfield_14181,omitzero"`
 	ResupplyVersion         string          `json:"customfield_14183,omitzero"`
+	UpdaterRelease          string          `json:"customfield_12780,omitzero"`
 }
 
 func (i *FieldsIssue) HasLabel(label string) bool {

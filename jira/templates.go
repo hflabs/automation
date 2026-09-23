@@ -400,6 +400,7 @@ type fieldsIssue struct {
 	SupportEmailTopic string // customfield_16881
 	ProductSup        string // customfield_16880
 	AffectedModules   string // customfield_17086
+	UpdaterRelease    string // customfield_12780
 
 	LearnTime               string // Месяц и год обучения
 	LearnForWho             string // Для кого еще подходит это обучение?
@@ -448,6 +449,7 @@ func newIssueFields() fieldsIssue {
 		SupportEmailTopic:  "customfield_16881",
 		ProductSup:         "customfield_16880",
 		AffectedModules:    "customfield_17086",
+		UpdaterRelease:     "customfield_12780",
 
 		LearnTime:               "customfield_14481",
 		LearnForWho:             "customfield_13881",
