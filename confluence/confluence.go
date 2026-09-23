@@ -234,6 +234,20 @@ func (c *confluence) UpdatePageByIdWithCheck(ctx context.Context, id string, con
 	return c.UpdatePageById(ctx, id, content, reCreate)
 }
 
+func (c *confluence) UpdatePageTitle(ctx context.Context, id, title string) error {
+	versionInfo, err := c.GetVersionById(ctx, id)
+	if err != nil {
+		return err
+	}
+	req := PageInfo{
+		Id:      id,
+		Type:    "page",
+		Title:   title,
+		Version: &PageVersion{Number: versionInfo.Version.Number + 1},
+	}
+	return c.updatePage(ctx, id, req)
+}
+
 func (c *confluence) updatePage(ctx context.Context, id string, req PageInfo) error {
 	return requests.
 		URL(fmt.Sprintf("%s/%s", c.baseUrl, id)).

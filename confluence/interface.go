@@ -23,6 +23,7 @@ type ApiConfluence interface {
 
 	UpdatePageById(ctx context.Context, id string, content string, reCreate bool) error
 	UpdatePageByIdWithCheck(ctx context.Context, id string, content string, reCreate bool) error
+	UpdatePageTitle(ctx context.Context, id, title string) error
 	UpdatePageParentById(ctx context.Context, id, parentId string) error
 
 	SetRestrictionUser(ctx context.Context, id, username, action string) error
