@@ -120,3 +120,13 @@ type Attachment struct {
 		Download string `json:"download"`
 	} `json:"_links"`
 }
+
+type Webhook struct {
+	Timestamp int64  `json:"timestamp"`
+	Event     string `json:"event"`
+	UserKey   string `json:"userKey"`
+	Content   struct {
+		ID int64 `json:"id"`
+	} `json:"content"`
+	Type string `json:"type"`
+}
