@@ -102,6 +102,7 @@ type status struct {
 	AnsweredButNeedImprovements string // Отвечено, но остались доделки
 	AwaitingCustomerResponse    string // Ожидает ответа заказчика
 	AwaitingDecisionColleagues  string // Ожидает решения от коллег
+	InProgressEK                string // В работе (ЕК)
 }
 
 func newStatuses() status {
@@ -157,6 +158,7 @@ func newStatuses() status {
 		AnsweredButNeedImprovements: "11822",
 		AwaitingCustomerResponse:    "11823",
 		AwaitingDecisionColleagues:  "11824",
+		InProgressEK:                "11",
 	}
 }
 
