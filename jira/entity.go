@@ -75,6 +75,7 @@ type FieldsIssue struct {
 	Reporter                JiraUser        `json:"reporter,omitzero"`
 	Closer                  JiraUser        `json:"customfield_10010,omitzero"`
 	Developer               JiraUser        `json:"customfield_13280,omitzero"` //Разработчик. EAS
+	DevelopmentReviewer     JiraUser        `json:"customfield_15581,omitzero"` //Ревьюер разработки
 	Participants            []JiraUser      `json:"customfield_10380,omitzero"`
 	Project                 JiraProject     `json:"project,omitzero"`
 	Components              []JiraComponent `json:"components,omitzero"`
