@@ -103,6 +103,7 @@ type status struct {
 	AwaitingCustomerResponse    string // Ожидает ответа заказчика
 	AwaitingDecisionColleagues  string // Ожидает решения от коллег
 	InProgressEK                string // В работе (ЕК)
+	NotReady                    string // Не готов
 }
 
 func newStatuses() status {
@@ -159,6 +160,7 @@ func newStatuses() status {
 		AwaitingCustomerResponse:    "11823",
 		AwaitingDecisionColleagues:  "11824",
 		InProgressEK:                "11",
+		NotReady:                    "12720",
 	}
 }
 
